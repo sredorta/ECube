@@ -50,9 +50,8 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
         super.onCreate(savedInstanceState);
         //If we had an user on the bundle it means that screen was rotated, so we restore
         if (savedInstanceState != null) {
-            if (savedInstanceState.getSerializable(KEY_SAVED_USER)!= null)
-                myUser = (User) savedInstanceState.getSerializable(KEY_SAVED_USER);
-            myUser.print("Back from bundle : ");
+            if (savedInstanceState.getParcelable(KEY_SAVED_USER)!= null)
+                myUser = savedInstanceState.getParcelable(KEY_SAVED_USER);
         }
 
 
@@ -67,12 +66,10 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bitmap myBitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.icon_camera);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(ProfileCreateAvatarFragment.FRAGMENT_INPUT_PARAM_USER_AVATAR_BITMAP, myBitmap);
+                bundle.putParcelable(ProfileCreateAvatarFragment.FRAGMENT_INPUT_PARAM_USER_AVATAR_BITMAP, myUser.getAvatarBitmap());
                 ProfileCreateAvatarFragment fragment = ProfileCreateAvatarFragment.newInstance(bundle);
                 fragment.setTargetFragment(ProfileCreateStartFragment.this, REQUEST_DEFINE_AVATAR);
-                //Now replace the AuthenticatorFragment with the SignInFragment
                 replaceFragment(fragment,"test",true);  //This comes from abstract
             }
         });
@@ -92,50 +89,39 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_DEFINE_AVATAR) {
-                Log.i(TAG, "Back from AVATAR");
-                Bitmap myBitmap = (Bitmap) data.getParcelableExtra(ProfileCreateAvatarFragment.FRAGMENT_OUTPUT_PARAM_USER_AVATAR_BITMAP);
                 myUser.setAvatarBitmap((Bitmap) data.getParcelableExtra(ProfileCreateAvatarFragment.FRAGMENT_OUTPUT_PARAM_USER_AVATAR_BITMAP));
-                myUser.print("This is what we have after names:");
-                ProfileCreateNamesFragment fragment = ProfileCreateNamesFragment.newInstance();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(ProfileCreateNamesFragment.FRAGMENT_INPUT_PARAM_USER_FIRST_NAME, myUser.getFirstName());
+                bundle.putSerializable(ProfileCreateNamesFragment.FRAGMENT_INPUT_PARAM_USER_LAST_NAME, myUser.getLastName());
+                ProfileCreateNamesFragment fragment = ProfileCreateNamesFragment.newInstance(bundle);
                 fragment.setTargetFragment(ProfileCreateStartFragment.this, REQUEST_DEFINE_NAMES);
-                //Now replace the AuthenticatorFragment with the SignInFragment
                 replaceFragment(fragment,"test",true);  //This comes from abstract
             } else if (requestCode == REQUEST_DEFINE_NAMES) {
                 myUser.setFirstName((String) data.getSerializableExtra(ProfileCreateNamesFragment.FRAGMENT_OUTPUT_PARAM_USER_FIRST_NAME));
                 myUser.setLastName((String) data.getSerializableExtra(ProfileCreateNamesFragment.FRAGMENT_OUTPUT_PARAM_USER_LAST_NAME));
-                myUser.print("This is what we have after names:");
-                //We now start the fragment for entering phone details
-                ProfileCreatePhoneFragment fragment = ProfileCreatePhoneFragment.newInstance();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(ProfileCreatePhoneFragment.FRAGMENT_INPUT_PARAM_USER_PHONE_NUMBER, myUser.getPhone());
+                ProfileCreatePhoneFragment fragment = ProfileCreatePhoneFragment.newInstance(bundle);
                 fragment.setTargetFragment(ProfileCreateStartFragment.this, REQUEST_DEFINE_PHONE);
-                //Now replace the AuthenticatorFragment with the SignInFragment
                 replaceFragment(fragment,"test",true);  //This comes from abstract
             } else if( requestCode == REQUEST_DEFINE_PHONE) {
                 myUser.setPhone((String) data.getSerializableExtra(ProfileCreatePhoneFragment.FRAGMENT_OUTPUT_PARAM_USER_PHONE_NUMBER));
-                myUser.print("after phone :");
-                //ProfileCreateEmailFragment fragment = ProfileCreateEmailFragment.newInstance();
-                //fragment.setTargetFragment(ProfileCreateStartFragment.this, REQUEST_DEFINE_EMAIL);
-                //replaceFragment(fragment, "test", true);
-
-            }
-            /*else if( requestCode == REQUEST_DEFINE_EMAIL) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(ProfileCreateEmailFragment.FRAGMENT_INPUT_PARAM_USER_EMAIL, myUser.getEmail());
+                ProfileCreateEmailFragment fragment = ProfileCreateEmailFragment.newInstance(bundle);
+                fragment.setTargetFragment(ProfileCreateStartFragment.this, REQUEST_DEFINE_EMAIL);
+                replaceFragment(fragment, "test", true);
+            } else if( requestCode == REQUEST_DEFINE_EMAIL) {
                 myUser.setEmail((String) data.getSerializableExtra(ProfileCreateEmailFragment.FRAGMENT_OUTPUT_PARAM_USER_EMAIL));
-                myUser.print("after email :");
                 ProfileCreatePasswordFragment fragment = ProfileCreatePasswordFragment.newInstance();
                 fragment.setTargetFragment(ProfileCreateStartFragment.this, REQUEST_DEFINE_PASSWORD);
                 replaceFragment(fragment, "test", true);
             } else if( requestCode == REQUEST_DEFINE_PASSWORD) {
                 myUser.setPassword((String) data.getSerializableExtra(ProfileCreatePasswordFragment.FRAGMENT_OUTPUT_PARAM_USER_PASSWORD));
-                myUser.print("after password :");
-                User finalUser = new User();
-                finalUser.initEmpty(getContext());
-                finalUser.update(myUser);
-                finalUser.print("Before account creation :");
-                // Now we create the account with all the data
-                AccountGeneral myAccountGeneral = new AccountGeneral(getContext());
-                myAccountGeneral.createServerAndDeviceAccount(mActivity, finalUser);
+                myUser.print("Final user: ");
+                //TODO create the account here
 
             }
-*/
         } else {
             // Reload our fragment
             replaceFragment(this, "test", true);
@@ -147,6 +133,6 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (DEBUG) Log.i(TAG, "Saving user in bundle...");
-        outState.putSerializable(KEY_SAVED_USER, myUser);
+        outState.putParcelable(KEY_SAVED_USER, myUser);
     }
 }

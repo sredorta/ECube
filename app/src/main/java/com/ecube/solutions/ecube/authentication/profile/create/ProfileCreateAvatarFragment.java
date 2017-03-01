@@ -74,7 +74,7 @@ public class ProfileCreateAvatarFragment extends FragmentAbstract {
         View v = inflater.inflate(R.layout.profile_create_avatar_fragment, container, false);
         setCurrentView(v);    //       mView = v;
 
-        hiddenPanel = (View) v.findViewById(R.id.profile_create_avatar_hidden_panel);
+        hiddenPanel =  v.findViewById(R.id.profile_create_avatar_hidden_panel);
         //In case the device was rotated
         if (savedInstanceState != null) {
             mPanelVisible = savedInstanceState.getBoolean(KEY_PANEL_STATUS);
@@ -111,8 +111,6 @@ public class ProfileCreateAvatarFragment extends FragmentAbstract {
             public void onClick(View view) {
                 putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_AVATAR_BITMAP, mAvatar.getBitmap());
                 sendResult(Activity.RESULT_OK);
-                // Remove our fragment
-///////                removeFragment(ProfileCreateAvatarFragment.this, true);  //This comes from abstract
             }
         });
 

@@ -49,9 +49,6 @@ public class ProfileCreatePhoneFragment extends FragmentAbstract {
     private static int REQUEST_COUNTRY = 0;
 
     private String mPhoneNumber;                //Contains input phone number
-    private String mFinalPhoneNumber = new String();
-
-    private boolean isPhoneNumberCorrect;       //Contains if typed in number is correct
     private Locale mLocale;                     //Current country Locale of the phone number
     private CountryPickerFragment dialog;       //Dialog to choose another country
 
@@ -106,9 +103,6 @@ public class ProfileCreatePhoneFragment extends FragmentAbstract {
         if (savedInstanceState!= null) {
             mLocale = (Locale) savedInstanceState.getSerializable(KEY_CURRENT_LOCALE);
         }
-
-        //We start with wrong number
-        isPhoneNumberCorrect = false;
     }
 
     private void updateCurrentCountry() {
@@ -155,29 +149,17 @@ public class ProfileCreatePhoneFragment extends FragmentAbstract {
             @Override
             public void afterTextChanged(Editable s) {
                 //Return if no characters are here
-                if (s.toString().length()== 0) return;
-                if ((s.toString().matches("[0-9]+") && s.toString().length() > 0)) {
+                if (checkPhoneNumber(mNumberEditText.getText().toString())) {
+                    mNumberEditText.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+                    mNumberEditText.setTypeface(mNumberEditText.getTypeface(), Typeface.BOLD);
+                    hideInputKeyBoard();
+                } else {
                     mNumberEditText.setTextColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
                     mNumberEditText.setTypeface(mNumberEditText.getTypeface(), Typeface.NORMAL);
-                    //We only start checking if number is valid once length is larger than 2 to avoid crash
-                    if (s.toString().length()>2) {
-                        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-                        Phonenumber.PhoneNumber inputNumber;
-                        try {
-                            inputNumber = phoneUtil.parse(s.toString(), mLocale.getCountry());
-                        } catch (NumberParseException e) {
-                            inputNumber = null;
-                            Log.i(TAG, "Caught exception :" + e);
-                        }
-                        isPhoneNumberCorrect = phoneUtil.isValidNumber(inputNumber);
-                        if (isPhoneNumberCorrect) {
-                            mNumberEditText.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-                            mNumberEditText.setTypeface(mNumberEditText.getTypeface(), Typeface.BOLD);
-                            mFinalPhoneNumber = phoneUtil.format(inputNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
-                            hideInputKeyBoard();
-                            if (DEBUG) Log.i(TAG, "Is Valid = : " + isPhoneNumberCorrect);
-                        }
-                    }
+                }
+                if (s.toString().length()== 0) return;
+                if ((s.toString().matches("[0-9]+") && s.toString().length() > 0)) {
+                    //Do nothing
                 } else {
                     //The input character was not a number so we remove it
                     s.delete(s.length()-1,s.length());
@@ -192,16 +174,48 @@ public class ProfileCreatePhoneFragment extends FragmentAbstract {
             public void onClick(View view) {
                 //Hide keyboard if exists
                 hideInputKeyBoard();
-                if (!isPhoneNumberCorrect) {
+                if (!checkPhoneNumber(mNumberEditText.getText().toString())) {
                     Snackbar snackbar = Snackbar.make(mView, "Invalid telephone format !", Snackbar.LENGTH_LONG);
                     snackbar.show();
                 } else {
-                    putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_PHONE_NUMBER, mFinalPhoneNumber);
+                    putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_PHONE_NUMBER, getFinalPhoneNumber());
                     sendResult(Activity.RESULT_OK);
                 }
             }
         });
         return v;
+    }
+
+    private boolean checkPhoneNumber(String phone) {
+        Boolean isValid = false;
+        if ((phone.matches("[0-9]+") && phone.length() > 0)) {
+            //We only start checking if number is valid once length is larger than 2 to avoid crash
+            if (phone.length()>2) {
+                PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+                Phonenumber.PhoneNumber inputNumber;
+                try {
+                    inputNumber = phoneUtil.parse(phone, mLocale.getCountry());
+                } catch (NumberParseException e) {
+                    inputNumber = null;
+                    Log.i(TAG, "Caught exception :" + e);
+                }
+                isValid = phoneUtil.isValidNumber(inputNumber);
+            }
+        }
+        return isValid;
+    }
+
+    private String getFinalPhoneNumber() {
+        final EditText mNumberEditText = (EditText) mView.findViewById(R.id.profile_create_phone_editText_number);
+        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+        Phonenumber.PhoneNumber inputNumber;
+        try {
+            inputNumber = phoneUtil.parse(mNumberEditText.getText().toString(), mLocale.getCountry());
+        } catch (NumberParseException e) {
+            inputNumber = null;
+            Log.i(TAG, "Caught exception :" + e);
+        }
+        return phoneUtil.format(inputNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
     }
 
 

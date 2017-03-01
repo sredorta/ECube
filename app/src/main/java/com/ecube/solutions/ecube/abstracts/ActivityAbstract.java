@@ -35,7 +35,7 @@ public abstract class ActivityAbstract extends AppCompatActivity {
     }
     public void replaceFragmentWithAnimation(android.support.v4.app.Fragment fragment, String tag){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left);
+        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_fade, R.anim.enter_from_right, R.anim.exit_fade);
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(tag);
         transaction.commit();
@@ -54,7 +54,7 @@ public abstract class ActivityAbstract extends AppCompatActivity {
     @Override
     public void finish() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left);
+        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_fade, R.anim.enter_from_right, R.anim.exit_fade);
         transaction.remove(fragment);
         //transaction.replace(R.id.fragment_container, fragment);
         //transaction..addToBackStack(tag);
