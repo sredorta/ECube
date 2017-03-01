@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="0dp">
+<android.support.v7.widget.CardView
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:id="@+id/profile_signin_with_phone_cardView_main"
+android:layout_gravity="top"
+android:layout_margin="10dp"
+style="?attr/cardStyle">
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:baselineAligned="false"
+    android:padding="10dp"    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Enter your credentials"
+        android:id="@+id/profile_signin_with_phone_title"
+        android:layout_gravity="center"
+        android:textStyle="bold"
+        android:gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Please enter your phone and password..."
+        android:id="@+id/profile_signin_with_phone_text"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="center_horizontal" />
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/profile_create_phone_country_display"
+        layout="@layout/profile_create_country_display" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="phone"
+        android:ems="10"
+        android:id="@+id/profile_signin_with_phone_editText_number"
+        android:hint="Phone number" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/profile_signin_with_phone_editText_password"
+        android:hint="password" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NEXT"
+        android:id="@+id/profile_signin_with_phone_Button_submit"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp" />
+
+</LinearLayout>
+</android.support.v7.widget.CardView>
+<LinearLayout
+android:orientation="vertical"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:gravity="center_vertical|center_horizontal"
+android:layout_gravity="center_vertical">
+
+<TextView
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="Login with email"
+    android:id="@+id/profile_signin_with_phone_TextView_use_email"
+    android:alpha="0.8"
+    android:gravity="center_vertical|center_horizontal"
+    android:layout_margin="10dp" />
+
+<TextView
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="Forgot password ?"
+    android:id="@+id/profile_signin_with_phone_TextView_forgot_password"
+    android:alpha="0.8"
+    android:gravity="center_vertical|center_horizontal"
+    android:layout_margin="10dp" />
+
+<TextView
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="Create new account"
+    android:id="@+id/profile_signin_with_phone_TextView_create"
+    android:alpha="0.8"
+    android:gravity="center_vertical|center_horizontal"
+    android:layout_margin="10dp" />
+
+</LinearLayout>
+</LinearLayout>

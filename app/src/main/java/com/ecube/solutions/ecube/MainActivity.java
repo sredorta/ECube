@@ -11,7 +11,7 @@ public class MainActivity extends ActivityAbstract {
     private final boolean DEBUG = true;
 
     public Fragment createFragment() {
-        return ProfileCreateStartFragment.newInstance();
+        return MainFragment.newInstance();
     }
 
 /*

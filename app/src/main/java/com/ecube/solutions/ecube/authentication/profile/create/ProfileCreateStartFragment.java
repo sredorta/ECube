@@ -15,6 +15,7 @@ import android.widget.Button;
 
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
+import com.ecube.solutions.ecube.authentication.authenticator.AccountGeneral;
 import com.ecube.solutions.ecube.authentication.profile.dao.Avatar;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 
@@ -118,9 +119,11 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
                 replaceFragment(fragment, "test", true);
             } else if( requestCode == REQUEST_DEFINE_PASSWORD) {
                 myUser.setPassword((String) data.getSerializableExtra(ProfileCreatePasswordFragment.FRAGMENT_OUTPUT_PARAM_USER_PASSWORD));
+                myUser.setAccountAccess(AccountGeneral.AUTHTOKEN_TYPE_STANDARD);  //We always create account with standard access first
                 myUser.print("Final user: ");
-                //TODO create the account here
-
+                Log.i(TAG, "We are hire");
+                AccountGeneral ag = new AccountGeneral(getContext(), myUser);
+                ag.createAccount();
             }
         } else {
             // Reload our fragment

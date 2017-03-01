@@ -2,9 +2,11 @@ package com.ecube.solutions.ecube.authentication.profile.dao;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -12,6 +14,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.util.Base64;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -21,6 +24,7 @@ import android.widget.ProgressBar;
 
 import com.ecube.solutions.ecube.R;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.regex.Matcher;
@@ -43,6 +47,7 @@ public class User implements Parcelable {
     private String mToken = null;          //User token
     private String mPassword = null;       //User password
     private Bitmap mAvatarBitmap = null;   //User avatar bitmap
+
 
 
     public User() {}
@@ -118,6 +123,24 @@ public class User implements Parcelable {
     public void setToken(String mToken) {
         this.mToken = mToken;
     }
+
+    //Converts bitmap into string
+    public String getAvatarString() {
+        if (this.getAvatarBitmap() == null) return null;
+        String result = null;
+        ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
+        getAvatarBitmap().compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOS);
+        return Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
+    }
+    public void setAvatarString(String avatar, Context context) {
+        byte[] bitmapBytes = Base64.decode(avatar, Base64.DEFAULT);
+        if (bitmapBytes != null) {
+            final Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapBytes,0, bitmapBytes.length);
+            this.setAvatarBitmap(bitmap);
+        } else
+            this.setAvatarBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.profile_user_default));
+    }
+
 
     //Prints status of user
     public void print(String s) {
