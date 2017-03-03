@@ -1,18 +1,24 @@
 package com.ecube.solutions.ecube.authentication.profile.signin;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.ecube.solutions.ecube.AuthenticatorDispatcherFragment;
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountGeneral;
 import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateStartFragment;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
+
+import org.w3c.dom.Text;
 
 /**
  * Created by sredorta on 2/2/2017.
@@ -26,6 +32,7 @@ public class ProfileSignInWithEmailFragment extends FragmentAbstract {
     private User mUser;
     private final int REQ_SIGNUP = 1;
     private final int REQ_SIGNIN_WITH_PHONE = 2;
+
 
     // Constructor
     public static ProfileSignInWithEmailFragment newInstance() {
@@ -46,6 +53,7 @@ public class ProfileSignInWithEmailFragment extends FragmentAbstract {
         View v = inflater.inflate(R.layout.profile_signin_with_email, container, false);
         setCurrentView(v);
         final EditText emailEditText = (EditText) v.findViewById(R.id.profile_signin_with_email_editText_email);
+
         final EditText passwordEditText = (EditText) v.findViewById(R.id.profile_signin_with_email_editText_password);
         //Re-enter credentials
         v.findViewById(R.id.profile_signin_with_email_Button_submit).setOnClickListener(new View.OnClickListener() {
@@ -59,6 +67,12 @@ public class ProfileSignInWithEmailFragment extends FragmentAbstract {
                     if (User.checkPasswordInput(passwordEditText,mView,mActivity)) {
                         if (DEBUG) Log.i(TAG, "We are now checking with server !");
                         //TODO do the actual login with the server
+                        User myUser = new User();
+                        myUser.setEmail(emailEditText.getText().toString());
+                        myUser.setPassword(passwordEditText.getText().toString());
+                        myUser.setAction(AuthenticatorDispatcherFragment.KEY_ACTION_SIGNIN_EMAIL);
+                        putOutputParam(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER, myUser);
+                        sendResult(Activity.RESULT_OK);
                     }
                 }
             }
@@ -70,7 +84,7 @@ public class ProfileSignInWithEmailFragment extends FragmentAbstract {
             public void onClick(View v) {
                 ProfileSignInWithPhoneFragment fragment = ProfileSignInWithPhoneFragment.newInstance();
                 fragment.setTargetFragment(ProfileSignInWithEmailFragment.this, REQ_SIGNIN_WITH_PHONE);
-                replaceFragment(fragment,"test",true);  //This comes from abstract
+                replaceFragment(fragment);
             }
         });
 
@@ -81,12 +95,22 @@ public class ProfileSignInWithEmailFragment extends FragmentAbstract {
                 if (DEBUG) Log.i(TAG, "Starting new activity to create account !");
                 ProfileCreateStartFragment fragment = ProfileCreateStartFragment.newInstance();
                 fragment.setTargetFragment(ProfileSignInWithEmailFragment.this, REQ_SIGNUP);
-                replaceFragment(fragment,"test",true);  //This comes from abstract
+                replaceFragment(fragment);
             }
         });
 
         return v;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (data.hasExtra(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER)) {
+                putOutputParam(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER, (User) data.getParcelableExtra(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER));
+                sendResult(Activity.RESULT_OK);
+            }
+        }
+    }
 }
 

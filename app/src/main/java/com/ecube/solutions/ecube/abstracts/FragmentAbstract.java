@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.ecube.solutions.ecube.R;
+import com.ecube.solutions.ecube.general.AppGeneral;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -45,8 +46,6 @@ public abstract class FragmentAbstract extends Fragment implements OnBackPressed
     private @AnimRes int mAnimPopEnter  = R.anim.enter_from_left;
     private @AnimRes int mAnimPopExit   = R.anim.exit_fade;
 
-    //Define if addToBackStack is required
-    private boolean mAddToBackStack;
     protected FragmentActivity mActivity;
 
 
@@ -71,10 +70,9 @@ public abstract class FragmentAbstract extends Fragment implements OnBackPressed
         getInputArgs();
         //Defaults
         mContainer = R.id.fragment_container;
-        mAddToBackStack = true;
         mAnimEnter     = R.anim.enter_from_right;
         mAnimExit      = R.anim.exit_fade;
-        mAnimPopEnter  = R.anim.enter_from_left;
+        mAnimPopEnter  = R.anim.enter_from_right;
         mAnimPopExit   = R.anim.exit_fade;
     }
 
@@ -195,10 +193,6 @@ public abstract class FragmentAbstract extends Fragment implements OnBackPressed
         mContainer = container;
     }
 
-    public void setAddToBackStack(boolean add) {
-        mAddToBackStack = add;
-    }
-
 
     //Sets the fragment animations
     protected void setAnimations(@AnimRes int enter, @AnimRes int exit, @AnimRes int popenter, @AnimRes int popexit) {
@@ -219,15 +213,29 @@ public abstract class FragmentAbstract extends Fragment implements OnBackPressed
 
 
     //Replace container with new fragment
-    public void replaceFragment(Fragment fragment, String tag, boolean animation){
+    public void replaceFragment(Fragment fragment, @Nullable String tag, boolean animation, boolean addToBackStack){
+
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         if (animation)
             transaction.setCustomAnimations(mAnimEnter, mAnimExit, mAnimPopEnter, mAnimPopExit);
-        transaction.replace(mContainer, fragment);
-        if (mAddToBackStack)
-              transaction.addToBackStack(tag);
+        transaction.replace(mContainer, fragment, tag);
+        if (addToBackStack)
+            transaction.addToBackStack(tag);
+        if (DEBUG) Log.i(TAG, "Added fragment " + fragment.getClass().getSimpleName() + " with tag:" + tag);
+
         transaction.commit();
+        if (DEBUG) Log.i(TAG, "Current fragment stack count :" + mActivity.getSupportFragmentManager().getBackStackEntryCount());
     }
+    //Replace container with new fragment and add to backStack
+    public void replaceFragment(Fragment fragment, @Nullable String tag, boolean animation){
+        replaceFragment(fragment, tag, animation, true);
+    }
+    //Replace container with new fragment and add to backStack with animation and default tag
+    public void replaceFragment(Fragment fragment){
+        replaceFragment(fragment, AppGeneral.KEY_FRAGMENT_STACK_LEVEL_UNDEFINED, true, true);
+    }
+
+
 
     //Remove a fragment
     public void removeFragment(Fragment fragment, boolean animation) {

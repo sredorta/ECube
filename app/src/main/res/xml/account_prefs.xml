@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceCategory android:title="Account Preferences" />
+    <SwitchPreference android:title="Debug Logs" android:key="debug.logs" android:defaultValue="true" android:summary="Show debug logs on LogCat"/>
+    <SwitchPreference android:title="Debug Server" android:key="debug.server" android:defaultValue="false" android:summary="Use localhost"/>
+    <SwitchPreference android:title="example" android:key="test" android:summary="this is a place holder"/>
+
+</PreferenceScreen>

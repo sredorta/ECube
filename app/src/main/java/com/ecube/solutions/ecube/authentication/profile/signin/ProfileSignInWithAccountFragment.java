@@ -4,8 +4,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
@@ -24,11 +22,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ecube.solutions.ecube.AuthenticatorDispatcherFragment;
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountGeneral;
 import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateStartFragment;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
+import com.ecube.solutions.ecube.general.AppGeneral;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,9 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
     private static final String TAG = ProfileSignInWithAccountFragment.class.getSimpleName();
     private static final boolean DEBUG = true;
 
-    private int REQ_SIGNUP = 1;
+    //Request to other fragments
+    private static final int REQ_SIGNUP = 1;
+    private static final int REQ_SIGNIN = 2;
 
     // In case of rotation
     private final String KEY_CURRENT_USER = "user.current";
@@ -52,6 +54,8 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
     private List<Account> mAccounts = new ArrayList<>();
     private AccountGeneral myAccountGeneral;
     private boolean mUpdatePostitions = true;
+    private Drawable mMoreDrawableLime;         //More icon drawable active
+    private Drawable mMoreDrawableGrey;         //More icon drawable not active
 
     private User mUser;
 
@@ -66,13 +70,33 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
         myAccountGeneral = new AccountGeneral(getContext());
 
         mUser = new User();
+        //We should init the user from preferences... but now I'm just setting it
+
+        //If there was no account from preferences we just pick one
+        Account account = myAccountGeneral.getAccount(mUser);
+        if (account == null) account = myAccountGeneral.getAccount();
+        mUser = myAccountGeneral.getDataFromDeviceAccount(account);
+
+        //mUser.setEmail("sergi.redorta@hotmail.com");
         if (savedInstanceState != null) {
             mUser.setEmail(savedInstanceState.getString(KEY_CURRENT_USER));
-            mUser = myAccountGeneral.getDataFromDeviceAccount(myAccountGeneral.getAccount(mUser));
+            account = myAccountGeneral.getAccount(mUser);
+            if (account == null) account = myAccountGeneral.getAccount();
+            mUser = myAccountGeneral.getDataFromDeviceAccount(account);
             mUpdatePostitions = false;
         }
-        //We should init the user from preferences... but now I'm just setting it
-        //mUser.setEmail("sergi.redorta@hotmail.com");
+
+        //Create the different drawables for the more icon
+        //Need to add .mutate in order to avoid intenal sharing of same object
+        mMoreDrawableLime = ContextCompat.getDrawable(getContext(), R.drawable.icon_more).mutate();
+        mMoreDrawableGrey = ContextCompat.getDrawable(getContext(), R.drawable.icon_more).mutate();
+        PorterDuffColorFilter porterDuffColorFilter;
+
+        porterDuffColorFilter = new PorterDuffColorFilter(ContextCompat.getColor(getContext(), R.color.md_lime_300),PorterDuff.Mode.SRC_ATOP);
+        mMoreDrawableLime.setColorFilter(porterDuffColorFilter);
+        porterDuffColorFilter = new PorterDuffColorFilter(ContextCompat.getColor(getContext(), R.color.md_grey_300),PorterDuff.Mode.SRC_ATOP);
+        mMoreDrawableGrey.setColorFilter(porterDuffColorFilter);
+
 
     }
 
@@ -85,13 +109,22 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
         mAccountsRecycleView.setLayoutManager(new LinearLayoutManager(mActivity));
         updateUI();
 
+        //Go for SignIn without accounts
+        v.findViewById(R.id.profile_signin_with_account_TextView_use_without_account).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ProfileSignInWithEmailFragment fragment = ProfileSignInWithEmailFragment.newInstance();
+                fragment.setTargetFragment(ProfileSignInWithAccountFragment.this, REQ_SIGNIN);
+                replaceFragment(fragment);  //This comes from abstract
+            }
+        });
         //Go for signup
         v.findViewById(R.id.profile_signin_with_account_TextView_create).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ProfileCreateStartFragment fragment = ProfileCreateStartFragment.newInstance();
                 fragment.setTargetFragment(ProfileSignInWithAccountFragment.this, REQ_SIGNUP);
-                replaceFragment(fragment,"test",true);  //This comes from abstract
+                replaceFragment(fragment);  //This comes from abstract
             }
         });
 
@@ -104,8 +137,14 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
                 //hide input keyboard
                 hideInputKeyBoard();
                 if (User.checkPasswordInput(passwordEditText,mView,mActivity)) {
-                        if (DEBUG) Log.i(TAG, "We are now checking with server !");
-                        //TODO do the actual login with the server
+                    if (DEBUG) Log.i(TAG, "We are now checking with server !");
+                    //TODO do the actual login with the server and return the results to the dispatcher
+                    User myUser = new User();
+                    myUser.setEmail(mUser.getEmail());
+                    myUser.setPassword(passwordEditText.getText().toString());
+                    myUser.setAction(AuthenticatorDispatcherFragment.KEY_ACTION_SIGNIN_EMAIL);
+                    putOutputParam(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER, myUser);
+                    sendResult(Activity.RESULT_OK);
                 }
             }
         });
@@ -114,10 +153,40 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
         return v;
     }
 
+    /*
+    @Override
+    public void onResume() {
+        //We check if there are accounts, and if not go back
+        Log.i(TAG, "We are onResume");
+        if (myAccountGeneral.getAccountsCount() == 0) {
+            removeFragment(ProfileSignInWithAccountFragment.this,false);
+            ProfileSignInWithEmailFragment fragment = ProfileSignInWithEmailFragment.newInstance();
+            fragment.setTargetFragment(ProfileSignInWithAccountFragment.this, REQ_SIGNIN);
+            setAddToBackStack(false);
+            replaceFragment(fragment,"test",true);  //This comes from abstract
+            setAddToBackStack(true);
+            super.onResume();
+        } else {
+            super.onResume();
+        }
+    }
+*/
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(KEY_CURRENT_USER, mUser.getEmail());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (data.hasExtra(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER)) {
+                putOutputParam(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER, (User) data.getParcelableExtra(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER));
+                sendResult(Activity.RESULT_OK);
+            }
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,7 +198,7 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
     private void updateUI() {
         AccountManager mAccountManager;
         mAccountManager = AccountManager.get(mActivity.getApplicationContext());
-
+        mAccounts = new ArrayList<>();
         for (Account account : myAccountGeneral.getAccounts()) {
             mAccounts.add(account);
         }
@@ -161,8 +230,7 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
         private TextView mUserFullNameTextView;
         private TextView mAccountNameTextView;
         private ImageView mAvatarImageView;
-        public ImageView buttonViewOption;
-        public ImageView buttonActiveView;
+        private ImageView buttonViewOption;
 
         private AccountListHolder(View itemView) {
             super(itemView);
@@ -172,25 +240,17 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
             mAvatarImageView = (ImageView) itemView.findViewById(R.id.profile_signin_with_account_display_account_ImageView_avatar);
             buttonViewOption = (ImageView) itemView.findViewById(R.id.profile_signin_with_account_display_account_ImageView_more);
 
-            PorterDuffColorFilter porterDuffColorFilter = new PorterDuffColorFilter(ContextCompat.getColor(itemView.getContext(), R.color.md_green_500),PorterDuff.Mode.SRC_ATOP);
-            buttonViewOption.getDrawable().setColorFilter(porterDuffColorFilter);
-            buttonViewOption.setBackgroundColor(Color.TRANSPARENT);
+            //Set default drawable to grey
+            buttonViewOption.setImageDrawable(mMoreDrawableGrey);
         }
 
 
         @Override
         public void onClick(View view) {
+            Log.i(TAG, "Clicked !" + mAccount.name);
             //We need to update the user with the account data that has been selected
             mUser = myAccountGeneral.getDataFromDeviceAccount(mAccount);
             mAdapter.notifyDataSetChanged();
-            //Send result to master fragment
-//            putOutputParam(FRAGMENT_OUTPUT_PARAM_SELECTED_USER, user.getName());
-//            sendResult(Activity.RESULT_OK);
-
-            //buttonViewOption.setColorFilter(ContextCompat.getColor(itemView.getContext(), R.color.md_red_500), PorterDuff.Mode.LIGHTEN);
-           /* Drawable bgDrawable = buttonViewOption.getDrawable();
-            bgDrawable.setColorFilter(ContextCompat.getColor(itemView.getContext(), R.color.md_red_500), PorterDuff.Mode.OVERLAY);
-            buttonViewOption.setImageDrawable(bgDrawable);*/
         }
 
         private void deleteItem() {
@@ -200,16 +260,13 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
 
                 mAccount = mAccounts.get(0);
                 mUser = myAccountGeneral.getDataFromDeviceAccount(mAccount);
-
-//                putOutputParam(FRAGMENT_OUTPUT_PARAM_SELECTED_USER,user.getName());
-//                sendResult(Activity.RESULT_OK);
                 mAdapter.notifyDataSetChanged();
             } else {
                 //If there are no accounts left we start the sign-in activity
                 //Change fragment as we have removed all accounts
                 Log.i(TAG,"Removed latest account:");
                 ProfileSignInWithEmailFragment fragment = ProfileSignInWithEmailFragment.newInstance();
-                replaceFragment(fragment,"test",true);  //This comes from abstract
+                replaceFragment(fragment, AppGeneral.KEY_FRAGMENT_STACK_LEVEL_1,true);
             }
         }
 
@@ -226,13 +283,15 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
             mUser.setAvatarString(mAccountManager.getUserData(account,AccountGeneral.PARAM_USER_AVATAR), getContext());
             mAvatarImageView.setImageBitmap(mUser.getAvatarBitmap());
             //Define color for active or not active account (last log-in)
-            if (mUser.getEmail()!= null) {
-                if (mUser.getEmail().equals(mAccountManager.getUserData(account, AccountGeneral.PARAM_USER_EMAIL))) {
+            if (mUser.getEmail() != null) {
+                if (mUser.getEmail().equals(account.name)) {
                     itemView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.md_lime_50));
-                     buttonViewOption.setEnabled(true);
+                    buttonViewOption.setEnabled(true);
+                    buttonViewOption.setImageDrawable(mMoreDrawableLime);
                 } else {
-                    buttonViewOption.setEnabled(false);
                     itemView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.md_white_1000));
+                    buttonViewOption.setImageDrawable(mMoreDrawableGrey);
+                    buttonViewOption.setEnabled(false);
                 }
             }
 
@@ -255,8 +314,12 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
                                     //handle menu1 click
                                     break;
                                 case R.id.options_menu_account_item_remove:
-                                    if (myAccountGeneral.removeAccount(mUser))
-                                        deleteItem();
+                                    User myUser = new User();
+                                    myUser.setEmail(mUser.getEmail());
+                                    myUser.setAction(AuthenticatorDispatcherFragment.KEY_ACTION_REMOVE_FROM_DEVICE);
+                                    putOutputParam(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER, myUser);
+                                    sendResult(Activity.RESULT_OK);
+                                    deleteItem();
                                     break;
                             }
                             return false;

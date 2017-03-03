@@ -23,8 +23,9 @@ public class AccountGeneral {
     private static final String TAG = AccountGeneral.class.getSimpleName();
     private static final boolean DEBUG = true;
 
-    public static final String ACCOUNT_TYPE = "com.locker.ilockapp.auth_locker";  //Defines our account
-
+    public static final String ACCOUNT_TYPE = "com.locker.ilockapp.auth_locker";
+    //com.ecube.solutions.ecube.auth_ecube";  //Defines our account
+    //
     //Access types
     public static final String AUTHTOKEN_TYPE_STANDARD = "Standard access";
     public static final String AUTHTOKEN_TYPE_STANDARD_LABEL = "Standard access to eCube account";

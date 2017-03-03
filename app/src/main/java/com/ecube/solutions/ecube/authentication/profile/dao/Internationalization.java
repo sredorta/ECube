@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.ecube.solutions.ecube.general.AppGeneral;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.Collator;
@@ -27,7 +29,6 @@ public class Internationalization {
     private static final boolean DEBUG = true;
 
     private static final String FOLDER_COUNTRY_FLAGS = "country_flags";
-    private static final List<String> SupportedCountries = Arrays.asList("FR", "ES" , "IT" , "MC");   //Supported countries
 
     private AssetManager mAssets;
     private List<Bitmap> countryFlagsBitmap;
@@ -100,7 +101,8 @@ public class Internationalization {
         List<Locale> mLocales = new ArrayList<>();
 
         for (String cnt : Locale.getISOCountries()) {
-            if (SupportedCountries.contains(cnt)) {
+//            Log.i(TAG, "ISO : " + cnt + " Name : " + (new Locale(Locale.FRENCH.getLanguage(),cnt)).getDisplayCountry());
+            if (AppGeneral.SupportedCountries.contains(cnt)) {
                 mLocales.add(new Locale("",cnt));
                 Log.i(TAG, "Adding locale : " + cnt);
             }

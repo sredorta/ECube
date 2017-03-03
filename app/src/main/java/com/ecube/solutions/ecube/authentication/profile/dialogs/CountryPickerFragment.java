@@ -5,8 +5,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +22,9 @@ import android.widget.TextView;
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.DialogAbstract;
 import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +61,7 @@ public class CountryPickerFragment extends DialogAbstract {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View v = LayoutInflater.from(getActivity()).inflate(R.layout.profile_create_country_display_list,null);
+
         //Get input Locale
         mCurrentLocale = (Locale) getInputParam(FRAGMENT_INPUT_PARAM_CURRENT_PHONE_COUNTRY);
 
@@ -60,11 +69,19 @@ public class CountryPickerFragment extends DialogAbstract {
         final TextView mCurrentCountryTextView = (TextView) v.findViewById(R.id.profile_create_country_display_TextView_country);
         mCurrentCountryTextView.setText(mCurrentLocale.getDisplayCountry());
 
+        //Set the current Country prefix
+        final TextView mCurrentPrefixTextView = (TextView) v.findViewById(R.id.profile_create_country_display_TextView_prefix);
+
+        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+        int prefix =  phoneUtil.getCountryCodeForRegion(mCurrentLocale.getCountry());
+        mCurrentPrefixTextView.setText("+" + prefix);
+
+
         final ImageView mCurrentCountryImageView = (ImageView) v.findViewById(R.id.profile_create_country_display_ImageView_flag);
         mCurrentCountryImageView.setImageBitmap(Internationalization.getCountryFlagBitmapFromAsset(getContext(),mCurrentLocale));
 
         final LinearLayout ll = (LinearLayout) v.findViewById(R.id.profile_create_country_display_LinearLayout);
-        ll.setBackgroundColor(getResources().getColor(R.color.md_green_50, null));
+        ll.setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.md_green_50));
 
         //Update the RecycleView
         mCountryRecycleView = (RecyclerView) v.findViewById(R.id.internationalization_country_recycleview);
@@ -86,6 +103,7 @@ public class CountryPickerFragment extends DialogAbstract {
     private class CountryListHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private Locale mLocale;
         private TextView mCountryTextView;
+        private TextView mPrefixTextView;
         private ImageView mCountryFlagImageView;
 
 
@@ -93,6 +111,7 @@ public class CountryPickerFragment extends DialogAbstract {
             super(itemView);
             itemView.setOnClickListener(this);
             mCountryTextView = (TextView) itemView.findViewById(R.id.profile_create_country_display_TextView_country);
+            mPrefixTextView = (TextView) itemView.findViewById(R.id.profile_create_country_display_TextView_prefix);
             mCountryFlagImageView = (ImageView) itemView.findViewById(R.id.profile_create_country_display_ImageView_flag);
         }
 
@@ -109,7 +128,13 @@ public class CountryPickerFragment extends DialogAbstract {
             mLocale = locale;
             mCountryTextView.setText(locale.getDisplayCountry());
             mCountryFlagImageView.setImageBitmap(Internationalization.getCountryFlagBitmapFromAsset(getContext(),locale));
+
+           PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+           int prefix =  phoneUtil.getCountryCodeForRegion(locale.getCountry());
+            mPrefixTextView.setText("+" + prefix);
         }
+
+
     }
 
     private class CountryListAdapter extends RecyclerView.Adapter<CountryListHolder> {

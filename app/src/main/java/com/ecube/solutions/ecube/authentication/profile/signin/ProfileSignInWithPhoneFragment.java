@@ -18,9 +18,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ecube.solutions.ecube.AuthenticatorDispatcherFragment;
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountGeneral;
+import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateStartFragment;
 import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.authentication.profile.dialogs.CountryPickerFragment;
@@ -130,6 +132,7 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
 
         });
 
+        //Submit button
         v.findViewById(R.id.profile_signin_with_phone_Button_submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,6 +143,12 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
                     if (User.checkPasswordInput(passwordEditText,mView,mActivity)) {
                         if (DEBUG) Log.i(TAG, "We are now checking with server !");
                         //TODO do the actual login with the server
+                        User myUser = new User();
+                        myUser.setPhone(getFinalPhoneNumber());
+                        myUser.setPassword(passwordEditText.getText().toString());
+                        myUser.setAction(AuthenticatorDispatcherFragment.KEY_ACTION_SIGNIN_PHONE);
+                        putOutputParam(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER, myUser);
+                        sendResult(Activity.RESULT_OK);
                     }
                 }
             }
@@ -153,10 +162,19 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
             public void onClick(View v) {
                 ProfileSignInWithEmailFragment fragment = ProfileSignInWithEmailFragment.newInstance();
                 fragment.setTargetFragment(ProfileSignInWithPhoneFragment.this, REQ_SIGNIN_WITH_EMAIL);
-                replaceFragment(fragment,"test",true);  //This comes from abstract
+                replaceFragment(fragment);  //This comes from abstract
             }
         });
 
+        //Signup
+        v.findViewById(R.id.profile_signin_with_phone_TextView_create).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProfileCreateStartFragment fragment = ProfileCreateStartFragment.newInstance();
+                fragment.setTargetFragment(ProfileSignInWithPhoneFragment.this, REQ_SIGNUP);
+                replaceFragment(fragment);  //This comes from abstract
+            }
+        });
         return v;
     }
 
@@ -170,6 +188,13 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
             final EditText mNumberEditText = (EditText) mView.findViewById(R.id.profile_signin_with_phone_editText_number);
             mNumberEditText.setText(mNumberEditText.getText().toString());
         }
+        //Send back the User
+        if (resultCode == Activity.RESULT_OK) {
+                if (data.hasExtra(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER)) {
+                    putOutputParam(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER, (User) data.getParcelableExtra(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER));
+                    sendResult(Activity.RESULT_OK);
+                }
+        }
     }
 
     @Override
@@ -178,9 +203,15 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
         outState.putSerializable(KEY_CURRENT_LOCALE, mLocale);
     }
 
+
     private void updateCurrentCountry() {
         final TextView mCountryTextView = (TextView) mView.findViewById(R.id.profile_create_country_display_TextView_country);
         mCountryTextView.setText(mLocale.getDisplayCountry());
+
+        final TextView mPrefixTextView = (TextView) mView.findViewById(R.id.profile_create_country_display_TextView_prefix);
+        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+        int prefix =  phoneUtil.getCountryCodeForRegion(mLocale.getCountry());
+        mPrefixTextView.setText("+" + prefix);
 
         final ImageView mCountryFlag = (ImageView) mView.findViewById(R.id.profile_create_country_display_ImageView_flag);
         mCountryFlag.setImageBitmap(Internationalization.getCountryFlagBitmapFromAsset(getContext(),mLocale));

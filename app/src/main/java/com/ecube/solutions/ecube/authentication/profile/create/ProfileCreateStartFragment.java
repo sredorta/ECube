@@ -1,5 +1,6 @@
 package com.ecube.solutions.ecube.authentication.profile.create;
 
+import android.accounts.AuthenticatorException;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.ecube.solutions.ecube.AuthenticatorDispatcherFragment;
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountGeneral;
@@ -30,7 +32,6 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
     private static final String TAG = ProfileCreateStartFragment.class.getSimpleName();
     private static final boolean DEBUG = true;
 
-    private View mView;
     private static String KEY_SAVED_USER = "user.saved";
     private static int REQUEST_DEFINE_NAMES = 1;
     private static int REQUEST_DEFINE_PHONE = 2;
@@ -71,7 +72,7 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
                 bundle.putParcelable(ProfileCreateAvatarFragment.FRAGMENT_INPUT_PARAM_USER_AVATAR_BITMAP, myUser.getAvatarBitmap());
                 ProfileCreateAvatarFragment fragment = ProfileCreateAvatarFragment.newInstance(bundle);
                 fragment.setTargetFragment(ProfileCreateStartFragment.this, REQUEST_DEFINE_AVATAR);
-                replaceFragment(fragment,"test",true);  //This comes from abstract
+                replaceFragment(fragment);  //This comes from abstract
             }
         });
         return v;
@@ -96,7 +97,7 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
                 bundle.putSerializable(ProfileCreateNamesFragment.FRAGMENT_INPUT_PARAM_USER_LAST_NAME, myUser.getLastName());
                 ProfileCreateNamesFragment fragment = ProfileCreateNamesFragment.newInstance(bundle);
                 fragment.setTargetFragment(ProfileCreateStartFragment.this, REQUEST_DEFINE_NAMES);
-                replaceFragment(fragment,"test",true);  //This comes from abstract
+                replaceFragment(fragment);  //This comes from abstract
             } else if (requestCode == REQUEST_DEFINE_NAMES) {
                 myUser.setFirstName((String) data.getSerializableExtra(ProfileCreateNamesFragment.FRAGMENT_OUTPUT_PARAM_USER_FIRST_NAME));
                 myUser.setLastName((String) data.getSerializableExtra(ProfileCreateNamesFragment.FRAGMENT_OUTPUT_PARAM_USER_LAST_NAME));
@@ -104,30 +105,31 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
                 bundle.putSerializable(ProfileCreatePhoneFragment.FRAGMENT_INPUT_PARAM_USER_PHONE_NUMBER, myUser.getPhone());
                 ProfileCreatePhoneFragment fragment = ProfileCreatePhoneFragment.newInstance(bundle);
                 fragment.setTargetFragment(ProfileCreateStartFragment.this, REQUEST_DEFINE_PHONE);
-                replaceFragment(fragment,"test",true);  //This comes from abstract
+                replaceFragment(fragment);  //This comes from abstract
             } else if( requestCode == REQUEST_DEFINE_PHONE) {
                 myUser.setPhone((String) data.getSerializableExtra(ProfileCreatePhoneFragment.FRAGMENT_OUTPUT_PARAM_USER_PHONE_NUMBER));
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(ProfileCreateEmailFragment.FRAGMENT_INPUT_PARAM_USER_EMAIL, myUser.getEmail());
                 ProfileCreateEmailFragment fragment = ProfileCreateEmailFragment.newInstance(bundle);
                 fragment.setTargetFragment(ProfileCreateStartFragment.this, REQUEST_DEFINE_EMAIL);
-                replaceFragment(fragment, "test", true);
+                replaceFragment(fragment);
             } else if( requestCode == REQUEST_DEFINE_EMAIL) {
                 myUser.setEmail((String) data.getSerializableExtra(ProfileCreateEmailFragment.FRAGMENT_OUTPUT_PARAM_USER_EMAIL));
                 ProfileCreatePasswordFragment fragment = ProfileCreatePasswordFragment.newInstance();
                 fragment.setTargetFragment(ProfileCreateStartFragment.this, REQUEST_DEFINE_PASSWORD);
-                replaceFragment(fragment, "test", true);
+                replaceFragment(fragment);
             } else if( requestCode == REQUEST_DEFINE_PASSWORD) {
                 myUser.setPassword((String) data.getSerializableExtra(ProfileCreatePasswordFragment.FRAGMENT_OUTPUT_PARAM_USER_PASSWORD));
                 myUser.setAccountAccess(AccountGeneral.AUTHTOKEN_TYPE_STANDARD);  //We always create account with standard access first
-                myUser.print("Final user: ");
-                Log.i(TAG, "We are hire");
-                AccountGeneral ag = new AccountGeneral(getContext(), myUser);
-                ag.createAccount();
+
+                //Send now back as result the full user to the dispatcher
+                myUser.setAction(AuthenticatorDispatcherFragment.KEY_ACTION_SIGNUP);
+                putOutputParam(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER, myUser);
+                sendResult(Activity.RESULT_OK);
             }
         } else {
             // Reload our fragment
-            replaceFragment(this, "test", true);
+            replaceFragment(this);
         }
 
     }

@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:orientation="vertical"
-android:layout_width="match_parent"
-android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="300dp">
 
-    <include layout="@layout/profile_create_country_display"></include>
+    <include layout="@layout/profile_create_country_display"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"></include>
 
 <android.support.v7.widget.RecyclerView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/internationalization_country_recycleview"
-    android:layout_width="match_parent"
+    android:layout_width="fill_parent"
     android:layout_height="match_parent"
     android:nestedScrollingEnabled="true"
     android:contextClickable="false" />

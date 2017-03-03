@@ -72,6 +72,7 @@
     </style>
 
     <style name="myDialogTheme" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:windowMinWidthMajor">90%</item>
     <!--        <item name="android:windowBackground">@drawable/view_rounded</item>
             <item name="buttonBarStyle">@style/Widget.AppCompat.ButtonBar</item>
             <item name="android:buttonBarButtonStyle">@style/myButtonStyle</item>

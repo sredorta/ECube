@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.telephony.PhoneNumberFormattingTextWatcher;
@@ -109,8 +110,14 @@ public class ProfileCreatePhoneFragment extends FragmentAbstract {
         final TextView mCountryTextView = (TextView) mView.findViewById(R.id.profile_create_country_display_TextView_country);
         mCountryTextView.setText(mLocale.getDisplayCountry());
 
+        final TextView mPrefixTextView = (TextView) mView.findViewById(R.id.profile_create_country_display_TextView_prefix);
+        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+        int prefix =  phoneUtil.getCountryCodeForRegion(mLocale.getCountry());
+        mPrefixTextView.setText("+" + prefix);
+
         final ImageView mCountryFlag = (ImageView) mView.findViewById(R.id.profile_create_country_display_ImageView_flag);
         mCountryFlag.setImageBitmap(Internationalization.getCountryFlagBitmapFromAsset(getContext(),mLocale));
+
 
     }
 
