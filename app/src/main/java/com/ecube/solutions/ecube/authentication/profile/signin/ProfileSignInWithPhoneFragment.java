@@ -18,10 +18,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.ecube.solutions.ecube.AuthenticatorDispatcherFragment;
+import com.ecube.solutions.ecube.MainFragment;
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
-import com.ecube.solutions.ecube.authentication.authenticator.AccountGeneral;
+import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
 import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateStartFragment;
 import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
@@ -40,7 +40,7 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
     private static final String TAG = ProfileSignInWithPhoneFragment.class.getSimpleName();
     private static final boolean DEBUG = true;
 
-    private AccountGeneral myAccountGeneral;
+    private AccountAuthenticator myAccountAuthenticator;
     private User mUser;
     private final int REQ_SIGNUP = 1;
     private final int REQ_SIGNIN_WITH_EMAIL = 2;
@@ -68,7 +68,7 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Get account details from Singleton either from intent or from account of the device
-        myAccountGeneral = new AccountGeneral(getContext());
+        myAccountAuthenticator = new AccountAuthenticator(getContext());
         mUser = new User();
 
         if (mLocale == null) {
@@ -146,8 +146,8 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
                         User myUser = new User();
                         myUser.setPhone(getFinalPhoneNumber());
                         myUser.setPassword(passwordEditText.getText().toString());
-                        myUser.setAction(AuthenticatorDispatcherFragment.KEY_ACTION_SIGNIN_PHONE);
-                        putOutputParam(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER, myUser);
+                        myUser.setAction(MainFragment.KEY_ACTION_SIGNIN_PHONE);
+                        putOutputParam(MainFragment.FRAGMENT_OUTPUT_PARAM_USER, myUser);
                         sendResult(Activity.RESULT_OK);
                     }
                 }
@@ -190,8 +190,8 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
         }
         //Send back the User
         if (resultCode == Activity.RESULT_OK) {
-                if (data.hasExtra(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER)) {
-                    putOutputParam(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER, (User) data.getParcelableExtra(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER));
+                if (data.hasExtra(MainFragment.FRAGMENT_OUTPUT_PARAM_USER)) {
+                    putOutputParam(MainFragment.FRAGMENT_OUTPUT_PARAM_USER, (User) data.getParcelableExtra(MainFragment.FRAGMENT_OUTPUT_PARAM_USER));
                     sendResult(Activity.RESULT_OK);
                 }
         }

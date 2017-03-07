@@ -1,12 +1,9 @@
 package com.ecube.solutions.ecube.authentication.profile.create;
 
-import android.accounts.AuthenticatorException;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,14 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.ecube.solutions.ecube.AuthenticatorDispatcherFragment;
+import com.ecube.solutions.ecube.MainFragment;
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
-import com.ecube.solutions.ecube.authentication.authenticator.AccountGeneral;
-import com.ecube.solutions.ecube.authentication.profile.dao.Avatar;
+import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
-
-import java.io.File;
 
 
 /**
@@ -120,11 +114,11 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
                 replaceFragment(fragment);
             } else if( requestCode == REQUEST_DEFINE_PASSWORD) {
                 myUser.setPassword((String) data.getSerializableExtra(ProfileCreatePasswordFragment.FRAGMENT_OUTPUT_PARAM_USER_PASSWORD));
-                myUser.setAccountAccess(AccountGeneral.AUTHTOKEN_TYPE_STANDARD);  //We always create account with standard access first
+                myUser.setAccountAccess(AccountAuthenticator.AUTHTOKEN_TYPE_STANDARD);  //We always create account with standard access first
 
                 //Send now back as result the full user to the dispatcher
-                myUser.setAction(AuthenticatorDispatcherFragment.KEY_ACTION_SIGNUP);
-                putOutputParam(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER, myUser);
+                myUser.setAction(MainFragment.KEY_ACTION_SIGNUP);
+                putOutputParam(MainFragment.FRAGMENT_OUTPUT_PARAM_USER, myUser);
                 sendResult(Activity.RESULT_OK);
             }
         } else {

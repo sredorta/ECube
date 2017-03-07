@@ -23,6 +23,13 @@ import android.widget.ProgressBar;
 
 
 import com.ecube.solutions.ecube.R;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
@@ -39,15 +46,60 @@ public class User implements Parcelable {
     private static final boolean DEBUG = true;
 
     private String mAction = null;         //User action to know what to do with at the AuthenticatorDispatcher
+    @SerializedName("id")
+    @Expose(serialize = true, deserialize = true)
     private String mId = null;             //User id
+
+    @SerializedName("email")
+    @Expose(serialize = true, deserialize = true)
     private String mEmail = null;          //User email
+
+    @SerializedName("phone")
+    @Expose(serialize = true, deserialize = true)
     private String mPhone = null;          //User phone
+
+    @SerializedName("firstName")
+    @Expose(serialize = true, deserialize = true)
     private String mFirstName = null;      //User first name
+
+    @SerializedName("lastName")
+    @Expose(serialize = true, deserialize = true)
     private String mLastName = null;       //User last name
+
+    @SerializedName("account_access")
+    @Expose(serialize = true, deserialize = true)
     private String mAccountAccess = null;  //Defines type of access of the user
+
+    @SerializedName("token")
+    @Expose(serialize = true, deserialize = true)
     private String mToken = null;          //User token
+
+    @SerializedName("creation_timestamp")
+    @Expose(serialize = true, deserialize = true)
+    private Integer mCreationTimeStamp;
+
+    @SerializedName("login_timestamp")
+    private Integer mLastLoginTimeStamp;
+
+    @SerializedName("password")
+    @Expose(serialize = true, deserialize = true)
     private String mPassword = null;       //User password
+
+    @SerializedName("latitude")
+    @Expose(serialize = true, deserialize = true)
+    private String mUserLatitude = null;;
+
+    @SerializedName("longitude")
+    @Expose(serialize = true, deserialize = true)
+    private String mUserLongitude = null;;
+
+    @SerializedName("avatar")
+    @Expose(serialize = true, deserialize = true)
+    private String mAvatarString;
+
+
     private Bitmap mAvatarBitmap = null;   //User avatar bitmap
+
 
 
 
@@ -134,13 +186,18 @@ public class User implements Parcelable {
     }
 
     //Converts bitmap into string
-    public String getAvatarString() {
+    public String getAvatarStringFromBitmap() {
         if (this.getAvatarBitmap() == null) return null;
         String result = null;
         ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
         getAvatarBitmap().compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOS);
-        return Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
+        this.mAvatarString = Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
+        return this.mAvatarString;
     }
+
+    public String getAvatarString() {return mAvatarString;}
+    public void setAvatarString(String avatar) { mAvatarString = avatar;}
+
     public void setAvatarString(String avatar, Context context) {
         byte[] bitmapBytes = Base64.decode(avatar, Base64.DEFAULT);
         if (bitmapBytes != null) {
@@ -148,8 +205,21 @@ public class User implements Parcelable {
             this.setAvatarBitmap(bitmap);
         } else
             this.setAvatarBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.profile_user_default));
+        this.mAvatarString = avatar;
     }
 
+    //Update from a user object all non-null variables
+    public void update(User data){
+        if (data.getId() != null) this.setId(data.getId());
+        if (data.getFirstName() != null) this.setFirstName(data.getFirstName());
+        if (data.getLastName() != null) this.setLastName(data.getLastName());
+        if (data.getEmail() != null) this.setEmail(data.getEmail());
+        if (data.getPhone() != null) this.setPhone(data.getPhone());
+        if (data.getAvatarString() != null) this.setAvatarString(data.getAvatarString());
+        if (data.getPassword() != null) this.setPassword(data.getPassword());
+        if (data.getToken() != null) this.setToken(data.getToken());
+        if (data.getAccountAccess() != null) this.setAccountAccess(data.getAccountAccess());
+    }
 
     //Prints status of user
     public void print(String s) {
@@ -170,6 +240,8 @@ public class User implements Parcelable {
             Log.i(TAG, "-----------------------------------------");
         }
     }
+
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // Input checks
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -338,6 +410,23 @@ public class User implements Parcelable {
             }
         return result;
     }
+
+
+    //Parses a JSON with the fields and returns a User object
+    public static User parseJSON(String jsonString) {
+        User myUser = new User();
+        try {
+            JSONObject jsonBody = new JSONObject(jsonString);
+            Gson gson = new GsonBuilder().serializeNulls().excludeFieldsWithoutExposeAnnotation().create();
+            myUser = gson.fromJson(jsonBody.toString(), User.class);
+            Log.i(TAG, "User details from JSON: " + jsonBody.toString(1));
+            myUser.print("User fields we got from JSON:");
+        }  catch (JSONException je) {
+            Log.i(TAG,"Caught exception: " + je);
+        }
+        return myUser;
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // PARCELABLE PART

@@ -22,10 +22,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ecube.solutions.ecube.AuthenticatorDispatcherFragment;
+import com.ecube.solutions.ecube.MainFragment;
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
-import com.ecube.solutions.ecube.authentication.authenticator.AccountGeneral;
+import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
 import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateStartFragment;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.general.AppGeneral;
@@ -52,7 +52,7 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
     private AccountListAdapter mAdapter;
     private RecyclerView mAccountsRecycleView;
     private List<Account> mAccounts = new ArrayList<>();
-    private AccountGeneral myAccountGeneral;
+    private AccountAuthenticator myAccountAuthenticator;
     private boolean mUpdatePostitions = true;
     private Drawable mMoreDrawableLime;         //More icon drawable active
     private Drawable mMoreDrawableGrey;         //More icon drawable not active
@@ -67,22 +67,22 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        myAccountGeneral = new AccountGeneral(getContext());
+        myAccountAuthenticator = new AccountAuthenticator(getContext());
 
         mUser = new User();
         //We should init the user from preferences... but now I'm just setting it
 
         //If there was no account from preferences we just pick one
-        Account account = myAccountGeneral.getAccount(mUser);
-        if (account == null) account = myAccountGeneral.getAccount();
-        mUser = myAccountGeneral.getDataFromDeviceAccount(account);
+        Account account = myAccountAuthenticator.getAccount(mUser);
+        if (account == null) account = myAccountAuthenticator.getAccount();
+        mUser = myAccountAuthenticator.getDataFromDeviceAccount(account);
 
         //mUser.setEmail("sergi.redorta@hotmail.com");
         if (savedInstanceState != null) {
             mUser.setEmail(savedInstanceState.getString(KEY_CURRENT_USER));
-            account = myAccountGeneral.getAccount(mUser);
-            if (account == null) account = myAccountGeneral.getAccount();
-            mUser = myAccountGeneral.getDataFromDeviceAccount(account);
+            account = myAccountAuthenticator.getAccount(mUser);
+            if (account == null) account = myAccountAuthenticator.getAccount();
+            mUser = myAccountAuthenticator.getDataFromDeviceAccount(account);
             mUpdatePostitions = false;
         }
 
@@ -142,8 +142,8 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
                     User myUser = new User();
                     myUser.setEmail(mUser.getEmail());
                     myUser.setPassword(passwordEditText.getText().toString());
-                    myUser.setAction(AuthenticatorDispatcherFragment.KEY_ACTION_SIGNIN_EMAIL);
-                    putOutputParam(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER, myUser);
+                    myUser.setAction(MainFragment.KEY_ACTION_SIGNIN_EMAIL);
+                    putOutputParam(MainFragment.FRAGMENT_OUTPUT_PARAM_USER, myUser);
                     sendResult(Activity.RESULT_OK);
                 }
             }
@@ -182,8 +182,8 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            if (data.hasExtra(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER)) {
-                putOutputParam(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER, (User) data.getParcelableExtra(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER));
+            if (data.hasExtra(MainFragment.FRAGMENT_OUTPUT_PARAM_USER)) {
+                putOutputParam(MainFragment.FRAGMENT_OUTPUT_PARAM_USER, (User) data.getParcelableExtra(MainFragment.FRAGMENT_OUTPUT_PARAM_USER));
                 sendResult(Activity.RESULT_OK);
             }
         }
@@ -199,15 +199,15 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
         AccountManager mAccountManager;
         mAccountManager = AccountManager.get(mActivity.getApplicationContext());
         mAccounts = new ArrayList<>();
-        for (Account account : myAccountGeneral.getAccounts()) {
+        for (Account account : myAccountAuthenticator.getAccounts()) {
             mAccounts.add(account);
         }
         //Do the swap to make sure that we start with last login as first element
         if (mUpdatePostitions) {
             Account myAccount;
             if (mUser.getEmail() != null)
-                for (Account account : myAccountGeneral.getAccounts()) {
-                    if (mUser.getEmail().equals(mAccountManager.getUserData(account, AccountGeneral.PARAM_USER_EMAIL))) {
+                for (Account account : myAccountAuthenticator.getAccounts()) {
+                    if (mUser.getEmail().equals(mAccountManager.getUserData(account, AccountAuthenticator.PARAM_USER_EMAIL))) {
                         int index = mAccounts.indexOf(account);
                         if (index != 0) {
                             myAccount = mAccounts.get(0);
@@ -249,7 +249,7 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
         public void onClick(View view) {
             Log.i(TAG, "Clicked !" + mAccount.name);
             //We need to update the user with the account data that has been selected
-            mUser = myAccountGeneral.getDataFromDeviceAccount(mAccount);
+            mUser = myAccountAuthenticator.getDataFromDeviceAccount(mAccount);
             mAdapter.notifyDataSetChanged();
         }
 
@@ -259,7 +259,7 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
             if (mAccounts.size()>0) {
 
                 mAccount = mAccounts.get(0);
-                mUser = myAccountGeneral.getDataFromDeviceAccount(mAccount);
+                mUser = myAccountAuthenticator.getDataFromDeviceAccount(mAccount);
                 mAdapter.notifyDataSetChanged();
             } else {
                 //If there are no accounts left we start the sign-in activity
@@ -274,13 +274,13 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
             AccountManager mAccountManager;
             mAccountManager = AccountManager.get(mActivity.getApplicationContext());
 
-            mAccountManager.getUserData(account, AccountGeneral.PARAM_USER_EMAIL);
-            String fullName = mAccountManager.getUserData(account, AccountGeneral.PARAM_USER_FIRST_NAME);
-            fullName = fullName + " " + mAccountManager.getUserData(account, AccountGeneral.PARAM_USER_LAST_NAME);
+            mAccountManager.getUserData(account, AccountAuthenticator.PARAM_USER_EMAIL);
+            String fullName = mAccountManager.getUserData(account, AccountAuthenticator.PARAM_USER_FIRST_NAME);
+            fullName = fullName + " " + mAccountManager.getUserData(account, AccountAuthenticator.PARAM_USER_LAST_NAME);
             mAccount = account;
             mUserFullNameTextView.setText(fullName);
-            mAccountNameTextView.setText(mAccountManager.getUserData(account, AccountGeneral.PARAM_USER_EMAIL));
-            mUser.setAvatarString(mAccountManager.getUserData(account,AccountGeneral.PARAM_USER_AVATAR), getContext());
+            mAccountNameTextView.setText(mAccountManager.getUserData(account, AccountAuthenticator.PARAM_USER_EMAIL));
+            mUser.setAvatarString(mAccountManager.getUserData(account, AccountAuthenticator.PARAM_USER_AVATAR), getContext());
             mAvatarImageView.setImageBitmap(mUser.getAvatarBitmap());
             //Define color for active or not active account (last log-in)
             if (mUser.getEmail() != null) {
@@ -316,8 +316,8 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
                                 case R.id.options_menu_account_item_remove:
                                     User myUser = new User();
                                     myUser.setEmail(mUser.getEmail());
-                                    myUser.setAction(AuthenticatorDispatcherFragment.KEY_ACTION_REMOVE_FROM_DEVICE);
-                                    putOutputParam(AuthenticatorDispatcherFragment.FRAGMENT_OUTPUT_PARAM_USER, myUser);
+                                    myUser.setAction(MainFragment.KEY_ACTION_REMOVE_FROM_DEVICE);
+                                    putOutputParam(MainFragment.FRAGMENT_OUTPUT_PARAM_USER, myUser);
                                     sendResult(Activity.RESULT_OK);
                                     deleteItem();
                                     break;

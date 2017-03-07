@@ -2,14 +2,9 @@ package com.ecube.solutions.ecube;
 
 import android.content.DialogInterface;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
 
 import com.ecube.solutions.ecube.abstracts.ActivityAbstract;
 import com.ecube.solutions.ecube.general.AppGeneral;
-
-import java.util.List;
 
 public class MainActivity extends ActivityAbstract {
     //Logs
@@ -19,7 +14,7 @@ public class MainActivity extends ActivityAbstract {
     private Fragment mFragmentDispatcher;
 
     public Fragment createFragment() {
-        return AuthenticatorDispatcherFragment.newInstance();
+        return MainFragment.newInstance();
     }
 
 

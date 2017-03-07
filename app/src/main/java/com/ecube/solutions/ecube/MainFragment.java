@@ -1,7 +1,9 @@
 package com.ecube.solutions.ecube;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -10,18 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
-import com.ecube.solutions.ecube.authentication.authenticator.AccountGeneral;
+import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
-import com.ecube.solutions.ecube.authentication.profile.signin.ProfileSignInWithAccountFragment;
-import com.ecube.solutions.ecube.authentication.profile.signin.ProfileSignInWithEmailFragment;
-import com.ecube.solutions.ecube.general.AppGeneral;
 
 /**
  * Created by sredorta on 3/1/2017.
  */
-public class AuthenticatorDispatcherFragment extends FragmentAbstract {
+public class MainFragment extends FragmentAbstract {
     //Logs
-    private static final String TAG = AuthenticatorDispatcherFragment.class.getSimpleName();
+    private static final String TAG = MainFragment.class.getSimpleName();
     private static final boolean DEBUG = true;
 
     //The dispatcher starts signin/signup... and all returns the user
@@ -41,11 +40,11 @@ public class AuthenticatorDispatcherFragment extends FragmentAbstract {
     public static final String KEY_ACTION_SIGNIN_PHONE = "user.signin.phone";
     public static final String KEY_ACTION_REMOVE_FROM_DEVICE = "user.remove.from.device";
 
-    AccountGeneral myAccountGeneral = null;
+    AccountAuthenticator myAccountAuthenticator = null;
 
     // Constructor
-    public static AuthenticatorDispatcherFragment newInstance() {
-        return new AuthenticatorDispatcherFragment();
+    public static MainFragment newInstance() {
+        return new MainFragment();
     }
 
 
@@ -53,7 +52,7 @@ public class AuthenticatorDispatcherFragment extends FragmentAbstract {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //We check what we need to do if start SignIn/SignInWithAccounts/SignUp
-        myAccountGeneral = new AccountGeneral(getContext());
+        myAccountAuthenticator = new AccountAuthenticator(getContext());
     }
 
     @Nullable
@@ -62,20 +61,67 @@ public class AuthenticatorDispatcherFragment extends FragmentAbstract {
         View v = inflater.inflate(R.layout.fragment_main, container, false);
         setCurrentView(v);
         //TODO we should first check if we can do fast login and if not then go for signup/signin...
-
+/*
         Log.i(TAG, "Found accounts :" + myAccountGeneral.getAccountsCount());
         if (myAccountGeneral.getAccountsCount() >0) {
             ProfileSignInWithAccountFragment fragment = ProfileSignInWithAccountFragment.newInstance();
-            fragment.setTargetFragment(AuthenticatorDispatcherFragment.this, REQ_SIGNIN_WITH_ACCOUNTS);
+            fragment.setTargetFragment(MainFragment.this, REQ_SIGNIN_WITH_ACCOUNTS);
             replaceFragment(fragment, AppGeneral.KEY_FRAGMENT_STACK_LEVEL_1,true);  //This comes from abstract
         } else {
             ProfileSignInWithEmailFragment fragment = ProfileSignInWithEmailFragment.newInstance();
-            fragment.setTargetFragment(AuthenticatorDispatcherFragment.this, REQ_SIGNIN);
+            fragment.setTargetFragment(MainFragment.this, REQ_SIGNIN);
             replaceFragment(fragment,AppGeneral.KEY_FRAGMENT_STACK_LEVEL_1,true);  //This comes from abstract
         }
+        */
+        addNewAccount(AccountAuthenticator.ACCOUNT_TYPE, AccountAuthenticator.AUTHTOKEN_TYPE_STANDARD);
+
+        //AccountGeneral myAccountGeneral = new AccountGeneral(getContext());
+        //confirmCredentials(myAccountGeneral.getAccount());
         return v;
     }
 
+
+    //Calling our authenticator example  to create a new account!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private void addNewAccount(String accountType, String authTokenType) {
+        AccountAuthenticator mAccountAuthenticator = new AccountAuthenticator(mActivity.getApplicationContext());
+        AccountManager mAccountManager = mAccountAuthenticator.getAccountManager();
+        final AccountManagerFuture<Bundle> future = mAccountManager.addAccount(accountType, authTokenType, null, null, mActivity, new AccountManagerCallback<Bundle>() {
+            @Override
+            public void run(AccountManagerFuture<Bundle> future) {
+                try {
+                    Bundle bnd = future.getResult();
+                    Log.i(TAG, "AddNewAccount Bundle is " + bnd);
+
+                } catch (Exception e) {
+                    Log.i(TAG, "Caught exception : " + e);
+                }
+            }
+        }, null);
+    }
+
+
+    //Calling our authenticator example  to create a new account!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private void confirmCredentials(Account account) {
+        AccountManager mAccountManager = AccountManager.get(mActivity.getApplicationContext());
+        final AccountManagerFuture<Bundle> future = mAccountManager.confirmCredentials(account,null, mActivity, new AccountManagerCallback<Bundle>() {
+            @Override
+            public void run(AccountManagerFuture<Bundle> future) {
+                try {
+                    Bundle bnd = future.getResult();
+                    Log.i(TAG, "ConfirmCredentials Bundle is " + bnd);
+
+                } catch (Exception e) {
+                    Log.i(TAG, "Caught exception : " + e);
+                }
+            }
+        }, null);
+    }
+
+
+
+
+
+/*
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -106,5 +152,6 @@ public class AuthenticatorDispatcherFragment extends FragmentAbstract {
             ag.createAccount();
         }
     }
+*/
 
 }
