@@ -3,6 +3,10 @@ package com.ecube.solutions.ecube.network;
 
 import android.net.Uri;
 import android.util.Log;
+
+import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
+import com.ecube.solutions.ecube.general.AppGeneral;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
@@ -32,16 +36,16 @@ public class CloudFetchr {
     private static final String URI_BASE_GOOGLE = "http://clients3.google.com/generate_204";    // Only required to check if internet is available
     private static final String PHP_CONNECTION_CHECK = "locker.connection.check.php";           // Params required : none
     private static final String PHP_USER_REMOVE = "locker.users.remove.php";                    // Params required : phone,email,user_table
-    private static final String PHP_USER_SIGNIN = "locker.users.signin.php";                    // Params required : user,password,user_table and returns token
-    private static final String PHP_USER_SIGNUP = "locker.users.signup.php";                    // Params required : user,password,email,user_table and returns token
+    private static final String PHP_USER_SIGNIN = "user.signin.php";                    // Params required : user,password,user_table and returns token
+    private static final String PHP_USER_SIGNUP = "user.signup.php";                    // Params required : user,password,email,user_table and returns token
     private static final String PHP_USER_PASSWORD = "locker.users.setpassword.php";                    // Params required : user,password,email,user_table and returns token
     private static final String PHP_USER_TOKEN = "locker.users.checktoken.php";                 // Params required : email,token and returns if token is valid or not
     private static final String PHP_USER_TEST = "test.php";
     private String SEND_METHOD = "POST";                                                        // POST or GET method
 
-    public static final String URI_BASE_DEBUG = "http://10.0.2.2/example1/api/";                //localhost controlled by prefs
+    public static final String URI_BASE_DEBUG = "http://10.0.2.2/EcubeServer/api/";                //localhost controlled by prefs
     public static final String URI_BASE_PROD = "http://ibikestation.000webhostapp.com/api/";        //realserver controlled by prefs
-    public static String URI_BASE = "http://ibikestation.000webhostapp.com/api/";
+    public static String URI_BASE = "http://10.0.2.2/EcubeServer/api/";
 
 
     //We try to see if we can connect to google for example
@@ -135,8 +139,12 @@ public class CloudFetchr {
             if (this.SEND_METHOD.equals("POST")) {
                 OutputStream os = connection.getOutputStream();
                 OutputStreamWriter writer = new OutputStreamWriter(os, "UTF-8");
-                String postData = getPostDataString(parametersPOST);
-
+                String postData;
+                if (AppGeneral.KEY_ENCRYPTION_ENABLED) {
+                    postData = getPostDataStringEncrypted(parametersPOST);
+                } else{
+                    postData = getPostDataString(parametersPOST);
+                }
                 writer.write(postData);
                 writer.flush();
                 writer.close();
@@ -197,7 +205,7 @@ public class CloudFetchr {
     }
 
     // Converts a HashMap of string parameter pairs into a string for POST send
-    private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException{
+    private String getPostDataStringEncrypted(HashMap<String, String> params) throws UnsupportedEncodingException{
         StringBuilder result = new StringBuilder();
         boolean first = true;
         for(Map.Entry<String, String> entry : params.entrySet()){
@@ -205,9 +213,7 @@ public class CloudFetchr {
                 first = false;
             else
                 result.append(";");
-/*            result.append(URLEncoder.encode("$_POST['" + entry.getKey() +"']", "UTF-8"));
-            result.append("=");
-            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));*/
+
             result.append("$_POST['" + entry.getKey() +"']");
             result.append("=");
             result.append("\"" + entry.getValue() + "\"");
@@ -232,6 +238,30 @@ public class CloudFetchr {
         }
     }
 
+    // Converts a HashMap of string parameter pairs into a string for POST send
+    private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException{
+        StringBuilder result = new StringBuilder();
+        boolean first = true;
+        for(Map.Entry<String, String> entry : params.entrySet()){
+            if (first)
+                first = false;
+            else
+                result.append("&");
+
+            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+            result.append("=");
+            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+        }
+
+        //For debug we replace &avatar=.*& by &avatar=<data>&
+        String tmp = result.toString().replaceFirst("&avatar=.*&", "&avatar=<data>&");
+        if (DEBUG) Log.i(TAG, "POST HEADER :" + tmp);
+        return result.toString();
+    }
+
+
+
+
 
     // Sends PHP request and returns JSON object
     private JsonItem getJSON(URL url,HashMap<String,String> parametersPOST){
@@ -249,22 +279,25 @@ public class CloudFetchr {
             return item;
         }
 
-        //Decrypt the input
-        String netStr = new String(network);
-        netStr = Encryption.hexToString(netStr);
-        Log.i(TAG, "Encrypted JSON: " + netStr);
+        if (AppGeneral.KEY_ENCRYPTION_ENABLED) {
+            //Decrypt the input
+            String netStr = network;
+            netStr = Encryption.hexToString(netStr);
+            Log.i(TAG, "Encrypted JSON: " + netStr);
 
-        Encryption mcrypt = new Encryption();
-        try {
-            jsonString = new String(mcrypt.decrypt(netStr));
-        } catch (Exception e) {
-            Log.i(TAG, "Caught decryption exception: " + e);
-            item.setSuccess(false);
-            item.setResult(false);
-            item.setMessage("ERROR: Connection to server failed !");
-            return item;
+            Encryption mcrypt = new Encryption();
+            try {
+                jsonString = new String(mcrypt.decrypt(netStr));
+            } catch (Exception e) {
+                Log.i(TAG, "Caught decryption exception: " + e);
+                item.setSuccess(false);
+                item.setResult(false);
+                item.setMessage("ERROR: Connection to server failed !");
+                return item;
+            }
+        } else {
+            jsonString = network;
         }
-
         //Parse the JSON string
         try {
             JSONObject jsonBody = new JSONObject(jsonString);
@@ -308,7 +341,7 @@ public class CloudFetchr {
     }
 
     //Checks if the user is registered and returns all details of the answer with full JsonItem
-    public JsonItem userSignUp(String phone, String email, String password, String firstName, String lastName, String avatar, String type, String auth_type, String table) {
+    public JsonItem userSignUp(String phone, String email, String password, String firstName, String lastName, String avatar, String type, String auth_type, String lang) {
         this.SEND_METHOD="POST";
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("phone", phone);
@@ -319,7 +352,7 @@ public class CloudFetchr {
         parameters.put("password", password);
         parameters.put("account_type", type);
         parameters.put("account_access", auth_type);
-        parameters.put("table_users", table);
+        parameters.put("language", lang);
 
         URL url = buildUrl(PHP_USER_SIGNUP,parameters);
         return getJSON(url,parameters);
@@ -329,15 +362,22 @@ public class CloudFetchr {
 
 
     //Checks if the user is registered and returns all Details
-    public JsonItem userSignIn(String user,  String password, String type, String auth_type, String table) {
+    public JsonItem userSignIn(String userID, String userEmail, String userPhone,  String password, String type, String auth_type, String lang) {
         this.SEND_METHOD="POST";
         HashMap<String, String> parameters = new HashMap<>();
-        parameters.put("account", user);
+        if (userID != null)
+            parameters.put("id", userID);
+        if (userEmail != null)
+            parameters.put("email", userEmail);
+        if (userPhone != null)
+            parameters.put("phone", userPhone);
+        if (auth_type == null)
+            auth_type = AccountAuthenticator.AUTHTOKEN_TYPE_STANDARD;
+
         parameters.put("password", password);
         parameters.put("account_type", type);
         parameters.put("account_access", auth_type);
-        parameters.put("table_users", table);
-        //Password needs to be sha1
+        parameters.put("language", lang);
 
         URL url = buildUrl(PHP_USER_SIGNIN,parameters);
         return getJSON(url,parameters);

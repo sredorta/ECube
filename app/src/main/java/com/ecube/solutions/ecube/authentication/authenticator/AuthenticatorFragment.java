@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateStartFragment;
+import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.authentication.profile.signin.ProfileSignInWithAccountFragment;
 import com.ecube.solutions.ecube.authentication.profile.signin.ProfileSignInWithEmailFragment;
@@ -79,7 +80,7 @@ public class AuthenticatorFragment extends FragmentAbstract {
         return v;
     }
 
-
+    //We have called signin/signup... and we get an User as result we need to process here what to do
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -87,6 +88,7 @@ public class AuthenticatorFragment extends FragmentAbstract {
             //We do restore the user from the different fragments response
             if (data.hasExtra(FRAGMENT_OUTPUT_PARAM_USER)) {
                 mUser = (User) data.getParcelableExtra(FRAGMENT_OUTPUT_PARAM_USER);
+                Log.i(TAG, "Got user onActivityResult");
                 handleAccountRequest();
             }
         } else {
@@ -99,6 +101,9 @@ public class AuthenticatorFragment extends FragmentAbstract {
     //Does any action required on the account : signin with email, signin with phone, signup
     //////////////////////////////////////////////////////////////////////////////////
     private void handleAccountRequest() {
+        mUser.setLanguage(Internationalization.getLanguage(getContext()));
+        Log.i(TAG,"Set language to :" + mUser.getLanguage());
+
         Log.i(TAG, "Action required : " + mUser.getAction());
         mUser.print("Dispatcher:");
         if (mUser.getAction().equals(KEY_ACTION_REMOVE_FROM_DEVICE)) {
@@ -108,6 +113,11 @@ public class AuthenticatorFragment extends FragmentAbstract {
             Log.i(TAG, "Creating user :" + mUser.getEmail());
             AccountAuthenticator ag = new AccountAuthenticator(getContext(), mUser);
             ag.createServerAndDeviceAccount(mActivity);
+        } else if ((mUser.getAction().equals(KEY_ACTION_SIGNIN_EMAIL)) || (mUser.getAction().equals(KEY_ACTION_SIGNIN_PHONE))) {
+            Log.i(TAG, "Restoring user...");
+            AccountAuthenticator ag = new AccountAuthenticator(getContext(), mUser);
+            ag.submitCredentials(mActivity, mView);
+
         }
     }
 

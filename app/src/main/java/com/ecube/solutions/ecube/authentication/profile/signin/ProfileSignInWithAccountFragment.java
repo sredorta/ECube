@@ -184,6 +184,7 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
         if (resultCode == Activity.RESULT_OK) {
             if (data.hasExtra(MainFragment.FRAGMENT_OUTPUT_PARAM_USER)) {
                 putOutputParam(MainFragment.FRAGMENT_OUTPUT_PARAM_USER, (User) data.getParcelableExtra(MainFragment.FRAGMENT_OUTPUT_PARAM_USER));
+                Log.i(TAG, "Got result user... transferring");
                 sendResult(Activity.RESULT_OK);
             }
         }

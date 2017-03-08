@@ -97,6 +97,9 @@ public class User implements Parcelable {
     @Expose(serialize = true, deserialize = true)
     private String mAvatarString;
 
+    @SerializedName("language")
+    @Expose(serialize = true, deserialize = true)
+    private String mLanguage;
 
     private Bitmap mAvatarBitmap = null;   //User avatar bitmap
 
@@ -185,6 +188,16 @@ public class User implements Parcelable {
         this.mToken = mToken;
     }
 
+    public String getLanguage() {
+        return mLanguage;
+    }
+
+    public void setLanguage(String mLanguage) {
+        this.mLanguage = mLanguage;
+    }
+
+
+
     //Converts bitmap into string
     public String getAvatarStringFromBitmap() {
         if (this.getAvatarBitmap() == null) return null;
@@ -219,6 +232,8 @@ public class User implements Parcelable {
         if (data.getPassword() != null) this.setPassword(data.getPassword());
         if (data.getToken() != null) this.setToken(data.getToken());
         if (data.getAccountAccess() != null) this.setAccountAccess(data.getAccountAccess());
+        if (data.getLanguage() != null) this.setLanguage(data.getLanguage());
+
     }
 
     //Prints status of user
@@ -230,8 +245,11 @@ public class User implements Parcelable {
             Log.i(TAG, "mLastName      =   " + mLastName);
             Log.i(TAG, "mEmail         =   " + mEmail);
             Log.i(TAG, "mPhone         =   " + mPhone);
+            Log.i(TAG, "mLanguage      =   " + mLanguage);
             if (mAvatarBitmap != null)
                 Log.i(TAG, "mAvatar        =   " + mAvatarBitmap.toString());
+            else if (mAvatarString != null)
+                Log.i(TAG, "mAvatar        =   " + mAvatarString);
             else
                 Log.i(TAG, "mAvatar        =   null");
             Log.i(TAG, "mPassword      =   " + mPassword);
@@ -436,6 +454,7 @@ public class User implements Parcelable {
         parcel.writeString(mId);
         parcel.writeString(mEmail);
         parcel.writeString(mPhone);
+        parcel.writeString(mLanguage);
         parcel.writeString(mFirstName);
         parcel.writeString(mLastName);
         parcel.writeString(mAccountAccess);
@@ -448,6 +467,7 @@ public class User implements Parcelable {
         mId = in.readString();
         mEmail = in.readString();
         mPhone = in.readString();
+        mLanguage = in.readString();
         mFirstName = in.readString();
         mLastName = in.readString();
         mAccountAccess = in.readString();

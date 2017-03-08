@@ -27,7 +27,8 @@ public class ServerAuthenticateClass implements ServerAuthenticate {
     @Override
     public JsonItem userSignUp(User user) {
         user.print("Before JsonParse");
-        JsonItem item = new CloudFetchr().userSignUp(user.getPhone(),
+        JsonItem item = new CloudFetchr().userSignUp(
+                user.getPhone(),
                 user.getEmail(),
                 user.getPassword(),
                 user.getFirstName(),
@@ -35,7 +36,8 @@ public class ServerAuthenticateClass implements ServerAuthenticate {
                 user.getAvatarStringFromBitmap(),
                 AccountAuthenticator.ACCOUNT_TYPE,
                 user.getAccountAccess(),
-                "users");
+                user.getLanguage());
+
         if (item.getAccountDetails() != null) {
             User myUser = User.parseJSON(item.getAccountDetails());
             //Update the fields that we have got from the server
@@ -50,16 +52,18 @@ public class ServerAuthenticateClass implements ServerAuthenticate {
     public JsonItem userSignIn(User user) {
         user.print("Before userSignIn:");
         String userID = null;
+        String userEmail = null;
+        String userPhone = null;
         if (user.getId() != null)
             userID = user.getId();
-        else {
-            if (user.getEmail() != null)
-                userID = user.getEmail();
-            else
-                userID = user.getPhone();
-        }
-        JsonItem item =  new CloudFetchr().userSignIn(userID, user.getPassword(),
-                AccountAuthenticator.ACCOUNT_TYPE, user.getAccountAccess(), "users");
+        if (user.getEmail() != null)
+                userEmail = user.getEmail();
+        if(user.getPhone() != null)
+                userPhone = user.getPhone();
+
+        user.print("User before signIn :");
+        JsonItem item =  new CloudFetchr().userSignIn(userID, userEmail, userPhone, user.getPassword(),
+                AccountAuthenticator.ACCOUNT_TYPE, user.getAccountAccess(), user.getLanguage());
 
         if (item.getAccountDetails() != null) {
             User myUser = User.parseJSON(item.getAccountDetails());

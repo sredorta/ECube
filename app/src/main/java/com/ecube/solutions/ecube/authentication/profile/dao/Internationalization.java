@@ -118,25 +118,14 @@ public class Internationalization {
         return mLocales;
     }
 
-
-/*
-    public static List<Locale> getSupportedLanguageLocales(Context context, Locale country) {
-        List<Locale> mLocales = new ArrayList<>();
-
-        for (String langStr : Locale.getISOLanguages()) {
-            if (SupportedLanguages.contains(langStr))
-              mLocales.add(new Locale(langStr));
+    //Gets locale language and if not supported returns "en"
+    public static String getLanguage(Context context) {
+        Log.i(TAG, "Trying to find current language..." + Locale.getDefault().getISO3Language());
+        if (AppGeneral.SupportedLanguages.contains(Locale.getDefault().getISO3Language())) {
+            Log.i(TAG, "Yes supported !");
+            return Locale.getDefault().getISO3Language();
         }
-        final Collator collator = Collator.getInstance(country);
-        Collections.sort(mLocales, new Comparator<Locale>() {
-            @Override
-            public int compare(Locale locale, Locale t1) {
-                return collator.compare(locale.getDisplayLanguage(),t1.getDisplayLanguage());
-            }
-        });
-
-        return mLocales;
+        return Locale.ENGLISH.getISO3Language();
     }
-*/
 
 }

@@ -15,6 +15,7 @@ import com.ecube.solutions.ecube.MainFragment;
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
+import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 
 

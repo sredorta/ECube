@@ -14,7 +14,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
@@ -405,7 +407,6 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
             @Override
             protected void onPostExecute(Intent intent) {
-
                 if (intent.hasExtra(KEY_ERROR_MESSAGE))
                     Toast.makeText(activity.getBaseContext(), intent.getStringExtra(KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
 
@@ -417,6 +418,57 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
                     activity.setResult(Activity.RESULT_OK, intent);
                     activity.finish();
                 }
+            }
+        }.execute();
+    }
+
+    //Submits credentials to the server and exits activity if successfull
+    public void submitCredentials(final Activity activity, final View v) {
+        new AsyncTask<Void, Void, Intent>() {
+            JsonItem item;
+            @Override
+            protected Intent doInBackground(Void... params) {
+                Log.i(TAG, "Started authenticating");
+                Bundle data = new Bundle();
+                //If we have an account we try to create a new session and get the new token sending ID + password
+                //The server function directly updates the singleton token,id fields
+                item = sServerAuthenticate.userSignIn(mUser);
+                if(!item.getResult()) {
+                    data.putString(KEY_ERROR_MESSAGE, item.getMessage());
+                } else {
+                    Log.i(TAG,"Creating now the account on the device !");
+                    if (getAccount()==null) {
+                        createAccount();
+                    }
+                    setUserDataToDeviceAccount();
+                }
+
+                //Settings for the Account AuthenticatorActivity
+                data.putString(AccountManager.KEY_ACCOUNT_NAME, mUser.getEmail());
+                data.putString(AccountManager.KEY_ACCOUNT_TYPE, ACCOUNT_TYPE);
+                data.putString(AccountManager.KEY_AUTHTOKEN, mUser.getToken());
+
+                final Intent res = new Intent();
+                res.putExtras(data);
+                return res;
+            }
+
+            @Override
+            protected void onPostExecute(Intent intent) {
+                if (intent.hasExtra(KEY_ERROR_MESSAGE))
+                    Toast.makeText(activity.getBaseContext(), intent.getStringExtra(KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+
+                else {
+                    activity.getIntent().putExtras(intent.getExtras());
+                    Log.i(TAG,"We have the following intent we try to give to AuthenticatorActivity:");
+                    //Save the account created in the preferences (all except critical things)
+                    //Finish and send to AuthenticatorActivity that we where successfull
+                    activity.setResult(Activity.RESULT_OK, intent);
+                    activity.finish();
+                }
+
+
+
             }
         }.execute();
     }

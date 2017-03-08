@@ -73,10 +73,12 @@ public class MainFragment extends FragmentAbstract {
             replaceFragment(fragment,AppGeneral.KEY_FRAGMENT_STACK_LEVEL_1,true);  //This comes from abstract
         }
         */
-        addNewAccount(AccountAuthenticator.ACCOUNT_TYPE, AccountAuthenticator.AUTHTOKEN_TYPE_STANDARD);
 
-        //AccountGeneral myAccountGeneral = new AccountGeneral(getContext());
-        //confirmCredentials(myAccountGeneral.getAccount());
+        //addNewAccount(AccountAuthenticator.ACCOUNT_TYPE, AccountAuthenticator.AUTHTOKEN_TYPE_STANDARD);
+
+        //If there is at least one account then we should go to confirm credentials
+        AccountAuthenticator myAccountGeneral = new AccountAuthenticator(getContext());
+        confirmCredentials(myAccountGeneral.getAccount());
         return v;
     }
 
@@ -109,6 +111,9 @@ public class MainFragment extends FragmentAbstract {
                 try {
                     Bundle bnd = future.getResult();
                     Log.i(TAG, "ConfirmCredentials Bundle is " + bnd);
+                    Log.i(TAG, "account name :" + bnd.getString(AccountManager.KEY_ACCOUNT_NAME));
+                    Log.i(TAG, "account type :" + bnd.getString(AccountManager.KEY_ACCOUNT_TYPE));
+                    Log.i(TAG, "token :" + bnd.getString(AccountManager.KEY_AUTHTOKEN));
 
                 } catch (Exception e) {
                     Log.i(TAG, "Caught exception : " + e);
