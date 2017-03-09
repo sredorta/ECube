@@ -45,7 +45,7 @@ public class CloudFetchr {
 
     public static final String URI_BASE_DEBUG = "http://10.0.2.2/EcubeServer/api/";                //localhost controlled by prefs
     public static final String URI_BASE_PROD = "http://ibikestation.000webhostapp.com/api/";        //realserver controlled by prefs
-    public static String URI_BASE = "http://10.0.2.2/EcubeServer/api/";
+    public static String URI_BASE = "http://ibikestation.000webhostapp.com/api/";
 
 
     //We try to see if we can connect to google for example
@@ -132,6 +132,7 @@ public class CloudFetchr {
             connection.setReadTimeout(4000);
             connection.setConnectTimeout(4000);
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+            //connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
             connection.setRequestMethod(this.SEND_METHOD);
             connection.connect();
 
@@ -164,7 +165,7 @@ public class CloudFetchr {
                     json.setMessage("ERROR: Server not available !");
                     break;
                 default:
-                    Log.i(TAG, "Not connected  !");
+                    Log.i(TAG, "Not connected  ! : " + connection.getResponseMessage());
                     json.setMessage("ERROR: Not connected to server !");
             }
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -178,7 +179,10 @@ public class CloudFetchr {
 
             // Response from server after login process will be stored in response variable.
             response = out.toByteArray();
-
+            Log.i(TAG, "START SERVER SAYS: ");
+            if (out != null)
+               Log.i(TAG, out.toString().replaceAll("<br>" , "\n"));
+            Log.i(TAG, "END SERVER SAYS: ");
             // You can perform UI operations here
             //Log.i(TAG, "Message from Server: \n" + response);
         } catch (IOException e) {
@@ -254,8 +258,8 @@ public class CloudFetchr {
         }
 
         //For debug we replace &avatar=.*& by &avatar=<data>&
-        String tmp = result.toString().replaceFirst("&avatar=.*&", "&avatar=<data>&");
-        if (DEBUG) Log.i(TAG, "POST HEADER :" + tmp);
+        //String tmp = result.toString().replaceFirst("&avatar=.*&", "&avatar=<data>&");
+        if (DEBUG) Log.i(TAG, "POST HEADER :" + result.toString());
         return result.toString();
     }
 

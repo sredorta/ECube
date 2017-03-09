@@ -33,11 +33,10 @@ public class ServerAuthenticateClass implements ServerAuthenticate {
                 user.getPassword(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getAvatarStringFromBitmap(),
+                user.getAvatar(),
                 AccountAuthenticator.ACCOUNT_TYPE,
                 user.getAccountAccess(),
                 user.getLanguage());
-
         if (item.getAccountDetails() != null) {
             User myUser = User.parseJSON(item.getAccountDetails());
             //Update the fields that we have got from the server

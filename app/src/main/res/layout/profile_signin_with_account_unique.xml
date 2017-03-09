@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:orientation="vertical"
+android:baselineAligned="false">
+
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/profile_create_start_cardView_main"
+    android:layout_gravity="top"
+    android:layout_margin="10dp"
+    style="?attr/cardStyle">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:padding="10dp"
+        android:gravity="top">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="test"
+            android:id="@+id/profile_signin_with_account_unique_name"
+            android:layout_gravity="center"
+            android:textStyle="bold"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="test@email"
+            android:id="@+id/profile_signin_with_account_unique_email"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_horizontal" />
+
+        <android.support.v7.widget.CardView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:elevation="12dp"
+            android:id="@+id/profile_create_avatar_cardView"
+            app:cardCornerRadius="50dp"
+            android:layout_centerHorizontal="true"
+            android:innerRadius="0dp"
+            android:shape="ring"
+            android:thicknessRatio="1.9"
+            android:layout_gravity="center"
+            android:focusable="false">
+            <ImageView
+                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:id="@+id/profile_signin_with_account_unique_ImageView_avatar"
+                android:src="@drawable/profile_user_default"
+                android:scaleType="fitXY"
+                android:layout_gravity="center">
+            </ImageView>
+        </android.support.v7.widget.CardView>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/profile_signin_with_account_unique_EditText_password"
+            android:hint="password"
+            android:layout_gravity="center_horizontal" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NEXT"
+            android:id="@+id/profile_signin_with_account_unique_Button_submit"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp" />
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_gravity="center_vertical" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:text="Connect to another account"
+            android:id="@+id/profile_signin_with_account_unique_TextView_other"
+            android:alpha="0.8"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal" />
+
+    </LinearLayout>
+
+</LinearLayout>

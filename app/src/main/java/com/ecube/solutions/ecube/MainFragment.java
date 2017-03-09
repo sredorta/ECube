@@ -1,15 +1,20 @@
 package com.ecube.solutions.ecube;
 
 import android.accounts.Account;
+import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
+import android.accounts.NetworkErrorException;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
@@ -61,6 +66,65 @@ public class MainFragment extends FragmentAbstract {
         View v = inflater.inflate(R.layout.fragment_main, container, false);
         setCurrentView(v);
         //TODO we should first check if we can do fast login and if not then go for signup/signin...
+        final EditText accountEditText = (EditText) v.findViewById(R.id.editText);
+        Button addButton = (Button) v.findViewById(R.id.buttonAdd);
+        Button confirmButton = (Button) v.findViewById(R.id.buttonConfirm);
+        Button getAuthTokenButton = (Button) v.findViewById(R.id.buttonGetAuthToken);
+        Button updateButton = (Button) v.findViewById(R.id.buttonUpdateCredentials);
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addNewAccount(AccountAuthenticator.ACCOUNT_TYPE, AccountAuthenticator.AUTHTOKEN_TYPE_STANDARD);
+            }
+        });
+
+        getAuthTokenButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Get the account
+                User myUser = new User();
+                myUser.setEmail(accountEditText.getText().toString());
+                AccountAuthenticator myAccountGeneral = new AccountAuthenticator(getContext());
+
+                Account account = myAccountAuthenticator.getAccount(myUser);
+                AccountManager am = myAccountAuthenticator.getAccountManager();
+                am.setAuthToken(account,AccountAuthenticator.AUTHTOKEN_TYPE_STANDARD, null);
+                if (account!= null) {
+                    //If there is at least one account then we should go to confirm credentials
+                    getAuthToken(account,"Standard access");
+                } else {
+                    Toast.makeText(getContext(),"Invalid account",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //If there is at least one account then we should go to confirm credentials
+                AccountAuthenticator myAccountGeneral = new AccountAuthenticator(getContext());
+                confirmCredentials(myAccountGeneral.getAccount());
+            }
+        });
+        updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String user = accountEditText.getText().toString();
+                AccountAuthenticator myAccountGeneral = new AccountAuthenticator(getContext());
+
+                Account account = myAccountAuthenticator.getAccount(user);
+                User myUser = myAccountAuthenticator.getDataFromDeviceAccount(account);
+                if (account != null) {
+                    updateCredentials(account, myUser.getAccountAccess());
+                } else {
+                    Toast.makeText(getContext(),"Invalid account",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+
+
 /*
         Log.i(TAG, "Found accounts :" + myAccountGeneral.getAccountsCount());
         if (myAccountGeneral.getAccountsCount() >0) {
@@ -74,14 +138,11 @@ public class MainFragment extends FragmentAbstract {
         }
         */
 
-        //addNewAccount(AccountAuthenticator.ACCOUNT_TYPE, AccountAuthenticator.AUTHTOKEN_TYPE_STANDARD);
+        //
 
-        //If there is at least one account then we should go to confirm credentials
-        AccountAuthenticator myAccountGeneral = new AccountAuthenticator(getContext());
-        confirmCredentials(myAccountGeneral.getAccount());
+
         return v;
     }
-
 
     //Calling our authenticator example  to create a new account!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private void addNewAccount(String accountType, String authTokenType) {
@@ -93,6 +154,31 @@ public class MainFragment extends FragmentAbstract {
                 try {
                     Bundle bnd = future.getResult();
                     Log.i(TAG, "AddNewAccount Bundle is " + bnd);
+                    Log.i(TAG, "account name :" + bnd.getString(AccountManager.KEY_ACCOUNT_NAME));
+                    Log.i(TAG, "account type :" + bnd.getString(AccountManager.KEY_ACCOUNT_TYPE));
+                    Log.i(TAG, "token :" + bnd.getString(AccountManager.KEY_AUTHTOKEN));
+                    Log.i(TAG, "message :" + bnd.getString(AccountManager.KEY_ERROR_MESSAGE));
+
+                } catch (Exception e) {
+                    Log.i(TAG, "Caught exception : " + e);
+                }
+            }
+        }, null);
+    }
+    //Calling our authenticator example  to create a new account!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private void getAuthToken(Account account, String authTokenType) {
+        AccountAuthenticator mAccountAuthenticator = new AccountAuthenticator(mActivity.getApplicationContext());
+        AccountManager mAccountManager = mAccountAuthenticator.getAccountManager();
+        final AccountManagerFuture<Bundle> future = mAccountManager.getAuthToken(account,authTokenType,null,mActivity,new AccountManagerCallback<Bundle>() {
+            @Override
+            public void run(AccountManagerFuture<Bundle> future) {
+                try {
+                    Bundle bnd = future.getResult();
+                    Log.i(TAG, "GetAuthToken Bundle is " + bnd);
+                    Log.i(TAG, "account name :" + bnd.getString(AccountManager.KEY_ACCOUNT_NAME));
+                    Log.i(TAG, "account type :" + bnd.getString(AccountManager.KEY_ACCOUNT_TYPE));
+                    Log.i(TAG, "token :" + bnd.getString(AccountManager.KEY_AUTHTOKEN));
+                    Log.i(TAG, "message :" + bnd.getString(AccountManager.KEY_ERROR_MESSAGE));
 
                 } catch (Exception e) {
                     Log.i(TAG, "Caught exception : " + e);
@@ -122,7 +208,26 @@ public class MainFragment extends FragmentAbstract {
         }, null);
     }
 
+    //Calling our authenticator example  to create a new account!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private void updateCredentials(Account account, String authTokenType) {
+        AccountManager mAccountManager = AccountManager.get(mActivity.getApplicationContext());
 
+        final AccountManagerFuture<Bundle> future = mAccountManager.updateCredentials(account,authTokenType, null, mActivity, new AccountManagerCallback<Bundle>() {
+            @Override
+            public void run(AccountManagerFuture<Bundle> future) {
+                try {
+                    Bundle bnd = future.getResult();
+                    Log.i(TAG, "UpdateCredentials Bundle is " + bnd);
+                    Log.i(TAG, "account name :" + bnd.getString(AccountManager.KEY_ACCOUNT_NAME));
+                    Log.i(TAG, "account type :" + bnd.getString(AccountManager.KEY_ACCOUNT_TYPE));
+                    Log.i(TAG, "token :" + bnd.getString(AccountManager.KEY_AUTHTOKEN));
+
+                } catch (Exception e) {
+                    Log.i(TAG, "Caught exception : " + e);
+                }
+            }
+        }, null);
+    }
 
 
 

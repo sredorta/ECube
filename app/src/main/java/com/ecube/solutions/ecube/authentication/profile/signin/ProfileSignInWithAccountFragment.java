@@ -267,7 +267,9 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
                 //Change fragment as we have removed all accounts
                 Log.i(TAG,"Removed latest account:");
                 ProfileSignInWithEmailFragment fragment = ProfileSignInWithEmailFragment.newInstance();
+                fragment.setTargetFragment(ProfileSignInWithAccountFragment.this, REQ_SIGNIN);
                 replaceFragment(fragment, AppGeneral.KEY_FRAGMENT_STACK_LEVEL_1,true);
+
             }
         }
 
@@ -281,8 +283,8 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
             mAccount = account;
             mUserFullNameTextView.setText(fullName);
             mAccountNameTextView.setText(mAccountManager.getUserData(account, AccountAuthenticator.PARAM_USER_EMAIL));
-            mUser.setAvatarString(mAccountManager.getUserData(account, AccountAuthenticator.PARAM_USER_AVATAR), getContext());
-            mAvatarImageView.setImageBitmap(mUser.getAvatarBitmap());
+            mUser.setAvatar(mAccountManager.getUserData(account, AccountAuthenticator.PARAM_USER_AVATAR));
+            mAvatarImageView.setImageBitmap(mUser.getAvatar(getContext()));
             //Define color for active or not active account (last log-in)
             if (mUser.getEmail() != null) {
                 if (mUser.getEmail().equals(account.name)) {

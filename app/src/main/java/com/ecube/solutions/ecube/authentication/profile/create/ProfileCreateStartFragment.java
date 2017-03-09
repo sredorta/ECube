@@ -64,7 +64,7 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(ProfileCreateAvatarFragment.FRAGMENT_INPUT_PARAM_USER_AVATAR_BITMAP, myUser.getAvatarBitmap());
+                bundle.putParcelable(ProfileCreateAvatarFragment.FRAGMENT_INPUT_PARAM_USER_AVATAR_BITMAP, myUser.getAvatar(getContext()));
                 ProfileCreateAvatarFragment fragment = ProfileCreateAvatarFragment.newInstance(bundle);
                 fragment.setTargetFragment(ProfileCreateStartFragment.this, REQUEST_DEFINE_AVATAR);
                 replaceFragment(fragment);  //This comes from abstract
@@ -86,7 +86,7 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_DEFINE_AVATAR) {
-                myUser.setAvatarBitmap((Bitmap) data.getParcelableExtra(ProfileCreateAvatarFragment.FRAGMENT_OUTPUT_PARAM_USER_AVATAR_BITMAP));
+                myUser.setAvatar((Bitmap) data.getParcelableExtra(ProfileCreateAvatarFragment.FRAGMENT_OUTPUT_PARAM_USER_AVATAR_BITMAP));
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(ProfileCreateNamesFragment.FRAGMENT_INPUT_PARAM_USER_FIRST_NAME, myUser.getFirstName());
                 bundle.putSerializable(ProfileCreateNamesFragment.FRAGMENT_INPUT_PARAM_USER_LAST_NAME, myUser.getLastName());
@@ -102,6 +102,8 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
                 fragment.setTargetFragment(ProfileCreateStartFragment.this, REQUEST_DEFINE_PHONE);
                 replaceFragment(fragment);  //This comes from abstract
             } else if( requestCode == REQUEST_DEFINE_PHONE) {
+                myUser.setLanguage(Internationalization.getLanguage(getContext()));
+                Log.i(TAG,"Set language to :" + myUser.getLanguage());
                 myUser.setPhone((String) data.getSerializableExtra(ProfileCreatePhoneFragment.FRAGMENT_OUTPUT_PARAM_USER_PHONE_NUMBER));
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(ProfileCreateEmailFragment.FRAGMENT_INPUT_PARAM_USER_EMAIL, myUser.getEmail());

@@ -31,7 +31,7 @@ public class Avatar implements Serializable {
     private static final String TAG = Avatar.class.getSimpleName();
     private static final boolean DEBUG = true;
 
-    private static final int AVATAR_SIZE = 200;
+    private static final int AVATAR_SIZE = 100;
     private Bitmap mBitmap;                     //Stores the bitmap of the avatar
     private File mPhotoFile;                    //Stores a photo of avatar if we take photo
     private Context mContext;

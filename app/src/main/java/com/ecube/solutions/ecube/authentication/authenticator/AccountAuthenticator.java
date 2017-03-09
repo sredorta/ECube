@@ -50,7 +50,8 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
     public final static String ARG_ACCOUNT_NAME = "ACCOUNT_NAME";
     public final static String ARG_ACCOUNT_TYPE = "ACCOUNT_TYPE";
     public final static String ARG_ACCOUNT_AUTH_TYPE = "AUTH_TYPE";
-    public final static String ARG_IS_ADDING_NEW_ACCOUNT = "IS_ADDING_ACCOUNT";
+    public final static String ARG_IS_ADDING_NEW_ACCOUNT = "IS_ADDING_ACCOUNT";   //Argument to go to signup
+    public final static String ARG_IS_UPDATING_ACCOUNT = "IS_UPDATING_ACCOUNT";     //Argument to go to edit profile
 
     public static final String KEY_ERROR_MESSAGE = "ERR_MSG";
 
@@ -108,49 +109,19 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
     @Override
     public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
+        //Android gets a token from the account and if there is no token then we get here !
         Log.i(TAG, "getAuthToken");
-        // If the caller requested an authToken type we don't support, then
-        // return an error
-/*        User user = new User();
-        user.init(mContext);
+
+        //Init the user from the account data
+        mUser = this.getDataFromDeviceAccount(account);
+
+        authTokenType = "Standard access";
         if (!authTokenType.equals(AUTHTOKEN_TYPE_STANDARD) && !authTokenType.equals(AUTHTOKEN_TYPE_FULL)) {
             final Bundle result = new Bundle();
             result.putString(AccountManager.KEY_ERROR_MESSAGE, "invalid authTokenType");
             return result;
         }
 
-        // Extract the username and password from the Account Manager, and ask
-        // the server for an appropriate AuthToken.
-        final AccountManager am = AccountManager.get(mContext);
-
-        String authToken = am.peekAuthToken(account, authTokenType);
-
-        Logs.i("peekAuthToken returned :: " + authToken, this.getClass());
-
-
-        // Lets give another try to authenticate the user
-        if (TextUtils.isEmpty(authToken)) {
-            final String password = am.getPassword(account);
-            if (password != null) {
-                try {
-                    Logs.i("Re-authenticating with the existing password", this.getClass());
-                    JsonItem item = sServerAuthenticate.userSignIn(user);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        authToken = user.getToken();
-
-        // If we get an authToken - we return it
-        if (!TextUtils.isEmpty(authToken)) {
-            final Bundle result = new Bundle();
-            result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
-            result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
-            result.putString(AccountManager.KEY_AUTHTOKEN, authToken);
-            return result;
-        }
-*/
         // If we get here, then we couldn't access the user's password - so we
         // need to re-prompt them for their credentials. We do that by creating
         // an intent to display our AuthenticatorActivity.
@@ -217,7 +188,19 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
     @Override
     public Bundle updateCredentials(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
         Log.i(TAG, "updateCredentials");
-        return null;
+        final Intent intent = new Intent(mContext, AuthenticatorActivity.class);
+        intent.putExtra(ARG_IS_UPDATING_ACCOUNT, true);
+        intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+        intent.putExtra(ARG_ACCOUNT_TYPE, account.type);
+        intent.putExtra(ARG_ACCOUNT_AUTH_TYPE, authTokenType);
+        intent.putExtra(ARG_ACCOUNT_NAME, account.name);
+
+        final Bundle bundle = new Bundle();
+        bundle.putParcelable(AccountManager.KEY_INTENT, intent);
+
+        Log.i(TAG,"Details of the intent sent to AuthenticatorActivity : ");
+        IntentHelper.dumpIntent(intent);
+        return bundle;
     }
 
     //In this case we have email + password... and we restore the account in the user with addAccountFromCredentials
@@ -251,6 +234,19 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
         //Find if there is an account with the correct accountName and get its token
         for (Account account : mAccountManager.getAccountsByType(ACCOUNT_TYPE)) {
             if (account.name.equals(user.getEmail())) {
+                return account;
+            }
+        }
+        return null;
+    }
+
+    // Gets the "current account" on the device matching our accountType and accountName with a String
+    public Account getAccount(String accountName) {
+        if (accountName == null)
+            return null;
+        //Find if there is an account with the correct accountName and get its token
+        for (Account account : mAccountManager.getAccountsByType(ACCOUNT_TYPE)) {
+            if (account.name.equals(accountName)) {
                 return account;
             }
         }
@@ -323,8 +319,9 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
                 mAccountManager.setUserData(account, PARAM_USER_FIRST_NAME, mUser.getFirstName());
             if (mUser.getLastName() != null)
                 mAccountManager.setUserData(account, PARAM_USER_LAST_NAME, mUser.getLastName());
-            if (mUser.getAvatarBitmap() != null)
-                mAccountManager.setUserData(account, PARAM_USER_AVATAR, mUser.getAvatarStringFromBitmap());
+            if (mUser.getAvatar() != null) {
+                mAccountManager.setUserData(account, PARAM_USER_AVATAR, mUser.getAvatar());
+            }
         }
     }
 
@@ -337,14 +334,12 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
         mUser.setLastName(mAccountManager.getUserData(myAccount, PARAM_USER_LAST_NAME));
         mUser.setEmail(mAccountManager.getUserData(myAccount, PARAM_USER_EMAIL));
         mUser.setPhone(mAccountManager.getUserData(myAccount, PARAM_USER_PHONE));
-        mUser.setAvatarString(mAccountManager.getUserData(myAccount, PARAM_USER_AVATAR),mContext);
-
+        mUser.setAvatar(mAccountManager.getUserData(myAccount, PARAM_USER_AVATAR));
         //System parameters
         mUser.setPassword(mAccountManager.getPassword(myAccount));
         mUser.setAccountAccess(mAccountManager.getUserData(myAccount, PARAM_USER_ACCOUNT_AUTH_TYPE));
         if (mUser.getAccountAccess() != null){
             mUser.setToken(mAccountManager.peekAuthToken(myAccount,mUser.getAccountAccess()));
-            if(DEBUG) Log.i(TAG, "We restored the token:" + mUser.getToken());
         }
         return mUser;
     }
@@ -436,8 +431,9 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
                 if(!item.getResult()) {
                     data.putString(KEY_ERROR_MESSAGE, item.getMessage());
                 } else {
-                    Log.i(TAG,"Creating now the account on the device !");
-                    if (getAccount()==null) {
+                    mUser.print("SERGI SERGI SERGI : Before the account that we should create!");
+                    //Log.i(TAG,"Creating now the account on the device !");
+                    if (getAccount(mUser)==null) {
                         createAccount();
                     }
                     setUserDataToDeviceAccount();

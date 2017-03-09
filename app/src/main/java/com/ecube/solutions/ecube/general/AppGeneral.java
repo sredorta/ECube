@@ -15,5 +15,5 @@ public class AppGeneral {
     public static final List<String> SupportedCountries = Arrays.asList("FR", "ES" , "IT" , "MC", "AT", "CH", "DE","DK", "FI", "GB", "GI", "GR", "IS", "NL", "NO", "AD");   //Supported countries
     public static final List<String> SupportedLanguages = Arrays.asList("fra", "eng");   //Supported ISO3 languages
 
-    public static final Boolean KEY_ENCRYPTION_ENABLED = false;
+    public static final Boolean KEY_ENCRYPTION_ENABLED = true;
 }

@@ -95,13 +95,13 @@ public class User implements Parcelable {
 
     @SerializedName("avatar")
     @Expose(serialize = true, deserialize = true)
-    private String mAvatarString;
+    private String mAvatar;
 
     @SerializedName("language")
     @Expose(serialize = true, deserialize = true)
     private String mLanguage;
 
-    private Bitmap mAvatarBitmap = null;   //User avatar bitmap
+//    private Bitmap mAvatarBitmap = null;   //User avatar bitmap
 
 
 
@@ -122,14 +122,6 @@ public class User implements Parcelable {
 
     public void setAccountAccess(String mAccountAccess) {
         this.mAccountAccess = mAccountAccess;
-    }
-
-    public Bitmap getAvatarBitmap() {
-        return mAvatarBitmap;
-    }
-
-    public void setAvatarBitmap(Bitmap mAvatarBitmap) {
-        this.mAvatarBitmap = mAvatarBitmap;
     }
 
     public String getEmail() {
@@ -198,28 +190,34 @@ public class User implements Parcelable {
 
 
 
-    //Converts bitmap into string
-    public String getAvatarStringFromBitmap() {
-        if (this.getAvatarBitmap() == null) return null;
-        String result = null;
+
+    // Gets the Avatar string
+    public String getAvatar() {return mAvatar;}
+
+    //Sets the Avatar string from String
+    public void setAvatar(String avatar) { mAvatar = avatar;}
+
+    //sets the Avatar string from bitmap
+    public void setAvatar(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
-        getAvatarBitmap().compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOS);
-        this.mAvatarString = Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
-        return this.mAvatarString;
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOS);
+        this.mAvatar = Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
     }
 
-    public String getAvatarString() {return mAvatarString;}
-    public void setAvatarString(String avatar) { mAvatarString = avatar;}
-
-    public void setAvatarString(String avatar, Context context) {
-        byte[] bitmapBytes = Base64.decode(avatar, Base64.DEFAULT);
-        if (bitmapBytes != null) {
-            final Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapBytes,0, bitmapBytes.length);
-            this.setAvatarBitmap(bitmap);
-        } else
-            this.setAvatarBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.profile_user_default));
-        this.mAvatarString = avatar;
+    //Gets the Avatar string into bitmap format
+    public Bitmap getAvatar(Context context) {
+        if (this.mAvatar != null) {
+            byte[] bitmapBytes = Base64.decode(this.mAvatar, Base64.DEFAULT);
+            if (bitmapBytes != null) {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
+                return bitmap;
+            }
+        }
+        return BitmapFactory.decodeResource(context.getResources(), R.drawable.profile_user_default);
     }
+
+
+
 
     //Update from a user object all non-null variables
     public void update(User data){
@@ -228,7 +226,7 @@ public class User implements Parcelable {
         if (data.getLastName() != null) this.setLastName(data.getLastName());
         if (data.getEmail() != null) this.setEmail(data.getEmail());
         if (data.getPhone() != null) this.setPhone(data.getPhone());
-        if (data.getAvatarString() != null) this.setAvatarString(data.getAvatarString());
+        if (data.getAvatar() != null) this.setAvatar(data.getAvatar());
         if (data.getPassword() != null) this.setPassword(data.getPassword());
         if (data.getToken() != null) this.setToken(data.getToken());
         if (data.getAccountAccess() != null) this.setAccountAccess(data.getAccountAccess());
@@ -246,12 +244,7 @@ public class User implements Parcelable {
             Log.i(TAG, "mEmail         =   " + mEmail);
             Log.i(TAG, "mPhone         =   " + mPhone);
             Log.i(TAG, "mLanguage      =   " + mLanguage);
-            if (mAvatarBitmap != null)
-                Log.i(TAG, "mAvatar        =   " + mAvatarBitmap.toString());
-            else if (mAvatarString != null)
-                Log.i(TAG, "mAvatar        =   " + mAvatarString);
-            else
-                Log.i(TAG, "mAvatar        =   null");
+            Log.i(TAG, "mAvatar        =   " + mAvatar);
             Log.i(TAG, "mPassword      =   " + mPassword);
             Log.i(TAG, "mAccountAccess =   " + mAccountAccess);
             Log.i(TAG, "mToken         =   " + mToken);
@@ -460,7 +453,8 @@ public class User implements Parcelable {
         parcel.writeString(mAccountAccess);
         parcel.writeString(mToken);
         parcel.writeString(mPassword);
-        parcel.writeParcelable(mAvatarBitmap, i);
+        parcel.writeString(mAvatar);
+        //parcel.writeParcelable(mAvatarString, i);
     }
     //Constructor for CREATOR of parcel
     private User(Parcel in) {
@@ -473,7 +467,8 @@ public class User implements Parcelable {
         mAccountAccess = in.readString();
         mToken = in.readString();
         mPassword = in.readString();
-        mAvatarBitmap = in.readParcelable(Bitmap.class.getClassLoader());
+        mAvatar = in.readString();
+        //mAvatarBitmap = in.readParcelable(Bitmap.class.getClassLoader());
     }
 
     @Override
