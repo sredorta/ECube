@@ -2,8 +2,6 @@ package com.ecube.solutions.ecube.authentication.profile.signin;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.Activity;
-import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
@@ -21,8 +19,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.ecube.solutions.ecube.MainFragment;
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
@@ -142,9 +138,9 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
                     User myUser = new User();
                     myUser.setEmail(mUser.getEmail());
                     myUser.setPassword(passwordEditText.getText().toString());
-                    myUser.setAction(MainFragment.KEY_ACTION_SIGNIN_EMAIL);
-                    putOutputParam(MainFragment.FRAGMENT_OUTPUT_PARAM_USER, myUser);
-                    sendResult(Activity.RESULT_OK);
+                    Log.i(TAG, "Restoring user...");
+                    AccountAuthenticator ag = new AccountAuthenticator(getContext(), myUser);
+                    ag.submitCredentials(mActivity, mView);
                 }
             }
         });
@@ -153,41 +149,11 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
         return v;
     }
 
-    /*
-    @Override
-    public void onResume() {
-        //We check if there are accounts, and if not go back
-        Log.i(TAG, "We are onResume");
-        if (myAccountGeneral.getAccountsCount() == 0) {
-            removeFragment(ProfileSignInWithAccountFragment.this,false);
-            ProfileSignInWithEmailFragment fragment = ProfileSignInWithEmailFragment.newInstance();
-            fragment.setTargetFragment(ProfileSignInWithAccountFragment.this, REQ_SIGNIN);
-            setAddToBackStack(false);
-            replaceFragment(fragment,"test",true);  //This comes from abstract
-            setAddToBackStack(true);
-            super.onResume();
-        } else {
-            super.onResume();
-        }
-    }
-*/
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(KEY_CURRENT_USER, mUser.getEmail());
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (data.hasExtra(MainFragment.FRAGMENT_OUTPUT_PARAM_USER)) {
-                putOutputParam(MainFragment.FRAGMENT_OUTPUT_PARAM_USER, (User) data.getParcelableExtra(MainFragment.FRAGMENT_OUTPUT_PARAM_USER));
-                Log.i(TAG, "Got result user... transferring");
-                sendResult(Activity.RESULT_OK);
-            }
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -319,9 +285,7 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
                                 case R.id.options_menu_account_item_remove:
                                     User myUser = new User();
                                     myUser.setEmail(mUser.getEmail());
-                                    myUser.setAction(MainFragment.KEY_ACTION_REMOVE_FROM_DEVICE);
-                                    putOutputParam(MainFragment.FRAGMENT_OUTPUT_PARAM_USER, myUser);
-                                    sendResult(Activity.RESULT_OK);
+                                    myAccountAuthenticator.removeAccount(myUser);
                                     deleteItem();
                                     break;
                             }

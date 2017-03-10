@@ -6,6 +6,7 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.accounts.NetworkErrorException;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
+import com.ecube.solutions.ecube.authentication.authenticator.AuthenticatorActivity;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 
 /**
@@ -27,23 +29,6 @@ public class MainFragment extends FragmentAbstract {
     //Logs
     private static final String TAG = MainFragment.class.getSimpleName();
     private static final boolean DEBUG = true;
-
-    //The dispatcher starts signin/signup... and all returns the user
-    public static final String FRAGMENT_OUTPUT_PARAM_USER = "param.user";  //Fragment output parameter for all fragments
-
-    private User mUser;
-
-    //Fragment start requests
-    private static final int REQ_SIGNIN = 1;
-    private static final int REQ_SIGNIN_WITH_ACCOUNTS = 2;
-    private static final int REQ_SIGNUP = 3;
-
-    //Actions that all the fragments will be sending
-    //TODO move this to user
-    public static final String KEY_ACTION_SIGNUP = "user.signup";
-    public static final String KEY_ACTION_SIGNIN_EMAIL = "user.signin.email";
-    public static final String KEY_ACTION_SIGNIN_PHONE = "user.signin.phone";
-    public static final String KEY_ACTION_REMOVE_FROM_DEVICE = "user.remove.from.device";
 
     AccountAuthenticator myAccountAuthenticator = null;
 
@@ -60,6 +45,18 @@ public class MainFragment extends FragmentAbstract {
         myAccountAuthenticator = new AccountAuthenticator(getContext());
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        final EditText accountEditText = (EditText) mView.findViewById(R.id.editText);
+        Account account = myAccountAuthenticator.getActiveAccount();
+        if (account != null) {
+            accountEditText.setText(account.name);
+        } else {
+            accountEditText.setText("no account");
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -71,7 +68,16 @@ public class MainFragment extends FragmentAbstract {
         Button confirmButton = (Button) v.findViewById(R.id.buttonConfirm);
         Button getAuthTokenButton = (Button) v.findViewById(R.id.buttonGetAuthToken);
         Button updateButton = (Button) v.findViewById(R.id.buttonUpdateCredentials);
+        Button removeButton = (Button) v.findViewById(R.id.buttonRemoveAll);
+        Button restoreButton = (Button) v.findViewById(R.id.buttonRestore);
 
+        //Init with account if there is one
+        Account account = myAccountAuthenticator.getActiveAccount();
+        if (account != null) {
+            accountEditText.setText(account.name);
+        } else {
+            accountEditText.setText("no account");
+        }
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,8 +95,8 @@ public class MainFragment extends FragmentAbstract {
 
                 Account account = myAccountAuthenticator.getAccount(myUser);
                 AccountManager am = myAccountAuthenticator.getAccountManager();
-                am.setAuthToken(account,AccountAuthenticator.AUTHTOKEN_TYPE_STANDARD, null);
                 if (account!= null) {
+                    am.setAuthToken(account,AccountAuthenticator.AUTHTOKEN_TYPE_STANDARD, null);
                     //If there is at least one account then we should go to confirm credentials
                     getAuthToken(account,"Standard access");
                 } else {
@@ -104,9 +110,17 @@ public class MainFragment extends FragmentAbstract {
             public void onClick(View view) {
                 //If there is at least one account then we should go to confirm credentials
                 AccountAuthenticator myAccountGeneral = new AccountAuthenticator(getContext());
-                confirmCredentials(myAccountGeneral.getAccount());
+                Account account = myAccountGeneral.getActiveAccount();
+                Log.i(TAG, "hrere confirm");
+                if (account!= null) {
+                    confirmCredentials(account);
+                } else {
+                    Toast.makeText(getContext(),"No accounts found",Toast.LENGTH_LONG).show();
+                }
             }
         });
+
+
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,8 +128,9 @@ public class MainFragment extends FragmentAbstract {
                 AccountAuthenticator myAccountGeneral = new AccountAuthenticator(getContext());
 
                 Account account = myAccountAuthenticator.getAccount(user);
-                User myUser = myAccountAuthenticator.getDataFromDeviceAccount(account);
+                Log.i(TAG, "hrere ");
                 if (account != null) {
+                    User myUser = myAccountAuthenticator.getDataFromDeviceAccount(account);
                     updateCredentials(account, myUser.getAccountAccess());
                 } else {
                     Toast.makeText(getContext(),"Invalid account",Toast.LENGTH_LONG).show();
@@ -124,22 +139,21 @@ public class MainFragment extends FragmentAbstract {
         });
 
 
+        removeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AccountAuthenticator myAccountGeneral = new AccountAuthenticator(getContext());
+                myAccountGeneral.removeAllAccounts();
+            }
+        });
 
-/*
-        Log.i(TAG, "Found accounts :" + myAccountGeneral.getAccountsCount());
-        if (myAccountGeneral.getAccountsCount() >0) {
-            ProfileSignInWithAccountFragment fragment = ProfileSignInWithAccountFragment.newInstance();
-            fragment.setTargetFragment(MainFragment.this, REQ_SIGNIN_WITH_ACCOUNTS);
-            replaceFragment(fragment, AppGeneral.KEY_FRAGMENT_STACK_LEVEL_1,true);  //This comes from abstract
-        } else {
-            ProfileSignInWithEmailFragment fragment = ProfileSignInWithEmailFragment.newInstance();
-            fragment.setTargetFragment(MainFragment.this, REQ_SIGNIN);
-            replaceFragment(fragment,AppGeneral.KEY_FRAGMENT_STACK_LEVEL_1,true);  //This comes from abstract
-        }
-        */
-
-        //
-
+        restoreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Intent intent = new Intent(getContext(), AuthenticatorActivity.class);
+                startActivity(intent);
+            }
+        });
 
         return v;
     }

@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -50,8 +49,9 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
     public final static String ARG_ACCOUNT_NAME = "ACCOUNT_NAME";
     public final static String ARG_ACCOUNT_TYPE = "ACCOUNT_TYPE";
     public final static String ARG_ACCOUNT_AUTH_TYPE = "AUTH_TYPE";
-    public final static String ARG_IS_ADDING_NEW_ACCOUNT = "IS_ADDING_ACCOUNT";   //Argument to go to signup
-    public final static String ARG_IS_UPDATING_ACCOUNT = "IS_UPDATING_ACCOUNT";     //Argument to go to edit profile
+    public final static String ARG_IS_ADDING_NEW_ACCOUNT = "IS_ADDING_ACCOUNT";                             //Argument to go to signup
+    public final static String ARG_IS_UPDATING_CREDENTIALS_ACCOUNT = "IS_UPDATING_CREDENTIALS_ACCOUNT";     //Argument to go to edit profile
+    public final static String ARG_IS_CONFIRM_CREDENTIALS_ACCOUNT = "IS_CONFIRM_CREDENTIALS_ACCOUNT";       //Argument to go to confirm credentials
 
     public static final String KEY_ERROR_MESSAGE = "ERR_MSG";
 
@@ -65,6 +65,9 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
     public final static String PARAM_USER_EMAIL = "USER_EMAIL";
     public final static String PARAM_USER_PHONE = "USER_PHONE";
     public final static String PARAM_USER_AVATAR = "USER_AVATAR";
+    public final static String PARAM_USER_ACCOUNT_ACTIVE = "ACTIVE_ACCOUNT";    //Stores latest used account
+    public final static String ACCOUNT_INACTIVE = "account.inactive";           //Defines account as inactive
+    public final static String ACCOUNT_ACTIVE = "account.active";               //Defines account as active (latest logged in)
 
     //Get access to the server part functions
     public static final ServerAuthenticate sServerAuthenticate = new ServerAuthenticateClass();
@@ -114,8 +117,6 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
         //Init the user from the account data
         mUser = this.getDataFromDeviceAccount(account);
-
-        authTokenType = "Standard access";
         if (!authTokenType.equals(AUTHTOKEN_TYPE_STANDARD) && !authTokenType.equals(AUTHTOKEN_TYPE_FULL)) {
             final Bundle result = new Bundle();
             result.putString(AccountManager.KEY_ERROR_MESSAGE, "invalid authTokenType");
@@ -126,6 +127,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
         // need to re-prompt them for their credentials. We do that by creating
         // an intent to display our AuthenticatorActivity.
         final Intent intent = new Intent(mContext, AuthenticatorActivity.class);
+        intent.putExtra(ARG_IS_CONFIRM_CREDENTIALS_ACCOUNT, true);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         intent.putExtra(ARG_ACCOUNT_TYPE, account.type);
         intent.putExtra(ARG_ACCOUNT_AUTH_TYPE, authTokenType);
@@ -175,8 +177,13 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
     public Bundle confirmCredentials(AccountAuthenticatorResponse response, Account account, Bundle options) throws NetworkErrorException {
         Log.i(TAG, "confirmCredentials");
         final Intent intent = new Intent(mContext, AuthenticatorActivity.class);
-        //intent.putExtra(ARG_IS_ADDING_NEW_ACCOUNT, false);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+        intent.putExtra(ARG_IS_CONFIRM_CREDENTIALS_ACCOUNT, true);
+
+        User tmp = getDataFromDeviceAccount(account);
+        intent.putExtra(ARG_ACCOUNT_TYPE, account.type);
+        intent.putExtra(ARG_ACCOUNT_AUTH_TYPE, tmp.getAccountAccess());
+        intent.putExtra(ARG_ACCOUNT_NAME, account.name);
 
         final Bundle bundle = new Bundle();
         bundle.putParcelable(AccountManager.KEY_INTENT, intent);
@@ -189,7 +196,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
     public Bundle updateCredentials(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
         Log.i(TAG, "updateCredentials");
         final Intent intent = new Intent(mContext, AuthenticatorActivity.class);
-        intent.putExtra(ARG_IS_UPDATING_ACCOUNT, true);
+        intent.putExtra(ARG_IS_UPDATING_CREDENTIALS_ACCOUNT, true);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         intent.putExtra(ARG_ACCOUNT_TYPE, account.type);
         intent.putExtra(ARG_ACCOUNT_AUTH_TYPE, authTokenType);
@@ -262,6 +269,15 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
         return null;
     }
 
+    //Only for debug
+    public void removeAllAccounts() {
+        for (Account account : mAccountManager.getAccountsByType(ACCOUNT_TYPE)) {
+            Log.i(TAG, "Removing account:" +account.name);
+            User myUser = new User();
+            myUser.setEmail(account.name);
+            removeAccount(myUser);
+        }
+    }
 
 
     //Returns all accounts of our type
@@ -343,6 +359,30 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
         }
         return mUser;
     }
+
+    //Sets account as active
+    public void setActiveAccount(Account account) {
+        if (account!= null) {
+            for (Account myAccount : mAccountManager.getAccountsByType(ACCOUNT_TYPE)) {
+                mAccountManager.setUserData(myAccount, PARAM_USER_ACCOUNT_ACTIVE, ACCOUNT_INACTIVE);
+            }
+            mAccountManager.setUserData(account, PARAM_USER_ACCOUNT_ACTIVE, ACCOUNT_ACTIVE);
+        }
+    }
+    public void setActiveAccount(String accountName) {
+        setActiveAccount(getAccount(accountName));
+    }
+    //Gets active account
+    public Account getActiveAccount() {
+        for (Account myAccount : mAccountManager.getAccountsByType(ACCOUNT_TYPE)) {
+            if (mAccountManager.getUserData(myAccount, PARAM_USER_ACCOUNT_ACTIVE).equals(ACCOUNT_ACTIVE)) {
+                return myAccount;
+            }
+        }
+        return null;
+    }
+
+
 
     //Remove account on the Device
     public Boolean removeAccount(User user) {

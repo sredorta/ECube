@@ -1,25 +1,19 @@
 package com.ecube.solutions.ecube.authentication.profile.update;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ecube.solutions.ecube.MainFragment;
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
-import com.ecube.solutions.ecube.authentication.profile.signin.ProfileSignInWithAccountFragment;
 import com.ecube.solutions.ecube.authentication.profile.signin.ProfileSignInWithEmailFragment;
-import com.ecube.solutions.ecube.general.AppGeneral;
+
 
 /**
  * Created by sredorta on 3/9/2017.
@@ -34,9 +28,6 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
 
     //In case of rotations
     public static final String KEY_CURRENT_USER = "user.save";
-
-    //Request to connect to another account in case several accounts are available
-    //private static final int REQ_SIGNIN_WITH_ACCOUNTS = 1;
 
     private AccountAuthenticator myAccountAuthenticator;
     private User mUser;
@@ -87,17 +78,6 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
 
 
         return v;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (data.hasExtra(MainFragment.FRAGMENT_OUTPUT_PARAM_USER)) {
-                putOutputParam(MainFragment.FRAGMENT_OUTPUT_PARAM_USER, (User) data.getParcelableExtra(MainFragment.FRAGMENT_OUTPUT_PARAM_USER));
-                sendResult(Activity.RESULT_OK);
-            }
-        }
     }
 
     //Save user in case of rotation

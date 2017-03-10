@@ -73,7 +73,7 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
         return v;
     }
 
-
+/*
     @Override
     public void onBackPressed() {
         //if (hiddenPanel.getVisibility() == View.VISIBLE) slideUpDown(mView);
@@ -81,7 +81,7 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
             super.onBackPressed();
         //}
     }
-
+*/
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
@@ -119,10 +119,10 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
                 myUser.setPassword((String) data.getSerializableExtra(ProfileCreatePasswordFragment.FRAGMENT_OUTPUT_PARAM_USER_PASSWORD));
                 myUser.setAccountAccess(AccountAuthenticator.AUTHTOKEN_TYPE_STANDARD);  //We always create account with standard access first
 
-                //Send now back as result the full user to the dispatcher
-                myUser.setAction(MainFragment.KEY_ACTION_SIGNUP);
-                putOutputParam(MainFragment.FRAGMENT_OUTPUT_PARAM_USER, myUser);
-                sendResult(Activity.RESULT_OK);
+                //Do the job !
+                Log.i(TAG, "Creating user :" + myUser.getEmail());
+                AccountAuthenticator ag = new AccountAuthenticator(getContext(), myUser);
+                ag.createServerAndDeviceAccount(mActivity);
             }
         } else {
             // Reload our fragment

@@ -14,6 +14,10 @@ import android.util.Log;
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.ActivityAbstract;
 import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateStartFragment;
+import com.ecube.solutions.ecube.authentication.profile.signin.ProfileSignInWithAccountFragment;
+import com.ecube.solutions.ecube.authentication.profile.signin.ProfileSignInWithAccountUniqueFragment;
+import com.ecube.solutions.ecube.authentication.profile.signin.ProfileSignInWithEmailFragment;
+import com.ecube.solutions.ecube.authentication.profile.update.ProfileUpdateStartFragment;
 import com.ecube.solutions.ecube.general.AppGeneral;
 import com.ecube.solutions.ecube.helpers.IntentHelper;
 
@@ -33,12 +37,32 @@ public class AuthenticatorActivity extends ActivityAbstract {
 
     public static AccountAuthenticatorResponse mAccountAuthenticatorResponse = null;
     public static Bundle mResultBundle = null;
-    private Fragment fragment;
 
 
- //   @Override
+    //The funcitonality here is to dispatch which fragment we load... as this is on activity all have level.0
     public Fragment createFragment() {
-        return AuthenticatorFragment.newInstance();
+        //Add account case
+        if (getIntent().hasExtra(AccountAuthenticator.ARG_IS_ADDING_NEW_ACCOUNT)) {
+            if (DEBUG) Log.i(TAG, "Starting new activity to create account !");
+            return ProfileCreateStartFragment.newInstance();
+        }
+        //Update credentials of a specific account !
+        if (getIntent().hasExtra(AccountAuthenticator.ARG_IS_UPDATING_CREDENTIALS_ACCOUNT)) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(ProfileSignInWithAccountUniqueFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT,
+                    getIntent().getStringExtra(AccountAuthenticator.ARG_ACCOUNT_NAME));
+            return ProfileUpdateStartFragment.newInstance(bundle);
+        }
+        //Confirm credentials of a specific account !
+        if (getIntent().hasExtra(AccountAuthenticator.ARG_IS_CONFIRM_CREDENTIALS_ACCOUNT)) {
+            Log.i(TAG, "We are in confirm credentials, account is :" + getIntent().getStringExtra(AccountAuthenticator.ARG_ACCOUNT_NAME));
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(ProfileSignInWithAccountUniqueFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT,
+                    getIntent().getStringExtra(AccountAuthenticator.ARG_ACCOUNT_NAME));
+            return ProfileSignInWithAccountUniqueFragment.newInstance(bundle);
+        }
+        //If we reach this point let the user login with email
+            return ProfileSignInWithEmailFragment.newInstance();
     }
 
     //Sets the bundle with the results that are sent to the authenticator (LockerAuthenticator)
@@ -49,21 +73,21 @@ public class AuthenticatorActivity extends ActivityAbstract {
 
     @Override
     public void finish() {
-        Log.i(TAG,"Input intent before finish:");
-        //Save the last successfull login account into the preferences
-//        if (getIntent().hasExtra(AccountManager.KEY_ACCOUNT_NAME)) {
-//            QueryPreferences.setPreference(getApplicationContext(),QueryPreferences.PREFERENCE_ACCOUNT_NAME,getIntent().getStringExtra(AccountManager.KEY_ACCOUNT_NAME));
-//        }
         AuthenticatorActivity.setAccountAuthenticatorResult(getIntent().getExtras());
-
         IntentHelper.dumpIntent(getIntent());
         Log.i(TAG, "Finish of AuthenticatorActivity !");
         if (mAccountAuthenticatorResponse != null) {
              // send the result bundle back if set, otherwise send an error.
              if (mResultBundle != null) {
-                    mAccountAuthenticatorResponse.onResult(mResultBundle);
-                    Log.i (TAG, "Account that we should save : " + getIntent().getStringExtra(AccountManager.KEY_ACCOUNT_NAME));
-
+                 mAccountAuthenticatorResponse.onResult(mResultBundle);
+                 //Now define active account here if intent we are returning has correct account
+                 if (getIntent().hasExtra(AccountManager.KEY_ACCOUNT_NAME)) {
+                     if ((getIntent().getStringExtra(AccountManager.KEY_ACCOUNT_NAME))!= null ) {
+                         Log.i(TAG, "Setting as active account : " + getIntent().getStringExtra(AccountManager.KEY_ACCOUNT_NAME));
+                         AccountAuthenticator mAccountAuthenticator = new AccountAuthenticator(getApplicationContext());
+                         mAccountAuthenticator.setActiveAccount(getIntent().getStringExtra(AccountManager.KEY_ACCOUNT_NAME));
+                     }
+                 }
              } else {
                     mAccountAuthenticatorResponse.onError(AccountManager.ERROR_CODE_CANCELED,
                                      "canceled");

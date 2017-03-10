@@ -17,8 +17,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.ecube.solutions.ecube.MainFragment;
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
@@ -146,9 +144,9 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
                         User myUser = new User();
                         myUser.setPhone(getFinalPhoneNumber());
                         myUser.setPassword(passwordEditText.getText().toString());
-                        myUser.setAction(MainFragment.KEY_ACTION_SIGNIN_PHONE);
-                        putOutputParam(MainFragment.FRAGMENT_OUTPUT_PARAM_USER, myUser);
-                        sendResult(Activity.RESULT_OK);
+                        Log.i(TAG, "Restoring user...");
+                        AccountAuthenticator ag = new AccountAuthenticator(getContext(), myUser);
+                        ag.submitCredentials(mActivity, mView);
                     }
                 }
             }
@@ -187,13 +185,6 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
             //In order to validate if with new country the phone is correct
             final EditText mNumberEditText = (EditText) mView.findViewById(R.id.profile_signin_with_phone_editText_number);
             mNumberEditText.setText(mNumberEditText.getText().toString());
-        }
-        //Send back the User
-        if (resultCode == Activity.RESULT_OK) {
-                if (data.hasExtra(MainFragment.FRAGMENT_OUTPUT_PARAM_USER)) {
-                    putOutputParam(MainFragment.FRAGMENT_OUTPUT_PARAM_USER, (User) data.getParcelableExtra(MainFragment.FRAGMENT_OUTPUT_PARAM_USER));
-                    sendResult(Activity.RESULT_OK);
-                }
         }
     }
 

@@ -63,7 +63,7 @@ public abstract class ActivityAbstract extends AppCompatActivity {
         fragment = fm.findFragmentById(mContainer);
         if (fragment == null) {
             fragment = createFragment();
-            replaceFragment(fragment, AppGeneral.KEY_FRAGMENT_STACK_LEVEL_0,false,true);
+            replaceFragment(fragment, AppGeneral.KEY_FRAGMENT_STACK_LEVEL_0,true,true);
         }
 
     }

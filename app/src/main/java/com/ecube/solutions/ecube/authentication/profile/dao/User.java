@@ -45,7 +45,6 @@ public class User implements Parcelable {
     private static final String TAG = User.class.getSimpleName();
     private static final boolean DEBUG = true;
 
-    private String mAction = null;         //User action to know what to do with at the AuthenticatorDispatcher
     @SerializedName("id")
     @Expose(serialize = true, deserialize = true)
     private String mId = null;             //User id
@@ -108,13 +107,7 @@ public class User implements Parcelable {
 
     public User() {}
 
-    public String getAction() {
-        return mAction;
-    }
 
-    public void setAction(String action) {
-        this.mAction = action;
-    }
 
     public String getAccountAccess() {
         return mAccountAccess;
