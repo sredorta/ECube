@@ -34,14 +34,17 @@
     android:layout_marginBottom="20dp"
     android:gravity="center_horizontal" />
 
-<EditText
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:inputType="textEmailAddress"
-    android:ems="10"
-    android:id="@+id/profile_create_email_editText_email"
-    android:hint="email" />
-
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:ems="10"
+            android:id="@+id/profile_create_email_editText_email"
+            android:hint="email" />
+    </android.support.design.widget.TextInputLayout>
 
 <Button
     android:layout_width="wrap_content"

@@ -43,14 +43,18 @@ android:padding="10dp"    >
     android:ems="10"
     android:id="@+id/profile_create_phone_country_display"
    layout="@layout/profile_create_country_display" />
-
-<EditText
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/profile_create_phone_TextInputLayout">
+    <EditText
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:inputType="phone"
     android:ems="10"
     android:id="@+id/profile_create_phone_editText_number"
     android:hint="Phone number" />
+    </android.support.design.widget.TextInputLayout>
 
 <Button
     android:layout_width="wrap_content"

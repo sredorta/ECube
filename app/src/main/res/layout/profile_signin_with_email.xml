@@ -4,7 +4,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="0dp">
+    android:layout_margin="0dp"
+    android:focusableInTouchMode="true">
 <android.support.v7.widget.CardView
 xmlns:android="http://schemas.android.com/apk/res/android"
 android:layout_width="match_parent"
@@ -39,7 +40,11 @@ style="?attr/cardStyle">
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:gravity="center_horizontal" />
-
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|center_horizontal"
+        android:id="@+id/profile_signin_with_email_TextInputLayout_email">
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,6 +52,12 @@ style="?attr/cardStyle">
         android:ems="10"
         android:id="@+id/profile_signin_with_email_editText_email"
         android:hint="email" />
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|center_horizontal"
+        android:id="@+id/profile_signin_with_email_TextInputLayout_password">
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -54,6 +65,7 @@ style="?attr/cardStyle">
         android:ems="10"
         android:id="@+id/profile_signin_with_email_editText_password"
         android:hint="password" />
+    </android.support.design.widget.TextInputLayout>
 
 
     <Button

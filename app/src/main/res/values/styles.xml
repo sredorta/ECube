@@ -10,6 +10,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+
     </style>
     <style name="LoginTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
@@ -33,6 +35,7 @@
         <item name="android:windowBackground">@color/background_material_light</item>
 
         <!-- Text colors -->
+        <item name="android:colorControlActivated">@color/md_green_A700</item>
         <item name="android:textColorPrimary">@color/md_green_900</item>
         <item name="android:textColorPrimaryInverse">@color/md_green_50</item>
         <item name="android:textColorSecondary">@color/md_green_700</item>
@@ -41,7 +44,7 @@
         <item name="android:textColorTertiaryInverse">@color/md_green_100</item>
         <item name="android:textColorPrimaryDisableOnly">@color/abc_primary_text_disable_only_material_light</item>
         <item name="android:textColorPrimaryInverseDisableOnly">@color/abc_primary_text_disable_only_material_dark</item>
-        <item name="android:textColorHint">@color/md_green_300</item>
+        <item name="android:textColorHint">@color/md_green_700</item>
         <item name="android:textColorHintInverse">@color/md_green_500</item>
         <item name="android:textColorHighlight">@color/md_green_A200</item>
         <item name="android:textColorLink">?attr/colorAccent</item>
@@ -70,6 +73,7 @@
         <item name="android:textColor">@color/md_green_800</item>
         <item name="android:textColorHint">@color/md_green_300</item>
     </style>
+
 
     <style name="myDialogTheme" parent="ThemeOverlay.AppCompat.Dialog.Alert">
         <item name="android:windowMinWidthMajor">90%</item>

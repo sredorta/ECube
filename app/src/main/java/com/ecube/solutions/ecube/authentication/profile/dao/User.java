@@ -252,10 +252,17 @@ public class User implements Parcelable {
     public static boolean checkFirstNameInput(EditText myEditText, final View v) {
         if (myEditText.getText().toString().equals("") || myEditText.length() < 3) {
             myEditText.setHintTextColor(ContextCompat.getColor(v.getContext(), R.color.colorAccent));
+            myEditText.setHintTextColor(ContextCompat.getColor(v.getContext(), R.color.colorAccent));
+            myEditText.setHighlightColor(ContextCompat.getColor(v.getContext(), R.color.colorAccent));
+            myEditText.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorAccent));
             Snackbar snackbar = Snackbar.make(v, "Please insert correct name", Snackbar.LENGTH_LONG);
             snackbar.show();
             return false;
         } else {
+            myEditText.setHintTextColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimary));
+            myEditText.setHintTextColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimary));
+            myEditText.setHighlightColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimary));
+            myEditText.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimary));
             return true;
         }
     }
