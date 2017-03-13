@@ -196,7 +196,6 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == ProfileSignInWithPhoneFragment.REQUEST_COUNTRY) {
             mLocale = (Locale) data.getSerializableExtra(CountryPickerFragment.FRAGMENT_OUTPUT_PARAM_SELECTED_PHONE_COUNTRY);
-            dialog.dismiss();
             updateCurrentCountry();
             //In order to validate if with new country the phone is correct
             final EditText mNumberEditText = (EditText) mView.findViewById(R.id.profile_signin_with_phone_editText_number);

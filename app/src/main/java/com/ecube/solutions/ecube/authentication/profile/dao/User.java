@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
 public class User implements Parcelable {
     //Logs
     private static final String TAG = User.class.getSimpleName();
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     @SerializedName("id")
     @Expose(serialize = true, deserialize = true)

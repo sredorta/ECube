@@ -47,6 +47,7 @@ public class WaitDialogFragment extends DialogAbstract {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View v = LayoutInflater.from(mActivity).inflate(R.layout.wait_fragment,null);
+        mView = v;
         dialogCardView = (CardView)v.findViewById(R.id.wait_fragment_CardView);
         dialogProgressBar = (ProgressBar) v.findViewById(R.id.wait_fragment_ProgressBar);
 
@@ -54,8 +55,16 @@ public class WaitDialogFragment extends DialogAbstract {
         v.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                 // Here you can get the size :)
-                int radius = dialogProgressBar.getMeasuredWidth();
+                 // Here you can get the size
+                int width = dialogProgressBar.getMeasuredWidth();
+                int height = dialogProgressBar.getMeasuredHeight();
+                int radius;
+                if (width < height) {
+                    radius = dialogProgressBar.getMeasuredWidth();
+
+                } else {
+                    radius = dialogProgressBar.getMeasuredHeight();
+                }
                 radius = radius / 2;
                 dialogCardView.setRadius(radius);
             }
@@ -70,8 +79,9 @@ public class WaitDialogFragment extends DialogAbstract {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View v = super.onCreateView(inflater, container, savedInstanceState);
+        mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        return v;
     }
 
 }

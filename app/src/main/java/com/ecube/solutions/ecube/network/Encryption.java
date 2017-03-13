@@ -17,7 +17,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class Encryption {
     //Logs
     private static final String TAG = Encryption.class.getSimpleName();
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     static char[] HEX_CHARS = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
 

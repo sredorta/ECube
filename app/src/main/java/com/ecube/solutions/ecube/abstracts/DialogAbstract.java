@@ -1,19 +1,25 @@
 package com.ecube.solutions.ecube.abstracts;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.AnimRes;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
 import com.ecube.solutions.ecube.R;
@@ -52,7 +58,8 @@ public abstract class DialogAbstract extends DialogFragment implements OnBackPre
     private boolean mAddToBackStack;
     protected FragmentActivity mActivity;
 
-
+    //Save of dialog for accessing without null during transactions
+    public Dialog mDialog;
 
     //Map for parsing input parameters
     private Map<String,Object> inputParams;
@@ -62,7 +69,6 @@ public abstract class DialogAbstract extends DialogFragment implements OnBackPre
 
     //View for access
     protected View mView;
-
 
 
     @Override
@@ -81,11 +87,31 @@ public abstract class DialogAbstract extends DialogFragment implements OnBackPre
         mAnimPopExit   = R.anim.exit_fade;
     }
 
+
+    @Override
+    public void dismiss() {
+        //We need to access mDialog in case transaction is not completed, otherwise it would be null
+        mDialog.dismiss();
+    }
+
     //To store the activity holding the fragment... and avoid nulls when transaction has not been completed
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Log.i("SERGI", "onAttach.. setting mDialog");
+        mDialog = getDialog();
         mActivity = (FragmentActivity) getActivity();
+
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = super.onCreateView(inflater, container, savedInstanceState);
+        mDialog = getDialog(); //Save mDialog
+        mView = v;
+        Log.i("mView", "Saved at onCreateView !");
+        return v;
     }
 
     @Override
@@ -220,21 +246,21 @@ public abstract class DialogAbstract extends DialogFragment implements OnBackPre
     protected View getCurrentView() { return mView;}
 
 
-
     //Replace container with new fragment
     public void replaceFragment(Fragment fragment, String tag, boolean animation){
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = mActivity.getSupportFragmentManager().beginTransaction();
         if (animation)
             transaction.setCustomAnimations(mAnimEnter, mAnimExit, mAnimPopEnter, mAnimPopExit);
         transaction.replace(mContainer, fragment);
         if (mAddToBackStack)
             transaction.addToBackStack(tag);
         transaction.commit();
+
     }
 
     //Remove a fragment
     public void removeFragment(Fragment fragment, boolean animation) {
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = mActivity.getSupportFragmentManager().beginTransaction();
         if (animation)
             transaction.setCustomAnimations(mAnimEnter, mAnimExit, mAnimPopEnter, mAnimPopExit);
         transaction.remove(fragment);

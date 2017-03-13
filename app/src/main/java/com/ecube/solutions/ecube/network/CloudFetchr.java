@@ -31,7 +31,7 @@ import java.util.Map;
 public class CloudFetchr {
     //Logs
     private static final String TAG = CloudFetchr.class.getSimpleName();
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private static final String URI_BASE_GOOGLE = "http://clients3.google.com/generate_204";    // Only required to check if internet is available
     private static final String PHP_CONNECTION_CHECK = "locker.connection.check.php";           // Params required : none

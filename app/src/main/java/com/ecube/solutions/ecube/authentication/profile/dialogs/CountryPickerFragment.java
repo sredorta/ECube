@@ -121,6 +121,7 @@ public class CountryPickerFragment extends DialogAbstract {
             //We need to update the user with the account data that has been selected
             putOutputParam(CountryPickerFragment.FRAGMENT_OUTPUT_PARAM_SELECTED_PHONE_COUNTRY, mLocale);
             sendResult(Activity.RESULT_OK);
+            mDialog.dismiss();
         }
 
 

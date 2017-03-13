@@ -62,7 +62,7 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="2"
             android:layout_gravity="center_vertical">
 
@@ -84,6 +84,14 @@
                 android:id="@+id/profile_update_start_TextView_email"
                 android:layout_gravity="left|bottom|center_horizontal"
                 android:gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Created on "
+                android:id="@+id/profile_update_start_TextView_creation"
+                android:gravity="bottom" />
 
         </LinearLayout>
 

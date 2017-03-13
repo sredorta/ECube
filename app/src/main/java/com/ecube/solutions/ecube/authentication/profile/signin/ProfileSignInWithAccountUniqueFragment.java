@@ -1,7 +1,9 @@
 package com.ecube.solutions.ecube.authentication.profile.signin;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -110,6 +112,7 @@ public class ProfileSignInWithAccountUniqueFragment extends FragmentAbstract{
                                 FragmentManager fm = getFragmentManager();
                                 dialog = WaitDialogFragment.newInstance();
                                 dialog.show(fm,"DIALOG");
+                                getFragmentManager().executePendingTransactions();
                             }
                             @Override
                             public void processFinish() {

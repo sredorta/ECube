@@ -85,11 +85,6 @@ public abstract class ActivityAbstract extends AppCompatActivity {
         replaceFragment(fragment, tag, animation, true);
     }
 
-
-
-
-
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -102,10 +97,10 @@ public abstract class ActivityAbstract extends AppCompatActivity {
 
     @Override
     public void finish() {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+/*        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(mAnimEnter,mAnimExit,mAnimPopEnter,mAnimPopExit);
         transaction.remove(fragment);
-        transaction.commit();
+        transaction.commit();*/
         super.finish();
     }
 
@@ -122,21 +117,5 @@ public abstract class ActivityAbstract extends AppCompatActivity {
         }
         return null;
     }
-
-/*
-    @Override
-    public void onBackPressed() {
-        Log.i(TAG, "OnBackPressed: Current number of fragments : " + getSupportFragmentManager().getBackStackEntryCount());
-        Fragment currentFragment = getSupportFragmentManager().getFragments().get(getSupportFragmentManager().getBackStackEntryCount() - 1);
-        if (currentFragment != null)
-            if (currentFragment instanceof OnBackPressed) {
-                ((OnBackPressed) currentFragment).onBackPressed();
-            } else
-                super.onBackPressed();
-        else
-            super.onBackPressed();
-    }
-*/
-
 
 }
