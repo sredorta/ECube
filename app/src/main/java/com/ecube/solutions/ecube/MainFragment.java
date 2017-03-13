@@ -6,9 +6,14 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.accounts.NetworkErrorException;
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +22,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.ecube.solutions.ecube.abstracts.AsyncTaskAbstract;
+import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
 import com.ecube.solutions.ecube.authentication.authenticator.AuthenticatorActivity;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
+import com.ecube.solutions.ecube.authentication.profile.dialogs.CountryPickerFragment;
+import com.ecube.solutions.ecube.network.JsonItem;
 
 /**
  * Created by sredorta on 3/1/2017.
@@ -70,7 +79,7 @@ public class MainFragment extends FragmentAbstract {
         Button updateButton = (Button) v.findViewById(R.id.buttonUpdateCredentials);
         Button removeButton = (Button) v.findViewById(R.id.buttonRemoveAll);
         Button restoreButton = (Button) v.findViewById(R.id.buttonRestore);
-
+        Button waitButton = (Button) v.findViewById(R.id.buttonWait);
         //Init with account if there is one
         Account account = myAccountAuthenticator.getActiveAccount();
         if (account != null) {
@@ -152,6 +161,20 @@ public class MainFragment extends FragmentAbstract {
             public void onClick(View view) {
                 final Intent intent = new Intent(getContext(), AuthenticatorActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        waitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                submitCredentials2();
+
+
+
+
+
+
             }
         });
 
@@ -277,5 +300,47 @@ public class MainFragment extends FragmentAbstract {
         }
     }
 */
+//Submits credentials to the server and exits activity if successfull
+public void submitCredentials2() {
+    AsyncTaskInterface ATI = new AsyncTaskInterface() {
+        WaitDialogFragment dialog;
+        @Override
+        public void processStart() {
+            Log.i(TAG, "on processStart");
+            FragmentManager fm = getFragmentManager();
+            dialog = WaitDialogFragment.newInstance();
+            dialog.show(fm,"DIALOG");
+        }
+
+        @Override
+        public void processFinish() {
+            Log.i(TAG, "on processFinish");
+            dialog.dismiss();
+        }
+
+    };
+
+    AsyncTask test = new AsyncTaskAbstract<Void, Void, Intent>(ATI,3000) {
+        JsonItem item;
+
+        @Override
+        protected Intent doInBackground(Void... params) {
+            super.doInBackground();
+            Log.i(TAG, "doInBackground");
+            final Intent res = new Intent();
+            res.putExtra("TEST", "yes");
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(Intent intent) {
+            Log.i(TAG, "onPostExecute");
+            super.onPostExecute(intent);
+        }
+
+     }.execute();
+
+}
+
 
 }

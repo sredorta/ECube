@@ -2,12 +2,15 @@ package com.ecube.solutions.ecube.authentication.profile.signin;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import com.ecube.solutions.ecube.R;
+import com.ecube.solutions.ecube.WaitDialogFragment;
+import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
 import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateStartFragment;
@@ -65,7 +68,21 @@ public class ProfileSignInWithEmailFragment extends FragmentAbstract {
                         myUser.setPassword(passwordEditText.getText().toString());
                         Log.i(TAG, "Restoring user...");
                         AccountAuthenticator ag = new AccountAuthenticator(getContext(), myUser);
-                        ag.submitCredentials(mActivity, mView);
+                        ag.submitCredentials(new AsyncTaskInterface() {
+                            WaitDialogFragment dialog;
+                            @Override
+                            public void processStart() {
+                                FragmentManager fm = getFragmentManager();
+                                dialog = WaitDialogFragment.newInstance();
+                                dialog.show(fm,"DIALOG");
+                            }
+                            @Override
+                            public void processFinish() {
+                                dialog.dismiss();
+                            }
+                        }, mActivity);
+                        //If we get to this point is that we could not authenticate !
+                        passwordEditText.setText("");
                     }
                 }
             }

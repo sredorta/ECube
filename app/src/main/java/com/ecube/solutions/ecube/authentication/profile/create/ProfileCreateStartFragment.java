@@ -3,8 +3,10 @@ package com.ecube.solutions.ecube.authentication.profile.create;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,8 @@ import android.widget.Button;
 
 import com.ecube.solutions.ecube.MainFragment;
 import com.ecube.solutions.ecube.R;
+import com.ecube.solutions.ecube.WaitDialogFragment;
+import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
 import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
@@ -102,8 +106,6 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
                 fragment.setTargetFragment(ProfileCreateStartFragment.this, REQUEST_DEFINE_PHONE);
                 replaceFragment(fragment);  //This comes from abstract
             } else if( requestCode == REQUEST_DEFINE_PHONE) {
-                myUser.setLanguage(Internationalization.getLanguage(getContext()));
-                Log.i(TAG,"Set language to :" + myUser.getLanguage());
                 myUser.setPhone((String) data.getSerializableExtra(ProfileCreatePhoneFragment.FRAGMENT_OUTPUT_PARAM_USER_PHONE_NUMBER));
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(ProfileCreateEmailFragment.FRAGMENT_INPUT_PARAM_USER_EMAIL, myUser.getEmail());
@@ -122,7 +124,19 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
                 //Do the job !
                 Log.i(TAG, "Creating user :" + myUser.getEmail());
                 AccountAuthenticator ag = new AccountAuthenticator(getContext(), myUser);
-                ag.createServerAndDeviceAccount(mActivity);
+                ag.createServerAndDeviceAccount(new AsyncTaskInterface() {
+                    WaitDialogFragment dialog;
+                    @Override
+                    public void processStart() {
+                        FragmentManager fm = getFragmentManager();
+                        dialog = WaitDialogFragment.newInstance();
+                        dialog.show(fm,"DIALOG");
+                    }
+                    @Override
+                    public void processFinish() {
+                        dialog.dismiss();
+                    }
+                }, mActivity);
             }
         } else {
             // Reload our fragment

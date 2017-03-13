@@ -18,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.ecube.solutions.ecube.R;
+import com.ecube.solutions.ecube.WaitDialogFragment;
+import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
 import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateStartFragment;
@@ -146,7 +148,21 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
                         myUser.setPassword(passwordEditText.getText().toString());
                         Log.i(TAG, "Restoring user...");
                         AccountAuthenticator ag = new AccountAuthenticator(getContext(), myUser);
-                        ag.submitCredentials(mActivity, mView);
+                        ag.submitCredentials(new AsyncTaskInterface() {
+                            WaitDialogFragment dialog;
+                            @Override
+                            public void processStart() {
+                                FragmentManager fm = getFragmentManager();
+                                dialog = WaitDialogFragment.newInstance();
+                                dialog.show(fm,"DIALOG");
+                            }
+                            @Override
+                            public void processFinish() {
+                                dialog.dismiss();
+                            }
+                        }, mActivity);
+                        //If we get to this point is that we could not authenticate !
+                        passwordEditText.setText("");
                     }
                 }
             }

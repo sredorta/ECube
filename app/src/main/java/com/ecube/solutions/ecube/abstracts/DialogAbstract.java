@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 /**
  * Created by sredorta on 2/28/2017.
  */
-public class DialogAbstract extends DialogFragment implements OnBackPressed{
+public abstract class DialogAbstract extends DialogFragment implements OnBackPressed {
     //Logs
     private final String TAG =  DialogAbstract.class.getSimpleName();
     private final boolean DEBUG = true;

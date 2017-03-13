@@ -14,10 +14,15 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.ecube.solutions.ecube.WaitDialogFragment;
+import com.ecube.solutions.ecube.abstracts.AsyncTaskAbstract;
+import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
+import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.helpers.IntentHelper;
 import com.ecube.solutions.ecube.network.Encryption;
@@ -411,11 +416,15 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
         return isDone;
     }
 
+
     //Creates the Server and Device account and exits activity if successfull
-    public void createServerAndDeviceAccount(final Activity activity) {
-        new AsyncTask<Void, Void, Intent>() {
+    public void createServerAndDeviceAccount(AsyncTaskInterface myAsyncTaskInterface,final Activity activity) {
+        new AsyncTaskAbstract<Void, Void, Intent>(myAsyncTaskInterface,1000) {
             @Override
             protected Intent doInBackground(Void... params) {
+                super.doInBackground();
+                mUser.setLanguage(Internationalization.getLanguage(mContext));
+                Log.i(TAG,"Set language to :" + mUser.getLanguage());
                 Bundle data = new Bundle();
                 JsonItem item = sServerAuthenticate.userSignUp(mUser);
                 if(!item.getResult()) {
@@ -442,14 +451,12 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
             @Override
             protected void onPostExecute(Intent intent) {
+                super.onPostExecute(intent);
                 if (intent.hasExtra(KEY_ERROR_MESSAGE))
                     Toast.makeText(activity.getBaseContext(), intent.getStringExtra(KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
 
                 else {
                     activity.getIntent().putExtras(intent.getExtras());
-                    Log.i(TAG,"We have the following intent we try to give to AuthenticatorActivity:");
-                    //Save the account created in the preferences (all except critical things)
-                    //Finish and send to AuthenticatorActivity that we where successfull
                     activity.setResult(Activity.RESULT_OK, intent);
                     activity.finish();
                 }
@@ -457,12 +464,16 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
         }.execute();
     }
 
+
     //Submits credentials to the server and exits activity if successfull
-    public void submitCredentials(final Activity activity, final View v) {
-        new AsyncTask<Void, Void, Intent>() {
+    public void submitCredentials(AsyncTaskInterface myAsyncTaskInterface, final Activity activity) {
+        new AsyncTaskAbstract<Void, Void, Intent>(myAsyncTaskInterface,1000) {
             JsonItem item;
             @Override
             protected Intent doInBackground(Void... params) {
+                super.doInBackground();
+                mUser.setLanguage(Internationalization.getLanguage(mContext));
+                Log.i(TAG,"Set language to :" + mUser.getLanguage());
                 Log.i(TAG, "Started authenticating");
                 Bundle data = new Bundle();
                 //If we have an account we try to create a new session and get the new token sending ID + password
@@ -471,8 +482,6 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
                 if(!item.getResult()) {
                     data.putString(KEY_ERROR_MESSAGE, item.getMessage());
                 } else {
-                    mUser.print("SERGI SERGI SERGI : Before the account that we should create!");
-                    //Log.i(TAG,"Creating now the account on the device !");
                     if (getAccount(mUser)==null) {
                         createAccount();
                     }
@@ -491,20 +500,15 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
             @Override
             protected void onPostExecute(Intent intent) {
-                if (intent.hasExtra(KEY_ERROR_MESSAGE))
+                super.onPostExecute(intent);
+                if (intent.hasExtra(KEY_ERROR_MESSAGE)) {
                     Toast.makeText(activity.getBaseContext(), intent.getStringExtra(KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
-
-                else {
+                } else {
                     activity.getIntent().putExtras(intent.getExtras());
-                    Log.i(TAG,"We have the following intent we try to give to AuthenticatorActivity:");
-                    //Save the account created in the preferences (all except critical things)
                     //Finish and send to AuthenticatorActivity that we where successfull
                     activity.setResult(Activity.RESULT_OK, intent);
                     activity.finish();
                 }
-
-
-
             }
         }.execute();
     }
