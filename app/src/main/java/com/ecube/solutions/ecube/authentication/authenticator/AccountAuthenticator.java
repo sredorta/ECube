@@ -419,7 +419,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
     //Creates the Server and Device account and exits activity if successfull
     public void createServerAndDeviceAccount(AsyncTaskInterface myAsyncTaskInterface,final Activity activity) {
-        new AsyncTaskAbstract<Void, Void, Intent>(myAsyncTaskInterface,1000) {
+        new AsyncTaskAbstract<Void, Void, Intent>(myAsyncTaskInterface,700) {
             @Override
             protected Intent doInBackground(Void... params) {
                 super.doInBackground();
@@ -467,7 +467,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
     //Submits credentials to the server and exits activity if successfull
     public void submitCredentials(AsyncTaskInterface myAsyncTaskInterface, final Activity activity) {
-        new AsyncTaskAbstract<Void, Void, Intent>(myAsyncTaskInterface,10000) {
+        new AsyncTaskAbstract<Void, Void, Intent>(myAsyncTaskInterface,700) {
             JsonItem item;
             @Override
             protected Intent doInBackground(Void... params) {

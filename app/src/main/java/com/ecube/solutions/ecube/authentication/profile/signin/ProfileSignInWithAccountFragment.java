@@ -28,6 +28,7 @@ import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticat
 import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateStartFragment;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.general.AppGeneral;
+import com.ecube.solutions.ecube.helpers.IconHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,8 +54,6 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
     private List<Account> mAccounts = new ArrayList<>();
     private AccountAuthenticator myAccountAuthenticator;
     private boolean mUpdatePostitions = true;
-    private Drawable mMoreDrawableLime;         //More icon drawable active
-    private Drawable mMoreDrawableGrey;         //More icon drawable not active
 
     private User mUser;
 
@@ -84,18 +83,6 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
             mUser = myAccountAuthenticator.getDataFromDeviceAccount(account);
             mUpdatePostitions = false;
         }
-
-        //Create the different drawables for the more icon
-        //Need to add .mutate in order to avoid intenal sharing of same object
-        mMoreDrawableLime = ContextCompat.getDrawable(getContext(), R.drawable.icon_more).mutate();
-        mMoreDrawableGrey = ContextCompat.getDrawable(getContext(), R.drawable.icon_more).mutate();
-        PorterDuffColorFilter porterDuffColorFilter;
-
-        porterDuffColorFilter = new PorterDuffColorFilter(ContextCompat.getColor(getContext(), R.color.md_lime_300),PorterDuff.Mode.SRC_ATOP);
-        mMoreDrawableLime.setColorFilter(porterDuffColorFilter);
-        porterDuffColorFilter = new PorterDuffColorFilter(ContextCompat.getColor(getContext(), R.color.md_grey_300),PorterDuff.Mode.SRC_ATOP);
-        mMoreDrawableGrey.setColorFilter(porterDuffColorFilter);
-
 
     }
 
@@ -225,7 +212,7 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
             buttonViewOption = (ImageView) itemView.findViewById(R.id.profile_signin_with_account_display_account_ImageView_more);
 
             //Set default drawable to grey
-            buttonViewOption.setImageDrawable(mMoreDrawableGrey);
+            IconHelper.colorize(getContext(), buttonViewOption, R.color.md_grey_300);
         }
 
 
@@ -273,10 +260,10 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
                 if (mUser.getEmail().equals(account.name)) {
                     itemView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.md_lime_50));
                     buttonViewOption.setEnabled(true);
-                    buttonViewOption.setImageDrawable(mMoreDrawableLime);
+                    IconHelper.colorize(getContext(), buttonViewOption, R.color.md_lime_300);
                 } else {
                     itemView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.md_white_1000));
-                    buttonViewOption.setImageDrawable(mMoreDrawableGrey);
+                    IconHelper.colorize(getContext(), buttonViewOption, R.color.md_grey_300);
                     buttonViewOption.setEnabled(false);
                 }
             }

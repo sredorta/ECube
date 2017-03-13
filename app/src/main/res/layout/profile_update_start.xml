@@ -97,12 +97,12 @@
 
     </LinearLayout>
 </android.support.v7.widget.CardView>
-    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        xmlns:app="http://schemas.android.com/tools"
-        android:id="@+id/profile_update_contact_cardView"
+        android:id="@+id/profile_update_start_email_cardView"
         android:layout_gravity="top"
         card_view:cardCornerRadius="0dp"
         android:layout_marginBottom="1dp"
@@ -115,25 +115,142 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="top">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="test"
-            android:id="@+id/profile_update_start_TextView_undefined"
-            android:textStyle="bold"
-            android:layout_weight="1" />
+                <ImageView
+                    android:layout_height="20dp"
+                    android:layout_width="20dp"
+                    android:layout_margin="20dp"
+                    android:id="@+id/profile_update_start_ImageView_email"
+                    android:src="@drawable/icon_settings_email"
+                    android:scaleType="fitXY"
+                    android:layout_gravity="center">
+                </ImageView>
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Large Text"
-                android:id="@+id/textView3"
-                android:layout_weight="1" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Change account email"
+                android:id="@+id/profile_update_start_TextView_email_change"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
+<android.support.v7.widget.CardView
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:card_view="http://schemas.android.com/apk/res-auto"
+android:layout_width="fill_parent"
+android:layout_height="wrap_content"
+android:id="@+id/profile_update_start_phone_cardView"
+android:layout_gravity="top"
+card_view:cardCornerRadius="0dp"
+android:layout_marginBottom="1dp"
+android:layout_marginLeft="0dp"
+android:layout_marginRight="0dp"
+android:elevation="12dp"
+android:orientation="vertical">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="top">
+    <ImageView
+        android:layout_height="20dp"
+        android:layout_width="20dp"
+        android:layout_margin="20dp"
+        android:id="@+id/profile_update_start_ImageView_phone"
+        android:src="@drawable/icon_settings_phone"
+        android:scaleType="fitXY"
+        android:layout_gravity="center">
+    </ImageView>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Change account phone"
+        android:id="@+id/profile_update_start_TextView_phone"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical" />
+</LinearLayout>
+</android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/profile_update_start_password_cardView"
+        android:layout_gravity="top"
+        card_view:cardCornerRadius="0dp"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:elevation="12dp"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="top">
+            <ImageView
+                android:layout_height="20dp"
+                android:layout_width="20dp"
+                android:layout_margin="20dp"
+                android:id="@+id/profile_update_start_ImageView_password"
+                android:src="@drawable/icon_settings_password"
+                android:scaleType="fitXY"
+                android:layout_gravity="center">
+            </ImageView>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Change account password"
+                android:id="@+id/profile_update_start_TextView_password"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/profile_update_access_cardView"
+        android:layout_gravity="top"
+        card_view:cardCornerRadius="0dp"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:elevation="12dp"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="top">
+            <ImageView
+                android:layout_height="20dp"
+                android:layout_width="20dp"
+                android:layout_margin="20dp"
+                android:id="@+id/profile_update_start_ImageView_access"
+                android:src="@drawable/icon_settings_account"
+                android:scaleType="fitXY"
+                android:layout_gravity="center">
+            </ImageView>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Change account type"
+                android:id="@+id/profile_update_start_TextView_access"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 
 </LinearLayout>

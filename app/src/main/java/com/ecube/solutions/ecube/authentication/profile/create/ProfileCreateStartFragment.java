@@ -77,15 +77,7 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
         return v;
     }
 
-/*
-    @Override
-    public void onBackPressed() {
-        //if (hiddenPanel.getVisibility() == View.VISIBLE) slideUpDown(mView);
-       // else {
-            super.onBackPressed();
-        //}
-    }
-*/
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
