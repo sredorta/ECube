@@ -146,7 +146,9 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
         v.findViewById(R.id.profile_update_start_password_cardView).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ProfileCreatePasswordFragment fragment = ProfileCreatePasswordFragment.newInstance();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(ProfileUpdatePasswordFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
+                ProfileUpdatePasswordFragment fragment = ProfileUpdatePasswordFragment.newInstance(bundle);
                 fragment.setTargetFragment(ProfileUpdateStartFragment.this, REQUEST_DEFINE_PASSWORD);
                 replaceFragment(fragment);  //This comes from abstract
             }

@@ -16,4 +16,12 @@ public class AppGeneral {
     public static final List<String> SupportedLanguages = Arrays.asList("fra", "eng");   //Supported ISO3 languages
 
     public static final Boolean KEY_ENCRYPTION_ENABLED = true;
+
+    //Error codes comming from the server
+    public static final String KEY_CODE_SUCCESS = "success";
+    public static final String KEY_CODE_ERROR_UNKNOWN = "error.unknown";
+    public static final String KEY_CODE_ERROR_DATABASE = "error.database";
+    public static final String KEY_CODE_ERROR_INVALID_PASSWORD = "error.password.invalid";
+    public static final String KEY_CODE_ERROR_INVALID_USER = "error.user.invalid";
+    public static final String KEY_CODE_ERROR_CONNECTION_ERROR = "error.connection";
 }

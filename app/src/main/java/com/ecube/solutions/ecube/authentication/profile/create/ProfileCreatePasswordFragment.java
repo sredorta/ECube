@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,6 +20,7 @@ import android.widget.ProgressBar;
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
+import com.ecube.solutions.ecube.helpers.TextInputLayoutHelper;
 
 
 /**
@@ -55,12 +57,10 @@ public class ProfileCreatePasswordFragment extends FragmentAbstract {
         View v = inflater.inflate(R.layout.profile_create_password_fragment, container, false);
         mView =v;
 
+        final TextInputLayout passwordTextInputLayout = (TextInputLayout) v.findViewById(R.id.profile_create_password_TextInputLayout);
         final EditText passwordEditText = (EditText) v.findViewById(R.id.profile_create_password_editText);
-
+        final TextInputLayout passwordShadowTextInputLayout = (TextInputLayout) v.findViewById(R.id.profile_create_password_TextInputLayout_shadow);
         final EditText passwordShadowEditText = (EditText) v.findViewById(R.id.profile_create_password_editText_shadow);
-        final ImageView passwordShadowImageView = (ImageView) v.findViewById(R.id.profile_create_password_imageView_password_shadow);
-
-        final ProgressBar passwordQualityProgressBar = (ProgressBar) v.findViewById(R.id.profile_create_password_ProgressBar_quality);
 
         Button nextButton = (Button) v.findViewById(R.id.profile_create_password_button);
 
@@ -71,8 +71,12 @@ public class ProfileCreatePasswordFragment extends FragmentAbstract {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
             @Override
             public void afterTextChanged(Editable editable) {
-                Log.i("SERGI:", "Password quality : " + editable.toString() +" ::" + User.getPasswordQuality(editable.toString()));
-                User.getPasswordQuality(editable.toString(), passwordQualityProgressBar, mView);
+                passwordTextInputLayout.setError("Password quality");
+                User.getPasswordQuality(editable.toString(), passwordTextInputLayout, mView);
+                passwordTextInputLayout.setError(String.format("Password quality %s", User.getPasswordQuality(editable.toString()))+ "%");
+                passwordEditText.refreshDrawableState();
+                passwordShadowEditText.setText("");
+                passwordShadowTextInputLayout.setError("");
 
             }
         });
@@ -84,13 +88,32 @@ public class ProfileCreatePasswordFragment extends FragmentAbstract {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
             @Override
             public void afterTextChanged(Editable editable) {
-                passwordShadowImageView.setVisibility(View.INVISIBLE);
-                if (passwordEditText.getText().toString().equals(passwordShadowEditText.getText().toString()))
-                    if (User.checkPasswordInput(passwordEditText.getText().toString())) {
-                        passwordShadowImageView.setVisibility(View.VISIBLE);
-                        //Hide keyboard if exists
-                        hideInputKeyBoard();
+                //If Shadow is longer than password we don't accept more chars
+                if (passwordShadowEditText.getText().length()> passwordEditText.getText().length()) {
+                    editable.delete(editable.length() - 1, editable.length());
+                }
+
+                if (passwordShadowEditText.getText().length() > 0 && passwordEditText.getText().length() > 0) {
+                    //Check if both strings matches
+                    String tmpPassword = passwordEditText.getText().toString().substring(0, passwordShadowEditText.getText().length());
+                    Log.i(TAG, "tmpPassword = " + tmpPassword);
+                    if (passwordShadowEditText.getText().toString().equals(tmpPassword)) {
+                        passwordShadowTextInputLayout.setError("Matching passwords");
+                        TextInputLayoutHelper.setErrorTextColor(passwordShadowTextInputLayout, ContextCompat.getColor(mView.getContext(), R.color.md_green_500));
+                    } else {
+                        passwordShadowTextInputLayout.setError("Passwords not matching");
+                        TextInputLayoutHelper.setErrorTextColor(passwordShadowTextInputLayout, ContextCompat.getColor(mView.getContext(), R.color.md_red_500));
                     }
+                    //passwordShadowTextInputLayout.refreshDrawableState();
+
+                    if (passwordEditText.getText().toString().equals(passwordShadowEditText.getText().toString()))
+                        if (User.checkPasswordInput(passwordEditText.getText().toString())) {
+                            passwordShadowTextInputLayout.setError("");
+                            passwordTextInputLayout.setError("");
+                            //Hide keyboard if exists
+                            hideInputKeyBoard();
+                        }
+                }
             }
         });
 
@@ -98,7 +121,7 @@ public class ProfileCreatePasswordFragment extends FragmentAbstract {
             @Override
             public void onClick(View view) {
                 hideInputKeyBoard();
-                if (User.checkShadowPasswordInput(passwordEditText, passwordShadowEditText,mView, mActivity)) {
+                if (User.checkShadowPasswordInput(passwordTextInputLayout, passwordShadowTextInputLayout,mView, mActivity)) {
                     putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_PASSWORD, passwordEditText.getText().toString());
                     sendResult(Activity.RESULT_OK);
                 }

@@ -14,20 +14,24 @@ public abstract class AsyncTaskAbstract<Params, Progress, Result> extends AsyncT
     private long tStart;
     private long minWaitTime;
 
-    public AsyncTaskAbstract(AsyncTaskInterface asyncResponse) {
+    public AsyncTaskAbstract(AsyncTaskInterface<Result> asyncResponse) {
             delegate = asyncResponse;   //Assigning call back interfacethrough constructor
             minWaitTime = 0;         // By default 2000ms of wait time minimal
     }
 
     //Constructor in case we want a minimum duration in miliseconds
-    public AsyncTaskAbstract(AsyncTaskInterface asyncResponse, long minDuration) {
+    public AsyncTaskAbstract(AsyncTaskInterface<Result> asyncResponse, long minDuration) {
         delegate = asyncResponse;   //Assigning call back interfacethrough constructor
         minWaitTime = minDuration;         // By default 2000ms of wait time minimal
     }
 
-    public void processFinish() {
-        delegate.processFinish();
+    @Override
+    public void processFinish(Object result) {
+        delegate.processFinish((Result) result);
     }
+/*   public void processFinish(Result... result) {
+        delegate.processFinish(result);
+    }*/
 
     public void processStart() {
         delegate.processStart();
@@ -59,7 +63,7 @@ public abstract class AsyncTaskAbstract<Params, Progress, Result> extends AsyncT
 
     @Override
     protected void onPostExecute(Result result) {
-        delegate.processFinish();
+        delegate.processFinish(result);
         super.onPostExecute(result);
     }
 }

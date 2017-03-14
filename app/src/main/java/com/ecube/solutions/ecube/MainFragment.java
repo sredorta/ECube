@@ -168,13 +168,6 @@ public class MainFragment extends FragmentAbstract {
             @Override
             public void onClick(View view) {
 
-                submitCredentials2();
-
-
-
-
-
-
             }
         });
 
@@ -300,47 +293,7 @@ public class MainFragment extends FragmentAbstract {
         }
     }
 */
-//Submits credentials to the server and exits activity if successfull
-public void submitCredentials2() {
-    AsyncTaskInterface ATI = new AsyncTaskInterface() {
-        WaitDialogFragment dialog;
-        @Override
-        public void processStart() {
-            Log.i(TAG, "on processStart");
-            FragmentManager fm = getFragmentManager();
-            dialog = WaitDialogFragment.newInstance();
-            dialog.show(fm,"DIALOG");
-        }
 
-        @Override
-        public void processFinish() {
-            Log.i(TAG, "on processFinish");
-            dialog.dismiss();
-        }
-
-    };
-
-    AsyncTask test = new AsyncTaskAbstract<Void, Void, Intent>(ATI,3000) {
-        JsonItem item;
-
-        @Override
-        protected Intent doInBackground(Void... params) {
-            super.doInBackground();
-            Log.i(TAG, "doInBackground");
-            final Intent res = new Intent();
-            res.putExtra("TEST", "yes");
-            return res;
-        }
-
-        @Override
-        protected void onPostExecute(Intent intent) {
-            Log.i(TAG, "onPostExecute");
-            super.onPostExecute(intent);
-        }
-
-     }.execute();
-
-}
 
 
 }

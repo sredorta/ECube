@@ -1,7 +1,9 @@
 package com.ecube.solutions.ecube.authentication.authenticator;
 
+import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.network.CloudFetchr;
+import com.ecube.solutions.ecube.network.Encryption;
 import com.ecube.solutions.ecube.network.JsonItem;
 
 
@@ -72,6 +74,22 @@ public class ServerAuthenticateClass implements ServerAuthenticate {
         user.print("After Json parse");
         return item;
     }
+
+    //Send to the Server id,token and password (sha1) and check if matches with server
+    @Override
+    public JsonItem userCheckPassword(User user) {
+        //TODO fix this... I don't know why language is null !
+        user.setLanguage("fra");
+        user.print("User before CheckPassword :");
+        JsonItem item =  new CloudFetchr().userCheckPassword(user.getId(), user.getPassword(),
+                AccountAuthenticator.ACCOUNT_TYPE, user.getAccountAccess(), user.getLanguage());
+
+        return item;
+    }
+
+
+
+
 
     /*
     //Send to the server all fields and create a new user and get the token

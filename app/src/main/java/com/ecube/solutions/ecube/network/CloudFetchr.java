@@ -31,13 +31,15 @@ import java.util.Map;
 public class CloudFetchr {
     //Logs
     private static final String TAG = CloudFetchr.class.getSimpleName();
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     private static final String URI_BASE_GOOGLE = "http://clients3.google.com/generate_204";    // Only required to check if internet is available
     private static final String PHP_CONNECTION_CHECK = "locker.connection.check.php";           // Params required : none
     private static final String PHP_USER_REMOVE = "locker.users.remove.php";                    // Params required : phone,email,user_table
     private static final String PHP_USER_SIGNIN = "user.signin.php";                    // Params required : user,password,user_table and returns token
     private static final String PHP_USER_SIGNUP = "user.signup.php";                    // Params required : user,password,email,user_table and returns token
+    private static final String PHP_USER_CHECK_PASSWORD = "user.check_password.php";    //Params required: id, token,password...
+
     private static final String PHP_USER_PASSWORD = "locker.users.setpassword.php";                    // Params required : user,password,email,user_table and returns token
     private static final String PHP_USER_TOKEN = "locker.users.checktoken.php";                 // Params required : email,token and returns if token is valid or not
     private static final String PHP_USER_TEST = "test.php";
@@ -45,7 +47,7 @@ public class CloudFetchr {
 
     public static final String URI_BASE_DEBUG = "http://10.0.2.2/EcubeServer/api/";                //localhost controlled by prefs
     public static final String URI_BASE_PROD = "http://ibikestation.000webhostapp.com/api/";        //realserver controlled by prefs
-    public static String URI_BASE = "http://ibikestation.000webhostapp.com/api/";
+    public static String URI_BASE = URI_BASE_PROD;
 
 
     //We try to see if we can connect to google for example
@@ -386,6 +388,25 @@ public class CloudFetchr {
         URL url = buildUrl(PHP_USER_SIGNIN,parameters);
         return getJSON(url,parameters);
     }
+
+    //Checks if the user is registered and returns all Details
+    public JsonItem userCheckPassword(String userID, String password, String type, String auth_type, String lang) {
+        this.SEND_METHOD="POST";
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("id", userID);
+        parameters.put("password", password);
+        parameters.put("account_type", type);
+        parameters.put("account_access", auth_type);
+        parameters.put("language", lang);
+
+        URL url = buildUrl(PHP_USER_CHECK_PASSWORD,parameters);
+        return getJSON(url,parameters);
+    }
+
+
+
+
+
 /*
     //Checks if the user is registered and returns token only
     public String userSignIn(String user,  String password, String table) {

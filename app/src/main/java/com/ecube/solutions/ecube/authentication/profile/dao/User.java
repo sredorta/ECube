@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 import android.util.Log;
@@ -23,6 +24,7 @@ import android.widget.ProgressBar;
 
 
 import com.ecube.solutions.ecube.R;
+import com.ecube.solutions.ecube.helpers.TextInputLayoutHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
@@ -43,7 +45,7 @@ import java.util.regex.Pattern;
 public class User implements Parcelable {
     //Logs
     private static final String TAG = User.class.getSimpleName();
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     @SerializedName("id")
     @Expose(serialize = true, deserialize = true)
@@ -249,39 +251,33 @@ public class User implements Parcelable {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // Input checks
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    public static boolean checkFirstNameInput(EditText myEditText, final View v) {
+    public static boolean checkFirstNameInput(TextInputLayout myTextInputLayout) {
+        EditText myEditText = myTextInputLayout.getEditText();
+        myEditText.setText(myEditText.getText().toString().trim());
         if (myEditText.getText().toString().equals("") || myEditText.length() < 3) {
-            myEditText.setHintTextColor(ContextCompat.getColor(v.getContext(), R.color.colorAccent));
-            myEditText.setHintTextColor(ContextCompat.getColor(v.getContext(), R.color.colorAccent));
-            myEditText.setHighlightColor(ContextCompat.getColor(v.getContext(), R.color.colorAccent));
-            myEditText.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorAccent));
-            Snackbar snackbar = Snackbar.make(v, "Please insert correct name", Snackbar.LENGTH_LONG);
-            snackbar.show();
+            myTextInputLayout.setError("Invalid name");
             return false;
         } else {
-            myEditText.setHintTextColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimary));
-            myEditText.setHintTextColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimary));
-            myEditText.setHighlightColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimary));
-            myEditText.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimary));
+            myTextInputLayout.setError("");
             return true;
         }
     }
 
-    public static boolean checkLastNameInput(EditText myEditText, final View v) {
-        return checkFirstNameInput(myEditText,v);
+    public static boolean checkLastNameInput(TextInputLayout myTextInputLayout) {
+        return checkFirstNameInput(myTextInputLayout);
     }
 
     //checks email input and acts on the EditText and shows snackBar if wrong
-    public static boolean checkEmailInput(EditText email, final View v) {
-        boolean result = checkEmailInput(email.getText().toString());
+    public static boolean checkEmailInput(TextInputLayout email) {
+        boolean result = checkEmailInput(email.getEditText().getText().toString());
         if (!result) {
-            email.setHintTextColor(ContextCompat.getColor(v.getContext(), R.color.colorAccent));
-            email.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorAccent));
-            Snackbar snackbar = Snackbar.make(v, "Invalid email format", Snackbar.LENGTH_LONG);
-            snackbar.show();
+            email.setError("Invalid email");
+            //Snackbar snackbar = Snackbar.make(v, "Invalid email format", Snackbar.LENGTH_LONG);
+            //snackbar.show();
         } else {
-            email.setHintTextColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimary));
+            email.setError("");
         }
+        email.refreshDrawableState();
         return result;
     }
 
@@ -292,17 +288,14 @@ public class User implements Parcelable {
     }
 
     //Get strength of password and update progressBar accordingly
-    public static int getPasswordQuality(String password, ProgressBar progressBar, final View v) {
+    public static int getPasswordQuality(String password, TextInputLayout passwordTextInputLayout, final View v) {
         int quality = getPasswordQuality(password);
-        progressBar.setProgress(quality);
-        Drawable bgDrawable = progressBar.getProgressDrawable();
         if (quality < 50)
-            bgDrawable.setColorFilter(ContextCompat.getColor(v.getContext(), R.color.md_red_500), PorterDuff.Mode.MULTIPLY);
+            TextInputLayoutHelper.setErrorTextColor(passwordTextInputLayout, ContextCompat.getColor(v.getContext(), R.color.md_red_500));
         else if (quality >= 50 && quality < 70)
-            bgDrawable.setColorFilter(ContextCompat.getColor(v.getContext(), R.color.md_orange_500), PorterDuff.Mode.MULTIPLY);
+            TextInputLayoutHelper.setErrorTextColor(passwordTextInputLayout, ContextCompat.getColor(v.getContext(), R.color.md_orange_500));
         else if (quality >= 70)
-            bgDrawable.setColorFilter(ContextCompat.getColor(v.getContext(), R.color.md_green_500), PorterDuff.Mode.MULTIPLY);
-        progressBar.setProgressDrawable(bgDrawable);
+            TextInputLayoutHelper.setErrorTextColor(passwordTextInputLayout, ContextCompat.getColor(v.getContext(), R.color.md_green_500));
         return quality;
     }
 
@@ -375,14 +368,13 @@ public class User implements Parcelable {
         else return false;
     }
 
-
     //Check that password meets the required strength and updates editText if is not the case
-    public static boolean checkPasswordInput(EditText password, final View v, final Activity activity) {
-        boolean result = checkPasswordInput(password.getText().toString());
+    public static boolean checkPasswordInput(TextInputLayout password, final View v, final Activity activity) {
+        boolean result = checkPasswordInput(password.getEditText().getText().toString());
         if (!result) {
-            password.setText("");
-            password.setHintTextColor(ContextCompat.getColor(v.getContext(), R.color.colorAccent));
-            Snackbar snackbar = Snackbar.make(v, "Invalid password", Snackbar.LENGTH_LONG).setAction("DETAILS", new View.OnClickListener() {
+            password.getEditText().setText("");
+            password.setError("Too low quality password");
+            Snackbar snackbar = Snackbar.make(v, "Want to know how to increase password quality ?", Snackbar.LENGTH_LONG).setAction("DETAILS", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -401,22 +393,27 @@ public class User implements Parcelable {
             });
             snackbar.show();
         } else {
-            password.setHintTextColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimary));
+            password.setError("");
         }
+        password.refreshDrawableState();
         return result;
     }
+
+
+
+
+
     //Check that password meets the required strength and updates editText if is not the case
-    public static boolean checkShadowPasswordInput(EditText password, EditText passwordShadow, final View v, final Activity activity) {
+    public static boolean checkShadowPasswordInput(TextInputLayout password, TextInputLayout passwordShadow, final View v, final Activity activity) {
 
         boolean result = checkPasswordInput(password, v, activity);
         if (result)
-            if (password.getText().toString().equals(passwordShadow.getText().toString())) {
+            if (password.getEditText().getText().toString().equals(passwordShadow.getEditText().getText().toString())) {
                 return true;
             } else {
-                passwordShadow.setText("");
-                passwordShadow.setHintTextColor(ContextCompat.getColor(v.getContext(), R.color.colorAccent));
-                Snackbar snackbar = Snackbar.make(v, "Passwords don't match", Snackbar.LENGTH_LONG);
-                snackbar.show();
+                passwordShadow.getEditText().setText("");
+                passwordShadow.setError("Invalid");
+                TextInputLayoutHelper.setErrorTextColor(passwordShadow, ContextCompat.getColor(v.getContext(), R.color.md_red_500));
                 return false;
             }
         return result;

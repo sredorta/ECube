@@ -11,4 +11,5 @@ public interface ServerAuthenticate {
     public Boolean userRemove(User user);
     public JsonItem userSignUp(User user);
     public JsonItem userSignIn(User user);
+    public JsonItem userCheckPassword(User user);
 }

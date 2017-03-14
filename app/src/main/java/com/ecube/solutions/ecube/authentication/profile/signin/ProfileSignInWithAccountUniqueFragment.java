@@ -1,8 +1,10 @@
 package com.ecube.solutions.ecube.authentication.profile.signin;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -12,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.WaitDialogFragment;
 import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
@@ -79,7 +83,8 @@ public class ProfileSignInWithAccountUniqueFragment extends FragmentAbstract{
         final TextView nameTextView = (TextView) v.findViewById(R.id.profile_signin_with_account_unique_name);
         final TextView emailTextView = (TextView) v.findViewById(R.id.profile_signin_with_account_unique_email);
         final ImageView avatarImageView = (ImageView) v.findViewById(R.id.profile_signin_with_account_unique_ImageView_avatar);
-        final EditText passwordEditText = (EditText) v.findViewById(R.id.profile_signin_with_account_unique_EditText_password);
+        //final EditText passwordEditText = (EditText) v.findViewById(R.id.profile_signin_with_account_unique_EditText_password);
+        final TextInputLayout passwordTextInputLayout = (TextInputLayout) v.findViewById(R.id.profile_signin_with_account_unique_TextInputLayout_password);
         final TextView otherAccountTextView = (TextView) v.findViewById(R.id.profile_signin_with_account_unique_TextView_other);
 
         //Do not show the see several accounts if there is only one
@@ -96,31 +101,39 @@ public class ProfileSignInWithAccountUniqueFragment extends FragmentAbstract{
             @Override
             public void onClick(View v) {
                 if (DEBUG) Log.i(TAG, "Submitting credentials to account manager !");
+                passwordTextInputLayout.setError("");
+                passwordTextInputLayout.refreshDrawableState();
                 //hide input keyboard
                 hideInputKeyBoard();
-                    if (User.checkPasswordInput(passwordEditText,mView,mActivity)) {
+                    if (User.checkPasswordInput(passwordTextInputLayout,mView,mActivity)) {
                         if (DEBUG) Log.i(TAG, "We are now checking with server !");
                         //TODO do the actual login with the server
                         User myUser = new User();
                         myUser.setEmail(mUser.getEmail());
-                        myUser.setPassword(passwordEditText.getText().toString());
+                        myUser.setPassword(passwordTextInputLayout.getEditText().getText().toString());
                         AccountAuthenticator ag = new AccountAuthenticator(getContext(), myUser);
-                        ag.submitCredentials(new AsyncTaskInterface() {
+                        ag.submitCredentials(new AsyncTaskInterface<Intent>() {
                             WaitDialogFragment dialog;
                             @Override
                             public void processStart() {
                                 FragmentManager fm = getFragmentManager();
                                 dialog = WaitDialogFragment.newInstance();
                                 dialog.show(fm,"DIALOG");
-                                getFragmentManager().executePendingTransactions();
                             }
                             @Override
-                            public void processFinish() {
+                            public void processFinish(Intent result) {
                                 dialog.dismiss();
+                                if (result.hasExtra(AccountAuthenticator.KEY_ERROR_CODE)) {
+                                    if (result.getStringExtra(AccountAuthenticator.KEY_ERROR_CODE).equals(AppGeneral.KEY_CODE_ERROR_INVALID_PASSWORD)) {
+                                         passwordTextInputLayout.setError("Invalid password");
+                                    } else {
+                                        passwordTextInputLayout.setError("");
+                                        Toast.makeText(getContext(), result.getStringExtra(AccountAuthenticator.KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
                             }
                         }, mActivity);
                         //If we get to this point is that we could not authenticate !
-                        passwordEditText.setText("");
                     }
             }
         });

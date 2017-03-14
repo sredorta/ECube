@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -146,6 +147,8 @@ public class ProfileCreatePhoneFragment extends FragmentAbstract {
 
 
         final EditText mNumberEditText = (EditText) v.findViewById(R.id.profile_create_phone_editText_number);
+        final TextInputLayout phoneTextInputLayout = (TextInputLayout) v.findViewById(R.id.profile_create_phone_TextInputLayout);
+
         if (DEBUG) Log.i(TAG, "Setting number to: " + mPhoneNumber);
         mNumberEditText.setText(mPhoneNumber);
 
@@ -157,12 +160,10 @@ public class ProfileCreatePhoneFragment extends FragmentAbstract {
             public void afterTextChanged(Editable s) {
                 //Return if no characters are here
                 if (checkPhoneNumber(mNumberEditText.getText().toString())) {
-                    mNumberEditText.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-                    mNumberEditText.setTypeface(mNumberEditText.getTypeface(), Typeface.BOLD);
+                    phoneTextInputLayout.setError("");
                     hideInputKeyBoard();
                 } else {
-                    mNumberEditText.setTextColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
-                    mNumberEditText.setTypeface(mNumberEditText.getTypeface(), Typeface.NORMAL);
+                    phoneTextInputLayout.setError("Invalid phone number");
                 }
                 if (s.toString().length()== 0) return;
                 if ((s.toString().matches("[0-9]+") && s.toString().length() > 0)) {
@@ -181,10 +182,7 @@ public class ProfileCreatePhoneFragment extends FragmentAbstract {
             public void onClick(View view) {
                 //Hide keyboard if exists
                 hideInputKeyBoard();
-                if (!checkPhoneNumber(mNumberEditText.getText().toString())) {
-                    Snackbar snackbar = Snackbar.make(mView, "Invalid telephone format !", Snackbar.LENGTH_LONG);
-                    snackbar.show();
-                } else {
+                if (checkPhoneNumber(mNumberEditText.getText().toString())) {
                     putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_PHONE_NUMBER, getFinalPhoneNumber());
                     sendResult(Activity.RESULT_OK);
                 }
@@ -230,7 +228,6 @@ public class ProfileCreatePhoneFragment extends FragmentAbstract {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == ProfileCreatePhoneFragment.REQUEST_COUNTRY) {
             mLocale = (Locale) data.getSerializableExtra(CountryPickerFragment.FRAGMENT_OUTPUT_PARAM_SELECTED_PHONE_COUNTRY);
-            dialog.dismiss();
             updateCurrentCountry();
             //In order to validate if with new country the phone is correct
             final EditText mNumberEditText = (EditText) mView.findViewById(R.id.profile_create_phone_editText_number);

@@ -22,9 +22,8 @@ public class JsonItem {
         @SerializedName("account")
         private String mAccount;
 
-
-        @SerializedName("action")
-        private String mAction = "nothing";
+        @SerializedName("key_error")
+        private String mKeyError = "nothing";
 
 
         public String getAccountDetails() {
@@ -72,10 +71,14 @@ public class JsonItem {
             mMessage = message;
         }
 
-
-       public String getAction() {
-        return mAction;
+        public String getKeyError() {
+        return mKeyError;
     }
+
+        public void setKeyError(String code) {
+        mKeyError = code;
+    }
+
 
         public static JsonItem parseJSON(String response) {
             Gson gson = new GsonBuilder().create();

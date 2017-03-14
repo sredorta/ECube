@@ -48,6 +48,7 @@
         <item name="android:textColorHintInverse">@color/md_green_500</item>
         <item name="android:textColorHighlight">@color/md_green_A200</item>
         <item name="android:textColorLink">?attr/colorAccent</item>
+        <item name="textColorError">@color/md_lime_700</item>
     </style>
 
     <style name="myCardStyle" parent="CardView">
@@ -70,7 +71,7 @@
 
     <style name="myEditTextStyle" parent="android:Widget.EditText">
         <item name="android:backgroundTint">@color/md_green_800</item>
-        <item name="android:textColor">@color/md_green_800</item>
+        <item name="android:textColor">@color/md_green_A700</item>
         <item name="android:textColorHint">@color/md_green_300</item>
     </style>
 

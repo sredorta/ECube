@@ -3,6 +3,7 @@ package com.ecube.solutions.ecube.authentication.profile.create;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,7 @@ public class ProfileCreateEmailFragment extends FragmentAbstract {
         View v = inflater.inflate(R.layout.profile_create_email_fragment, container, false);
         setCurrentView(v);
         final EditText emailEditText = (EditText) v.findViewById(R.id.profile_create_email_editText_email);
+        final TextInputLayout emailTextInputLayout = (TextInputLayout) v.findViewById(R.id.profile_create_email_TextInputLayout_email);
         emailEditText.setText(mEmail);
         Button nextButton = (Button) v.findViewById(R.id.profile_create_email_button);
 
@@ -64,7 +66,7 @@ public class ProfileCreateEmailFragment extends FragmentAbstract {
                 emailEditText.setText(emailEditText.getText().toString().trim());
                 //Hide keyboard if exists
                 hideInputKeyBoard();
-                if (User.checkEmailInput(emailEditText,mView)) {
+                if (User.checkEmailInput(emailTextInputLayout)) {
                     putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_EMAIL, emailEditText.getText().toString());
                     sendResult(Activity.RESULT_OK);
                     removeFragment(ProfileCreateEmailFragment.this,true);

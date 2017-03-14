@@ -24,6 +24,7 @@ import com.ecube.solutions.ecube.abstracts.AsyncTaskAbstract;
 import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
 import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
+import com.ecube.solutions.ecube.general.AppGeneral;
 import com.ecube.solutions.ecube.helpers.IntentHelper;
 import com.ecube.solutions.ecube.network.Encryption;
 import com.ecube.solutions.ecube.network.JsonItem;
@@ -59,7 +60,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
     public final static String ARG_IS_CONFIRM_CREDENTIALS_ACCOUNT = "IS_CONFIRM_CREDENTIALS_ACCOUNT";       //Argument to go to confirm credentials
 
     public static final String KEY_ERROR_MESSAGE = "ERR_MSG";
-
+    public static final String KEY_ERROR_CODE = "ERR_CODE";
 
     //Parameters that we save in the account
     public final static String PARAM_USER_ACCOUNT_TYPE = "USER_ACCOUNT_TYPE";
@@ -418,7 +419,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
 
     //Creates the Server and Device account and exits activity if successfull
-    public void createServerAndDeviceAccount(AsyncTaskInterface myAsyncTaskInterface,final Activity activity) {
+    public void createServerAndDeviceAccount(AsyncTaskInterface<Intent> myAsyncTaskInterface,final Activity activity) {
         new AsyncTaskAbstract<Void, Void, Intent>(myAsyncTaskInterface,700) {
             @Override
             protected Intent doInBackground(Void... params) {
@@ -429,6 +430,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
                 JsonItem item = sServerAuthenticate.userSignUp(mUser);
                 if(!item.getResult()) {
                     data.putString(KEY_ERROR_MESSAGE, item.getMessage());
+                    data.putString(KEY_ERROR_CODE, item.getKeyError());
                 } else {
                     Log.i(TAG,"Creating now the account on the device !");
                     if (!createAccount()) {
@@ -436,6 +438,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
                         sServerAuthenticate.userRemove(mUser);
                         Log.i(TAG,"Removing server account as we could not create device account !");
                         data.putString(KEY_ERROR_MESSAGE, "Could not create device account !");
+                        data.putString(KEY_ERROR_CODE, AppGeneral.KEY_CODE_ERROR_UNKNOWN);
                     }
                 }
 
@@ -452,10 +455,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
             @Override
             protected void onPostExecute(Intent intent) {
                 super.onPostExecute(intent);
-                if (intent.hasExtra(KEY_ERROR_MESSAGE))
-                    Toast.makeText(activity.getBaseContext(), intent.getStringExtra(KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
-
-                else {
+                if (!intent.hasExtra(KEY_ERROR_MESSAGE)) {
                     activity.getIntent().putExtras(intent.getExtras());
                     activity.setResult(Activity.RESULT_OK, intent);
                     activity.finish();
@@ -466,7 +466,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
 
     //Submits credentials to the server and exits activity if successfull
-    public void submitCredentials(AsyncTaskInterface myAsyncTaskInterface, final Activity activity) {
+    public void submitCredentials(AsyncTaskInterface<Intent> myAsyncTaskInterface, final Activity activity) {
         new AsyncTaskAbstract<Void, Void, Intent>(myAsyncTaskInterface,700) {
             JsonItem item;
             @Override
@@ -481,6 +481,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
                 item = sServerAuthenticate.userSignIn(mUser);
                 if(!item.getResult()) {
                     data.putString(KEY_ERROR_MESSAGE, item.getMessage());
+                    data.putString(KEY_ERROR_CODE, item.getKeyError());
                 } else {
                     if (getAccount(mUser)==null) {
                         createAccount();
@@ -501,14 +502,43 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
             @Override
             protected void onPostExecute(Intent intent) {
                 super.onPostExecute(intent);
-                if (intent.hasExtra(KEY_ERROR_MESSAGE)) {
-                    Toast.makeText(activity.getBaseContext(), intent.getStringExtra(KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
-                } else {
+                if (!intent.hasExtra(KEY_ERROR_MESSAGE)) {
                     activity.getIntent().putExtras(intent.getExtras());
                     //Finish and send to AuthenticatorActivity that we where successfull
                     activity.setResult(Activity.RESULT_OK, intent);
                     activity.finish();
                 }
+            }
+        }.execute();
+    }
+
+
+    //Submits credentials to the server and exits activity if successfull
+    public void checkPassword(AsyncTaskInterface<JsonItem> myAsyncTaskInterface, final Activity activity) {
+        new AsyncTaskAbstract<Void, Void, JsonItem>(myAsyncTaskInterface,700) {
+            JsonItem item;
+            @Override
+            protected JsonItem doInBackground(Void... params) {
+                super.doInBackground();
+                Log.i(TAG, "Started checking password");
+
+                item = sServerAuthenticate.userCheckPassword(mUser);
+                //Check that account and user password matches
+                String oldPassword = Encryption.getSHA1(mUser.getPassword());
+                if (!oldPassword.equals(mAccountManager.getPassword(getAccount(mUser)))) {
+                    Log.i(TAG, "Passwords between entered and local account dont match !");
+                    item.setKeyError(AppGeneral.KEY_CODE_ERROR_INVALID_PASSWORD);
+                }
+
+                Log.i(TAG, "Passwords between entered and local account match !");
+                //Check that server has same password
+                return item;
+            }
+
+            @Override
+            protected void onPostExecute(JsonItem result) {
+                super.onPostExecute(result);
+
             }
         }.execute();
     }

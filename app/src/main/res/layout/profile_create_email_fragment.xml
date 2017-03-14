@@ -36,7 +36,8 @@
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/profile_create_email_TextInputLayout_email">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.telephony.PhoneNumberFormattingTextWatcher;
@@ -17,6 +18,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.WaitDialogFragment;
 import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
@@ -26,6 +29,7 @@ import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateStar
 import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.authentication.profile.dialogs.CountryPickerFragment;
+import com.ecube.solutions.ecube.general.AppGeneral;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
@@ -90,6 +94,9 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
         //Update the current country
         updateCurrentCountry();
         final EditText passwordEditText = (EditText) v.findViewById(R.id.profile_signin_with_phone_editText_password);
+        final TextInputLayout passwordTextInputLayout = (TextInputLayout) v.findViewById(R.id.profile_signin_with_phone_TextInputLayout_password);
+        final EditText mNumberEditText = (EditText) v.findViewById(R.id.profile_signin_with_phone_editText_number);
+        final TextInputLayout phoneTextInputLayout = (TextInputLayout) v.findViewById(R.id.profile_signin_with_phone_TextInputLayout_phone);
         //Show CountryPicker Dialog if we click
         final LinearLayout mLinearCountry = (LinearLayout) v.findViewById(R.id.profile_create_country_display_LinearLayout);
         mLinearCountry.setOnClickListener(new View.OnClickListener() {
@@ -105,7 +112,6 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
         });
 
         //Listener on Phone number
-        final EditText mNumberEditText = (EditText) v.findViewById(R.id.profile_signin_with_phone_editText_number);
         if (DEBUG) Log.i(TAG, "Setting number to: " + mPhoneNumber);
         mNumberEditText.setText(mPhoneNumber);
         //We add a listener to verify that we have correct number
@@ -114,12 +120,13 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
             public void afterTextChanged(Editable s) {
                 //Return if no characters are here
                 if (checkPhoneNumber(mNumberEditText.getText().toString())) {
-                    mNumberEditText.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-                    mNumberEditText.setTypeface(mNumberEditText.getTypeface(), Typeface.BOLD);
+                    phoneTextInputLayout.setError("");
+                    phoneTextInputLayout.refreshDrawableState();
                     hideInputKeyBoard();
                 } else {
-                    mNumberEditText.setTextColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
-                    mNumberEditText.setTypeface(mNumberEditText.getTypeface(), Typeface.NORMAL);
+                    phoneTextInputLayout.setError("Invalid phone number");
+                    //mNumberEditText.setTextColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+                    //mNumberEditText.setTypeface(mNumberEditText.getTypeface(), Typeface.NORMAL);
                 }
                 if (s.toString().length()== 0) return;
                 if ((s.toString().matches("[0-9]+") && s.toString().length() > 0)) {
@@ -140,7 +147,7 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
                 //hide input keyboard
                 hideInputKeyBoard();
                 if (checkPhoneNumber(mNumberEditText.getText().toString())) {
-                    if (User.checkPasswordInput(passwordEditText,mView,mActivity)) {
+                    if (User.checkPasswordInput(passwordTextInputLayout,mView,mActivity)) {
                         if (DEBUG) Log.i(TAG, "We are now checking with server !");
                         //TODO do the actual login with the server
                         User myUser = new User();
@@ -148,7 +155,7 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
                         myUser.setPassword(passwordEditText.getText().toString());
                         Log.i(TAG, "Restoring user...");
                         AccountAuthenticator ag = new AccountAuthenticator(getContext(), myUser);
-                        ag.submitCredentials(new AsyncTaskInterface() {
+                        ag.submitCredentials(new AsyncTaskInterface<Intent>() {
                             WaitDialogFragment dialog;
                             @Override
                             public void processStart() {
@@ -157,12 +164,19 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
                                 dialog.show(fm,"DIALOG");
                             }
                             @Override
-                            public void processFinish() {
+                            public void processFinish(Intent result) {
                                 dialog.dismiss();
+                                if (result.hasExtra(AccountAuthenticator.KEY_ERROR_CODE)) {
+                                    if (result.getStringExtra(AccountAuthenticator.KEY_ERROR_CODE).equals(AppGeneral.KEY_CODE_ERROR_INVALID_USER)) {
+                                        phoneTextInputLayout.setError("Phone number not registered");
+                                    } else if (result.getStringExtra(AccountAuthenticator.KEY_ERROR_CODE).equals(AppGeneral.KEY_CODE_ERROR_INVALID_PASSWORD)) {
+                                        passwordTextInputLayout.setError("Invalid password");
+                                    } else {
+                                        Toast.makeText(getContext(), result.getStringExtra(AccountAuthenticator.KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
                             }
                         }, mActivity);
-                        //If we get to this point is that we could not authenticate !
-                        passwordEditText.setText("");
                     }
                 }
             }

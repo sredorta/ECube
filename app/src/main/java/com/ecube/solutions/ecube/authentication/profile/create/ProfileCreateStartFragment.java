@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.ecube.solutions.ecube.MainFragment;
 import com.ecube.solutions.ecube.R;
@@ -21,6 +22,8 @@ import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
 import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
+import com.ecube.solutions.ecube.general.AppGeneral;
+import com.ecube.solutions.ecube.helpers.IntentHelper;
 
 
 /**
@@ -116,7 +119,7 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
                 //Do the job !
                 Log.i(TAG, "Creating user :" + myUser.getEmail());
                 AccountAuthenticator ag = new AccountAuthenticator(getContext(), myUser);
-                ag.createServerAndDeviceAccount(new AsyncTaskInterface() {
+                ag.createServerAndDeviceAccount(new AsyncTaskInterface<Intent>() {
                     WaitDialogFragment dialog;
                     @Override
                     public void processStart() {
@@ -124,9 +127,15 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
                         dialog = WaitDialogFragment.newInstance();
                         dialog.show(fm,"DIALOG");
                     }
+
                     @Override
-                    public void processFinish() {
+                    public void processFinish(Intent result) {
+                        Log.i("SERGI", "Dumping intent in processFinish !!!");
+                        IntentHelper.dumpIntent(result);
                         dialog.dismiss();
+                        if (result.hasExtra(AccountAuthenticator.KEY_ERROR_MESSAGE)) {
+                                Toast.makeText(getContext(), result.getStringExtra(AccountAuthenticator.KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }, mActivity);
             }
