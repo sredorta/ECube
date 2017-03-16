@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources >
+    <!-- Style for TextInputLayoutAppWidget -->
+    <declare-styleable name="TextInputLayoutAppWidget">
+        <attr name="inputMode" format="enum">
+            <enum name ="name" value="0"/>
+            <enum name ="email" value="1"/>
+            <enum name ="phone" value="2"/>
+            <enum name ="password_define" value="3"/>
+            <enum name ="password_confirm" value="4"/>
+        </attr>
+        <attr name="hasShadow" format="boolean"/>
+        <attr name="hint" format="string"/>
+        <attr name="errorColorTyping" format="color"/>
+        <attr name="errorColorFinal" format="color"/>
+    </declare-styleable>
+
+</resources>

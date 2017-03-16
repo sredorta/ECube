@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:hasShadow= "false"
+    app:inputMode="email"
+    app:errorColorTyping="@color/md_lime_500"
+    app:errorColorFinal="@color/md_red_500"
+    android:id="@+id/widget_text_input_layout_LinearLayout">
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:errorEnabled="true"
+        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
+        android:id="@+id/widget_text_input_layout_TextInputLayout">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="hint"
+            android:id="@+id/widget_text_input_layout_EditText" />
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:errorEnabled="true"
+        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
+        android:id="@+id/widget_text_input_layout_TextInputLayout_shadow">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="hint"
+            android:id="@+id/widget_text_input_layout_EditText_shadow" />
+    </android.support.design.widget.TextInputLayout>
+</LinearLayout>

@@ -1,19 +1,12 @@
 package com.ecube.solutions.ecube;
 
 import android.accounts.Account;
-import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
-import android.accounts.NetworkErrorException;
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,14 +15,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.ecube.solutions.ecube.abstracts.AsyncTaskAbstract;
-import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
 import com.ecube.solutions.ecube.authentication.authenticator.AuthenticatorActivity;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
-import com.ecube.solutions.ecube.authentication.profile.dialogs.CountryPickerFragment;
-import com.ecube.solutions.ecube.network.JsonItem;
+import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 
 /**
  * Created by sredorta on 3/1/2017.
@@ -167,7 +157,10 @@ public class MainFragment extends FragmentAbstract {
         waitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                    final TextInputLayoutAppWidget test = (TextInputLayoutAppWidget) mView.findViewById(R.id.custonTextInputLayout);
+                    final TextInputLayoutAppWidget test2 = (TextInputLayoutAppWidget) mView.findViewById(R.id.customTextInputLayout2);
+                    test.isValidInput();
+                    test2.isValidInput();
             }
         });
 
