@@ -26,6 +26,7 @@ import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
 import com.ecube.solutions.ecube.authentication.profile.dialogs.CountryPickerFragment;
+import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
@@ -107,6 +108,7 @@ public class ProfileCreatePhoneFragment extends FragmentAbstract {
         }
     }
 
+
     private void updateCurrentCountry() {
         final TextView mCountryTextView = (TextView) mView.findViewById(R.id.profile_create_country_display_TextView_country);
         mCountryTextView.setText(mLocale.getDisplayCountry());
@@ -145,44 +147,17 @@ public class ProfileCreatePhoneFragment extends FragmentAbstract {
             }
         });
 
-
-        final EditText mNumberEditText = (EditText) v.findViewById(R.id.profile_create_phone_editText_number);
-        final TextInputLayout phoneTextInputLayout = (TextInputLayout) v.findViewById(R.id.profile_create_phone_TextInputLayout);
-
-        if (DEBUG) Log.i(TAG, "Setting number to: " + mPhoneNumber);
-        mNumberEditText.setText(mPhoneNumber);
-
+        final TextInputLayoutAppWidget phoneTextInputLayout = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_create_phone_TextInputLayoutAppWidget_phone);
         final Button nextButton = (Button) v.findViewById(R.id.profile_create_phone_button);
-
-        //We add a listener to verify that we have correct number
-        mNumberEditText.addTextChangedListener(new PhoneNumberFormattingTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                //Return if no characters are here
-                if (checkPhoneNumber(mNumberEditText.getText().toString())) {
-                    phoneTextInputLayout.setError("");
-                    hideInputKeyBoard();
-                } else {
-                    phoneTextInputLayout.setError("Invalid phone number");
-                }
-                if (s.toString().length()== 0) return;
-                if ((s.toString().matches("[0-9]+") && s.toString().length() > 0)) {
-                    //Do nothing
-                } else {
-                    //The input character was not a number so we remove it
-                    s.delete(s.length()-1,s.length());
-                }
-            }
-
-        });
-
+        phoneTextInputLayout.setLocale(mLocale); //Set our current locale for phone calculation
+        phoneTextInputLayout.setText(mPhoneNumber);
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Hide keyboard if exists
                 hideInputKeyBoard();
-                if (checkPhoneNumber(mNumberEditText.getText().toString())) {
+                if (phoneTextInputLayout.isValidInput()) {
                     putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_PHONE_NUMBER, getFinalPhoneNumber());
                     sendResult(Activity.RESULT_OK);
                 }
@@ -191,31 +166,13 @@ public class ProfileCreatePhoneFragment extends FragmentAbstract {
         return v;
     }
 
-    private boolean checkPhoneNumber(String phone) {
-        Boolean isValid = false;
-        if ((phone.matches("[0-9]+") && phone.length() > 0)) {
-            //We only start checking if number is valid once length is larger than 2 to avoid crash
-            if (phone.length()>2) {
-                PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-                Phonenumber.PhoneNumber inputNumber;
-                try {
-                    inputNumber = phoneUtil.parse(phone, mLocale.getCountry());
-                } catch (NumberParseException e) {
-                    inputNumber = null;
-                    Log.i(TAG, "Caught exception :" + e);
-                }
-                isValid = phoneUtil.isValidNumber(inputNumber);
-            }
-        }
-        return isValid;
-    }
 
     private String getFinalPhoneNumber() {
-        final EditText mNumberEditText = (EditText) mView.findViewById(R.id.profile_create_phone_editText_number);
+        final TextInputLayoutAppWidget phoneTextInputLayout = (TextInputLayoutAppWidget) mView.findViewById(R.id.profile_create_phone_TextInputLayoutAppWidget_phone);
         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
         Phonenumber.PhoneNumber inputNumber;
         try {
-            inputNumber = phoneUtil.parse(mNumberEditText.getText().toString(), mLocale.getCountry());
+            inputNumber = phoneUtil.parse(phoneTextInputLayout.getText(), mLocale.getCountry());
         } catch (NumberParseException e) {
             inputNumber = null;
             Log.i(TAG, "Caught exception :" + e);
@@ -230,9 +187,11 @@ public class ProfileCreatePhoneFragment extends FragmentAbstract {
             mLocale = (Locale) data.getSerializableExtra(CountryPickerFragment.FRAGMENT_OUTPUT_PARAM_SELECTED_PHONE_COUNTRY);
             updateCurrentCountry();
             //In order to validate if with new country the phone is correct
-            final EditText mNumberEditText = (EditText) mView.findViewById(R.id.profile_create_phone_editText_number);
-            mNumberEditText.setText(mNumberEditText.getText().toString());
-        }
+            final TextInputLayoutAppWidget phoneTextInputLayout = (TextInputLayoutAppWidget) mView.findViewById(R.id.profile_create_phone_TextInputLayoutAppWidget_phone);
+            phoneTextInputLayout.setLocale(mLocale);
+            phoneTextInputLayout.setText(phoneTextInputLayout.getText());
+            phoneTextInputLayout.getEditText().setSelection(phoneTextInputLayout.getText().length());
+         }
     }
 
     @Override

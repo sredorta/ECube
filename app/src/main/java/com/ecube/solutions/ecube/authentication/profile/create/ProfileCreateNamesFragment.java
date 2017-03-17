@@ -17,6 +17,7 @@ import android.widget.EditText;
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
+import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 
 
 /**
@@ -61,56 +62,24 @@ public class ProfileCreateNamesFragment extends FragmentAbstract {
         setCurrentView(v);
 
         if (DEBUG) Log.i(TAG,"firstName :" + mFirstName);
-        final TextInputLayout firstNameTextInputLayout = (TextInputLayout) v.findViewById(R.id.profile_create_names_TextInputLayout_firstName);
-        final TextInputLayout lastNameTextInputLayout = (TextInputLayout) v.findViewById(R.id.profile_create_names_TextInputLayout_lastName);
+        final TextInputLayoutAppWidget firstNameTextInputLayout = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_create_names_TextInputLayoutAppWidget_firstName);
+        final TextInputLayoutAppWidget lastNameTextInputLayout = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_create_names_TextInputLayoutAppWidget_lastName);
 
         Button nextButton = (Button) v.findViewById(R.id.profile_create_names_button);
 
         firstNameTextInputLayout.getEditText().setText(mFirstName);
         lastNameTextInputLayout.getEditText().setText(mLastName);
 
-        firstNameTextInputLayout.getEditText().addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                firstNameTextInputLayout.setError("");
-            }
-            @Override
-            public void afterTextChanged(Editable editable) {}
-        });
-
-        lastNameTextInputLayout.getEditText().addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                lastNameTextInputLayout.setError("");
-            }
-            @Override
-            public void afterTextChanged(Editable editable) {}
-        });
 
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                firstNameTextInputLayout.setError("");
-                lastNameTextInputLayout.setError("");
-                firstNameTextInputLayout.refreshDrawableState();
-                lastNameTextInputLayout.refreshDrawableState();
+
                 //Hide keyboard if exists
-                hideInputKeyBoard();
-                mFirstName = firstNameTextInputLayout.getEditText().getText().toString();
-                mLastName = lastNameTextInputLayout.getEditText().getText().toString();
-                boolean firstOk;
-                boolean lastOk;
-                firstOk = User.checkFirstNameInput(firstNameTextInputLayout);
-                lastOk = User.checkLastNameInput(lastNameTextInputLayout);
-                if (firstOk && lastOk) {
-                        //We return results
+                mFirstName = firstNameTextInputLayout.getText();
+                mLastName = lastNameTextInputLayout.getText();
+                if (firstNameTextInputLayout.isValidInput() && lastNameTextInputLayout.isValidInput()) {
                         putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_FIRST_NAME, mFirstName);
                         putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_LAST_NAME, mLastName);
                         sendResult(Activity.RESULT_OK);

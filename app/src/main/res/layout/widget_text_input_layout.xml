@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
     app:hasShadow= "false"
     app:inputMode="email"
     app:errorColorTyping="@color/md_lime_500"
@@ -12,27 +13,37 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:errorEnabled="true"
-        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
         android:id="@+id/widget_text_input_layout_TextInputLayout">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
             android:ems="10"
             android:hint="hint"
             android:id="@+id/widget_text_input_layout_EditText" />
     </android.support.design.widget.TextInputLayout>
-    <android.support.design.widget.TextInputLayout
+   <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:errorEnabled="true"
-        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
         android:id="@+id/widget_text_input_layout_TextInputLayout_shadow">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
+            android:inputType="textEmailAddress"
             android:hint="hint"
             android:id="@+id/widget_text_input_layout_EditText_shadow" />
     </android.support.design.widget.TextInputLayout>
+<!--    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/profile_create_names_TextInputLayout_lastName">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/profile_create_names_editText_lastName"
+            android:hint="Last name" />
+    </android.support.design.widget.TextInputLayout>-->
 </LinearLayout>

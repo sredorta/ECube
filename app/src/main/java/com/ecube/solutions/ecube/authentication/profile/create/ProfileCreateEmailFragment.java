@@ -13,6 +13,7 @@ import android.widget.EditText;
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
+import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 
 
 /**
@@ -45,8 +46,6 @@ public class ProfileCreateEmailFragment extends FragmentAbstract {
         super.onCreate(savedInstanceState);
         mEmail = (String) getInputParam(ProfileCreateEmailFragment.FRAGMENT_INPUT_PARAM_USER_EMAIL);
         if (mEmail == null) mEmail = "";
-
-        //mLastName = (String) getInputParam(ProfileCreateNamesFragment.FRAGMENT_INPUT_PARAM_USER_LAST_NAME);
     }
 
     @Nullable
@@ -54,20 +53,16 @@ public class ProfileCreateEmailFragment extends FragmentAbstract {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.profile_create_email_fragment, container, false);
         setCurrentView(v);
-        final EditText emailEditText = (EditText) v.findViewById(R.id.profile_create_email_editText_email);
-        final TextInputLayout emailTextInputLayout = (TextInputLayout) v.findViewById(R.id.profile_create_email_TextInputLayout_email);
-        emailEditText.setText(mEmail);
-        Button nextButton = (Button) v.findViewById(R.id.profile_create_email_button);
+        final TextInputLayoutAppWidget emailTextInputLayout = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_create_email_TextInputLayoutAppWidget_email);
+        final Button nextButton = (Button) v.findViewById(R.id.profile_create_email_button);
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Trim the text in case we copy from suggestion
-                emailEditText.setText(emailEditText.getText().toString().trim());
                 //Hide keyboard if exists
                 hideInputKeyBoard();
-                if (User.checkEmailInput(emailTextInputLayout)) {
-                    putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_EMAIL, emailEditText.getText().toString());
+                if (emailTextInputLayout.isValidInput()) {
+                    putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_EMAIL, emailTextInputLayout.getText());
                     sendResult(Activity.RESULT_OK);
                     removeFragment(ProfileCreateEmailFragment.this,true);
                 }

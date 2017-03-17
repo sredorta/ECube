@@ -21,6 +21,7 @@ import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.helpers.TextInputLayoutHelper;
+import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 
 
 /**
@@ -57,72 +58,15 @@ public class ProfileCreatePasswordFragment extends FragmentAbstract {
         View v = inflater.inflate(R.layout.profile_create_password_fragment, container, false);
         mView =v;
 
-        final TextInputLayout passwordTextInputLayout = (TextInputLayout) v.findViewById(R.id.profile_create_password_TextInputLayout);
-        final EditText passwordEditText = (EditText) v.findViewById(R.id.profile_create_password_editText);
-        final TextInputLayout passwordShadowTextInputLayout = (TextInputLayout) v.findViewById(R.id.profile_create_password_TextInputLayout_shadow);
-        final EditText passwordShadowEditText = (EditText) v.findViewById(R.id.profile_create_password_editText_shadow);
-
-        Button nextButton = (Button) v.findViewById(R.id.profile_create_password_button);
-
-        passwordEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override
-            public void afterTextChanged(Editable editable) {
-                passwordTextInputLayout.setError("Password quality");
-                User.getPasswordQuality(editable.toString(), passwordTextInputLayout, mView);
-                passwordTextInputLayout.setError(String.format("Password quality %s", User.getPasswordQuality(editable.toString()))+ "%");
-                passwordEditText.refreshDrawableState();
-                passwordShadowEditText.setText("");
-                passwordShadowTextInputLayout.setError("");
-
-            }
-        });
-
-        passwordShadowEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override
-            public void afterTextChanged(Editable editable) {
-                //If Shadow is longer than password we don't accept more chars
-                if (passwordShadowEditText.getText().length()> passwordEditText.getText().length()) {
-                    editable.delete(editable.length() - 1, editable.length());
-                }
-
-                if (passwordShadowEditText.getText().length() > 0 && passwordEditText.getText().length() > 0) {
-                    //Check if both strings matches
-                    String tmpPassword = passwordEditText.getText().toString().substring(0, passwordShadowEditText.getText().length());
-                    Log.i(TAG, "tmpPassword = " + tmpPassword);
-                    if (passwordShadowEditText.getText().toString().equals(tmpPassword)) {
-                        passwordShadowTextInputLayout.setError("Matching passwords");
-                        TextInputLayoutHelper.setErrorTextColor(passwordShadowTextInputLayout, ContextCompat.getColor(mView.getContext(), R.color.md_green_500));
-                    } else {
-                        passwordShadowTextInputLayout.setError("Passwords not matching");
-                        TextInputLayoutHelper.setErrorTextColor(passwordShadowTextInputLayout, ContextCompat.getColor(mView.getContext(), R.color.md_red_500));
-                    }
-                    //passwordShadowTextInputLayout.refreshDrawableState();
-
-                    if (passwordEditText.getText().toString().equals(passwordShadowEditText.getText().toString()))
-                        if (User.checkPasswordInput(passwordEditText.getText().toString())) {
-                            passwordShadowTextInputLayout.setError("");
-                            passwordTextInputLayout.setError("");
-                            //Hide keyboard if exists
-                            hideInputKeyBoard();
-                        }
-                }
-            }
-        });
+        final TextInputLayoutAppWidget passwordTextInputLayout = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_create_password_TextInputLayoutAppWidget_password);
+        final Button nextButton = (Button) v.findViewById(R.id.profile_create_password_button);
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 hideInputKeyBoard();
-                if (User.checkShadowPasswordInput(passwordTextInputLayout, passwordShadowTextInputLayout,mView, mActivity)) {
-                    putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_PASSWORD, passwordEditText.getText().toString());
+                if (passwordTextInputLayout.isValidInput()) {
+                    putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_PASSWORD, passwordTextInputLayout.getText());
                     sendResult(Activity.RESULT_OK);
                 }
             }

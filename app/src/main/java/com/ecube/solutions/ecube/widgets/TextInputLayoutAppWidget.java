@@ -8,8 +8,12 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
 import android.text.InputType;
@@ -69,21 +73,6 @@ public class TextInputLayoutAppWidget extends LinearLayout {
     //Handle rotations
     private static final String KEY_SAVE_COLOR_ERROR_TEXT = "error_text.color";
 
-    @Override
-    protected void onLayout(boolean paramBoolean, int left, int top, int right, int bottom)
-    {
-
-        int widthOfCell = right - left;
-
-        getChildAt(0)
-                .layout(1,
-                        1,
-                        widthOfCell,
-                        widthOfCell
-                );
-
-    }
-
     public TextInputLayoutAppWidget(Context context) {
         this(context, null);
     }
@@ -92,14 +81,15 @@ public class TextInputLayoutAppWidget extends LinearLayout {
         this(context, attrs, 0);
     }
 
-
-
     public TextInputLayoutAppWidget(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs);
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Get input attributes from XML
         ////////////////////////////////////////////////////////////////////////////////////////////
+        mColorErrorTyping = ContextCompat.getColor(getContext(), R.color.md_lime_500); //Default color
+        mColorErrorFinal = ContextCompat.getColor(getContext(),R.color.md_red_500);
+
         TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.TextInputLayoutAppWidget, 0, 0);
         int n = typedArray.getIndexCount();
         for (int i = 0; i < n; i++) {
@@ -116,12 +106,15 @@ public class TextInputLayoutAppWidget extends LinearLayout {
                     mHasShadow = typedArray.getBoolean(R.styleable.TextInputLayoutAppWidget_hasShadow, false);
                     break;
                 case R.styleable.TextInputLayoutAppWidget_errorColorTyping:
-                    int myColor = typedArray.getResourceId(R.styleable.TextInputLayoutAppWidget_errorColorTyping,R.color.md_lime_500);
-                     mColorErrorTyping = ContextCompat.getColor(getContext(),myColor);
+                    int myColor = typedArray.getResourceId(R.styleable.TextInputLayoutAppWidget_errorColorTyping,0);
+                    if (myColor != 0 ) {
+                        mColorErrorTyping = ContextCompat.getColor(getContext(), myColor);
+                    }
                     break;
                 case R.styleable.TextInputLayoutAppWidget_errorColorFinal:
-                    myColor = typedArray.getResourceId(R.styleable.TextInputLayoutAppWidget_errorColorFinal,R.color.md_red_500);
-                    mColorErrorFinal = ContextCompat.getColor(getContext(),myColor);
+                    myColor = typedArray.getResourceId(R.styleable.TextInputLayoutAppWidget_errorColorFinal,0);
+                    if (myColor != 0 )
+                        mColorErrorFinal = ContextCompat.getColor(getContext(),myColor);
                     break;
                 default:
                     //Do nothing
@@ -129,35 +122,50 @@ public class TextInputLayoutAppWidget extends LinearLayout {
         }
         typedArray.recycle();
 
-        LayoutInflater.from(context).inflate(R.layout.widget_text_input_layout, this, true);
-        mTextInputLayout = (TextInputLayout) findViewById(R.id.widget_text_input_layout_TextInputLayout);
-        mEditText = (EditText) findViewById(R.id.widget_text_input_layout_EditText);
-        mEditTextShadow = (EditText) findViewById(R.id.widget_text_input_layout_EditText_shadow);
-        mTextInputLayoutShadow = (TextInputLayout) findViewById(R.id.widget_text_input_layout_TextInputLayout_shadow);
+        View root = LayoutInflater.from(context).inflate(R.layout.widget_text_input_layout, this, true);
+        mEditText = (EditText) root.findViewById(R.id.widget_text_input_layout_EditText);
+        mEditTextShadow = (EditText) root.findViewById(R.id.widget_text_input_layout_EditText_shadow);
+        mTextInputLayoutShadow = (TextInputLayout) root.findViewById(R.id.widget_text_input_layout_TextInputLayout_shadow);
+        mTextInputLayout = (TextInputLayout) root.findViewById(R.id.widget_text_input_layout_TextInputLayout);
+        LinearLayout mLinearLayout = (LinearLayout) root.findViewById(R.id.widget_text_input_layout_LinearLayout);
+
+
+        if (isInEditMode()) {   // If we are in development we stop here
+
+            if (mHasShadow) {
+            //    mTextInputLayoutShadow.setWillNotDraw(false);
+            //    mTextInputLayoutShadow.setVisibility(VISIBLE);
+            }
+            return;
+        }
+
 
         if (!mHasShadow) {
             mTextInputLayoutShadow.setVisibility(GONE);
         } else {
+            mTextInputLayoutShadow.setVisibility(VISIBLE);
             mTextInputLayoutShadow.setHint("Confirm " + mHintText);
         }
-
-
-        LinearLayout mLinearLayout = (LinearLayout) findViewById(R.id.widget_text_input_layout_LinearLayout);
+        //setSaveEnabled(true);   // Tell android that we want to save status of children
+/*
         mLinearLayout.setMinimumHeight(mTextInputLayout.getMinimumHeight());
-        setSaveEnabled(true);   // Tell android that we want to save status of children
         mTextInputLayout.setWillNotDraw(false);
         mEditText.setWillNotDraw(false);
         mLinearLayout.setWillNotDraw(false);
+        mTextInputLayout.addView(mEditText);
+        mLinearLayout.addView(mTextInputLayout);
         setWillNotDraw(false);  // Tell android we want to see interior in xml display
+
+
         if (isInEditMode()) {   // If we are in development we stop here
             this.addView(mTextInputLayout);
-            this.addView(mEditText);
-            /*if (mHasShadow) {
+            if (mHasShadow) {
                 mTextInputLayoutShadow.setWillNotDraw(false);
                 mTextInputLayoutShadow.setVisibility(VISIBLE);
-            }*/
-            //return;
+            }
+            return;
         }
+        */
          //Set default Locale
         mLocale = Locale.getDefault();
 

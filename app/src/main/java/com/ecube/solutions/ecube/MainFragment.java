@@ -157,10 +157,10 @@ public class MainFragment extends FragmentAbstract {
         waitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    final TextInputLayoutAppWidget test = (TextInputLayoutAppWidget) mView.findViewById(R.id.custonTextInputLayout);
+                   /* final TextInputLayoutAppWidget test = (TextInputLayoutAppWidget) mView.findViewById(R.id.custonTextInputLayout);
                     final TextInputLayoutAppWidget test2 = (TextInputLayoutAppWidget) mView.findViewById(R.id.customTextInputLayout2);
                     test.isValidInput();
-                    test2.isValidInput();
+                    test2.isValidInput();*/
             }
         });
 
