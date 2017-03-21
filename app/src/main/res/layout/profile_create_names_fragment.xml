@@ -35,25 +35,35 @@
     android:layout_marginTop="20dp"
     android:layout_marginBottom="20dp"
     android:gravity="center_horizontal" />
-
-    <com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget
-        android:layout_width="wrap_content"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:inputMode="name"
-        app:hasShadow="false"
-        app:hint="First name"
-        android:id="@+id/profile_create_names_TextInputLayoutAppWidget_firstName"
-        android:layout_gravity="center_horizontal" />
-    <com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:inputMode="name"
-        app:hasShadow="false"
-        app:hint="Last name"
-        android:id="@+id/profile_create_names_TextInputLayoutAppWidget_lastName"
-        android:gravity="center_horizontal"
-        android:layout_gravity="center_horizontal" />
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:padding="10dp">
 
+        <com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget
+            android:id="@+id/profile_create_names_TextInputLayoutAppWidget_firstName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="2"
+            app:hasShadow="false"
+            app:hint="First name"
+            app:inputMode="name" />
+
+        <com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget
+            android:id="@+id/profile_create_names_TextInputLayoutAppWidget_lastName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="3"
+            android:gravity="center_horizontal"
+            app:hasShadow="false"
+            app:hint="Last name"
+            app:inputMode="name" />
+    </LinearLayout>
     <Button
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

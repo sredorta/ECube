@@ -146,30 +146,6 @@ public class TextInputLayoutAppWidget extends LinearLayout {
             return;
         }
 
-
-
-
-
-        //setSaveEnabled(true);   // Tell android that we want to save status of children
-/*
-        mLinearLayout.setMinimumHeight(mTextInputLayout.getMinimumHeight());
-        mTextInputLayout.setWillNotDraw(false);
-        mEditText.setWillNotDraw(false);
-        mLinearLayout.setWillNotDraw(false);
-        mTextInputLayout.addView(mEditText);
-        mLinearLayout.addView(mTextInputLayout);
-        setWillNotDraw(false);  // Tell android we want to see interior in xml display
-
-
-        if (isInEditMode()) {   // If we are in development we stop here
-            this.addView(mTextInputLayout);
-            if (mHasShadow) {
-                mTextInputLayoutShadow.setWillNotDraw(false);
-                mTextInputLayoutShadow.setVisibility(VISIBLE);
-            }
-            return;
-        }
-        */
          //Set default Locale
         mLocale = Locale.getDefault();
 
@@ -189,9 +165,6 @@ public class TextInputLayoutAppWidget extends LinearLayout {
             }
         });
 */
-
-
-
 
         final TextWatcher mTextWatcher;
         switch (mInputMode) {

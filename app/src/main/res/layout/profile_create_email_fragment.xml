@@ -33,20 +33,7 @@
     android:layout_marginTop="20dp"
     android:layout_marginBottom="20dp"
     android:gravity="center_horizontal" />
-<!--
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/profile_create_email_TextInputLayout_email">
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
-            android:ems="10"
-            android:id="@+id/profile_create_email_editText_email"
-            android:hint="email" />
-    </android.support.design.widget.TextInputLayout>
--->
+
     <com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
