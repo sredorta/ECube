@@ -79,6 +79,15 @@ android:focusableInTouchMode="true">
                 android:id="@+id/profile_signin_with_account_unique_email"
                 android:layout_gravity="left|bottom|center_horizontal"
                 android:gravity="center_horizontal" />
+            <com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:inputMode="password_confirm"
+                app:hasShadow="false"
+                app:hint="password"
+                android:id="@+id/profile_signin_with_account_unique_TextInputLayoutAppWidget_password"
+                />
+            <!--
             <android.support.design.widget.TextInputLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -92,6 +101,7 @@ android:focusableInTouchMode="true">
                 android:id="@+id/profile_signin_with_account_unique_EditText_password"
                 android:hint="password" />
             </android.support.design.widget.TextInputLayout>
+            -->
         </LinearLayout>
 
         <LinearLayout

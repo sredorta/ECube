@@ -32,6 +32,7 @@ import com.ecube.solutions.ecube.general.AppGeneral;
 import com.ecube.solutions.ecube.helpers.IconHelper;
 import com.ecube.solutions.ecube.network.Encryption;
 import com.ecube.solutions.ecube.network.JsonItem;
+import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 
 /**
  * Created by sredorta on 3/14/2017.
@@ -83,57 +84,42 @@ public class ProfileUpdatePasswordFragment extends FragmentAbstract {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.profile_update_password, container, false);
         setCurrentView(v);
-        final TextInputLayout   passwordOldTextInputLayout  = (TextInputLayout) v.findViewById(R.id.profile_update_password_TextInputLayout_old);
-        final EditText          passwordOldEditText         = (EditText)        v.findViewById(R.id.profile_update_password_EditText_old);
-        final TextInputLayout   passwordNewTextInputLayout  = (TextInputLayout) v.findViewById(R.id.profile_update_password_TextInputLayout_new);
-        final EditText          passwordNewEditText         = (EditText)        v.findViewById(R.id.profile_update_password_EditText_new);
-        final TextInputLayout   passwordNewShadowTextInputLayout  = (TextInputLayout) v.findViewById(R.id.profile_update_password_TextInputLayout_new_shadow);
-        final EditText          passwordNewShadowEditText         = (EditText)        v.findViewById(R.id.profile_update_password_EditText_new_shadow);
-
+        final TextInputLayoutAppWidget passwordOldTextInputLayout  = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_update_password_TextInputLayoutAppWidget_password_old);
+        final TextInputLayoutAppWidget passwordNewTextInputLayout  = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_update_password_TextInputLayoutAppWidget_password_new);
 
         final Button            submitButton                = (Button)          v.findViewById(R.id.profile_update_password_Button_submit);
 
-/*
-        passwordOldEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override
-            public void afterTextChanged(Editable editable) {
-                Log.i("SERGI:", "Password quality : " + editable.toString() +" ::" + User.getPasswordQuality(editable.toString()));
-                User.getPasswordQuality(editable.toString(), passwordQualityProgressBar, mView);
-            }
-        });
-*/
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //TODO Need to check if fields are ok...
-                final WaitDialogFragment dialog = WaitDialogFragment.newInstance();
-                //Check that old password is correct
-                mUser.setPassword(passwordOldEditText.getText().toString());
-                AccountAuthenticator ag = new AccountAuthenticator(getContext(), mUser);
-                ag.checkPassword(new AsyncTaskInterface<JsonItem>() {
-                    @Override
-                    public void processStart() {
-                        FragmentManager fm = getFragmentManager();
-                        dialog.show(fm,"DIALOG");
-                    }
-                    @Override
-                    public void processFinish(JsonItem result) {
-                        dialog.dismiss();
-                        if (result.getKeyError().equals(AppGeneral.KEY_CODE_ERROR_INVALID_PASSWORD)){
-                            passwordOldTextInputLayout.setError("Invalid password");
-                        } else {
-                            passwordOldTextInputLayout.setError("");
-                            if (!result.getKeyError().equals(AppGeneral.KEY_CODE_SUCCESS)) {
-                                Toast.makeText(getContext(), result.getMessage(), Toast.LENGTH_SHORT).show();
+                if (passwordOldTextInputLayout.isValidInput()) {
+                    final WaitDialogFragment dialog = WaitDialogFragment.newInstance();
+                    //Check that old password is correct
+                    mUser.setPassword(passwordOldTextInputLayout.getText());
+                    AccountAuthenticator ag = new AccountAuthenticator(getContext(), mUser);
+                    ag.checkPassword(new AsyncTaskInterface<JsonItem>() {
+                        @Override
+                        public void processStart() {
+                            FragmentManager fm = getFragmentManager();
+                            dialog.show(fm, "DIALOG");
+                        }
+
+                        @Override
+                        public void processFinish(JsonItem result) {
+                            dialog.dismiss();
+                            if (result.getKeyError().equals(AppGeneral.KEY_CODE_ERROR_INVALID_PASSWORD)) {
+                                passwordOldTextInputLayout.setError("Invalid password");
+                            } else {
+                                passwordOldTextInputLayout.setError("");
+                                if (!result.getKeyError().equals(AppGeneral.KEY_CODE_SUCCESS)) {
+                                    Toast.makeText(getContext(), result.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
-                    }
-                }, mActivity);
+                    }, mActivity);
+                }
 
             }
         });

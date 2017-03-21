@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -50,32 +50,24 @@ style="?attr/cardStyle">
         android:ems="10"
         android:id="@+id/profile_create_phone_country_display"
         layout="@layout/profile_create_country_display" />
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
+    <com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left|center_horizontal"
-        android:id="@+id/profile_signin_with_phone_TextInputLayout_phone">
-        <EditText
-        android:layout_width="match_parent"
+        app:inputMode="phone"
+        app:hasShadow="false"
+        app:hint="phone"
+        android:id="@+id/profile_signin_with_phone_TextInputLayoutAppWidget_phone"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal" />
+    <com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="phone"
-        android:ems="10"
-        android:id="@+id/profile_signin_with_phone_editText_number"
-        android:hint="Phone number" />
-    </android.support.design.widget.TextInputLayout>
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left|center_horizontal"
-        android:id="@+id/profile_signin_with_phone_TextInputLayout_password">
-        <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/profile_signin_with_phone_editText_password"
-        android:hint="password" />
-    </android.support.design.widget.TextInputLayout>
+        app:inputMode="password_confirm"
+        app:hasShadow="false"
+        app:hint="password"
+        android:id="@+id/profile_signin_with_phone_TextInputLayoutAppWidget_password"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

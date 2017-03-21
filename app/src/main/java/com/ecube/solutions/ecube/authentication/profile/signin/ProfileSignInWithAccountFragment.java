@@ -33,6 +33,7 @@ import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateStar
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.general.AppGeneral;
 import com.ecube.solutions.ecube.helpers.IconHelper;
+import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 
 import org.w3c.dom.Text;
 
@@ -121,16 +122,14 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
         });
 
         //Submit
-        final TextInputLayout passwordTextInputLayout = (TextInputLayout) v.findViewById(R.id.profile_signin_with_account_TextInputLayout_password);
+        final TextInputLayoutAppWidget passwordTextInputLayout = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_signin_with_account_TextInputLayoutAppWidget_password);
         v.findViewById(R.id.profile_signin_with_account_Button_submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (DEBUG) Log.i(TAG, "Submitting credentials to account manager !");
                 //hide input keyboard
                 hideInputKeyBoard();
-                if (User.checkPasswordInput(passwordTextInputLayout,mView,mActivity)) {
-                    if (DEBUG) Log.i(TAG, "We are now checking with server !");
-                    //TODO do the actual login with the server and return the results to the dispatcher
+                if (passwordTextInputLayout.isValidInput()) {
                     User myUser = new User();
                     myUser.setEmail(mUser.getEmail());
                     myUser.setPassword(passwordTextInputLayout.getEditText().getText().toString());
@@ -157,7 +156,6 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
                             }
                         }
                     }, mActivity);
-                    //If we get to this point is that we could not authenticate !
                 }
             }
         });

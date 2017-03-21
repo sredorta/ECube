@@ -52,21 +52,15 @@
             android:id="@+id/profile_signin_with_account_display_account_list_include"
             layout="@layout/profile_signin_with_account_display_account_list"
             android:layout_weight="0.5" />
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
+        <com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            app:errorEnabled="true"
-            android:id="@+id/profile_signin_with_account_TextInputLayout_password"
-            android:layout_weight="0">
-            <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:ems="10"
-            android:id="@+id/profile_signin_with_account_editText_password"
-            android:hint="password" />
-        </android.support.design.widget.TextInputLayout>
+            app:inputMode="password_confirm"
+            app:hasShadow="false"
+            app:hint="password"
+            android:id="@+id/profile_signin_with_account_TextInputLayoutAppWidget_password"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_horizontal" />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

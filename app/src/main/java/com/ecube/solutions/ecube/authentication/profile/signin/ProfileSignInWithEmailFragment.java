@@ -20,6 +20,7 @@ import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticat
 import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateStartFragment;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.general.AppGeneral;
+import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 
 /**
  * Created by sredorta on 2/2/2017.
@@ -53,10 +54,9 @@ public class ProfileSignInWithEmailFragment extends FragmentAbstract {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.profile_signin_with_email, container, false);
         setCurrentView(v);
-        final TextInputLayout emailTextInputLayout = (TextInputLayout) v.findViewById(R.id.profile_signin_with_email_TextInputLayout_email);
-        final TextInputLayout passwordTextInputLayout = (TextInputLayout) v.findViewById(R.id.profile_signin_with_email_TextInputLayout_password);
+        final TextInputLayoutAppWidget emailTextInputLayout = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_signin_with_email_TextInputLayoutAppWidget_email);
+        final TextInputLayoutAppWidget passwordTextInputLayout = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_signin_with_email_TextInputLayoutAppWidget_password);
 
-        final EditText passwordEditText = (EditText) v.findViewById(R.id.profile_signin_with_email_editText_password);
         //Re-enter credentials
         v.findViewById(R.id.profile_signin_with_email_Button_submit).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,14 +64,11 @@ public class ProfileSignInWithEmailFragment extends FragmentAbstract {
                 if (DEBUG) Log.i(TAG, "Submitting credentials to account manager !");
                 //hide input keyboard
                 hideInputKeyBoard();
-
-                if (User.checkEmailInput(emailTextInputLayout)) {
-                    if (User.checkPasswordInput(passwordTextInputLayout,mView,mActivity)) {
-                        if (DEBUG) Log.i(TAG, "We are now checking with server !");
-                        //TODO do the actual login with the server
+                if (emailTextInputLayout.isValidInput()) {
+                    if (passwordTextInputLayout.isValidInput()) {
                         User myUser = new User();
-                        myUser.setEmail(emailTextInputLayout.getEditText().getText().toString());
-                        myUser.setPassword(passwordEditText.getText().toString());
+                        myUser.setEmail(emailTextInputLayout.getText());
+                        myUser.setPassword(passwordTextInputLayout.getText());
                         Log.i(TAG, "Restoring user...");
                         AccountAuthenticator ag = new AccountAuthenticator(getContext(), myUser);
                         ag.submitCredentials(new AsyncTaskInterface<Intent>() {
@@ -96,7 +93,6 @@ public class ProfileSignInWithEmailFragment extends FragmentAbstract {
                                 }
                             }
                         }, mActivity);
-                        //If we get to this point is that we could not authenticate !
                     }
                 }
             }

@@ -30,6 +30,7 @@ import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.authentication.profile.dialogs.CountryPickerFragment;
 import com.ecube.solutions.ecube.general.AppGeneral;
+import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
@@ -93,10 +94,9 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
         setCurrentView(v);
         //Update the current country
         updateCurrentCountry();
-        final EditText passwordEditText = (EditText) v.findViewById(R.id.profile_signin_with_phone_editText_password);
-        final TextInputLayout passwordTextInputLayout = (TextInputLayout) v.findViewById(R.id.profile_signin_with_phone_TextInputLayout_password);
-        final EditText mNumberEditText = (EditText) v.findViewById(R.id.profile_signin_with_phone_editText_number);
-        final TextInputLayout phoneTextInputLayout = (TextInputLayout) v.findViewById(R.id.profile_signin_with_phone_TextInputLayout_phone);
+        final TextInputLayoutAppWidget passwordTextInputLayout = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_signin_with_phone_TextInputLayoutAppWidget_password);
+        final TextInputLayoutAppWidget phoneTextInputLayout = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_signin_with_phone_TextInputLayoutAppWidget_phone);
+        phoneTextInputLayout.setLocale(mLocale);
         //Show CountryPicker Dialog if we click
         final LinearLayout mLinearCountry = (LinearLayout) v.findViewById(R.id.profile_create_country_display_LinearLayout);
         mLinearCountry.setOnClickListener(new View.OnClickListener() {
@@ -113,31 +113,7 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
 
         //Listener on Phone number
         if (DEBUG) Log.i(TAG, "Setting number to: " + mPhoneNumber);
-        mNumberEditText.setText(mPhoneNumber);
-        //We add a listener to verify that we have correct number
-        mNumberEditText.addTextChangedListener(new PhoneNumberFormattingTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                //Return if no characters are here
-                if (checkPhoneNumber(mNumberEditText.getText().toString())) {
-                    phoneTextInputLayout.setError("");
-                    phoneTextInputLayout.refreshDrawableState();
-                    hideInputKeyBoard();
-                } else {
-                    phoneTextInputLayout.setError("Invalid phone number");
-                    //mNumberEditText.setTextColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
-                    //mNumberEditText.setTypeface(mNumberEditText.getTypeface(), Typeface.NORMAL);
-                }
-                if (s.toString().length()== 0) return;
-                if ((s.toString().matches("[0-9]+") && s.toString().length() > 0)) {
-                    //Do nothing
-                } else {
-                    //The input character was not a number so we remove it
-                    s.delete(s.length()-1,s.length());
-                }
-            }
-
-        });
+        phoneTextInputLayout.setText(mPhoneNumber);
 
         //Submit button
         v.findViewById(R.id.profile_signin_with_phone_Button_submit).setOnClickListener(new View.OnClickListener() {
@@ -146,13 +122,11 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
                 if (DEBUG) Log.i(TAG, "Submitting credentials to account manager !");
                 //hide input keyboard
                 hideInputKeyBoard();
-                if (checkPhoneNumber(mNumberEditText.getText().toString())) {
-                    if (User.checkPasswordInput(passwordTextInputLayout,mView,mActivity)) {
-                        if (DEBUG) Log.i(TAG, "We are now checking with server !");
-                        //TODO do the actual login with the server
+                if (phoneTextInputLayout.isValidInput()) {
+                    if (passwordTextInputLayout.isValidInput()) {
                         User myUser = new User();
                         myUser.setPhone(getFinalPhoneNumber());
-                        myUser.setPassword(passwordEditText.getText().toString());
+                        myUser.setPassword(passwordTextInputLayout.getText());
                         Log.i(TAG, "Restoring user...");
                         AccountAuthenticator ag = new AccountAuthenticator(getContext(), myUser);
                         ag.submitCredentials(new AsyncTaskInterface<Intent>() {
@@ -212,8 +186,10 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
             mLocale = (Locale) data.getSerializableExtra(CountryPickerFragment.FRAGMENT_OUTPUT_PARAM_SELECTED_PHONE_COUNTRY);
             updateCurrentCountry();
             //In order to validate if with new country the phone is correct
-            final EditText mNumberEditText = (EditText) mView.findViewById(R.id.profile_signin_with_phone_editText_number);
-            mNumberEditText.setText(mNumberEditText.getText().toString());
+            final TextInputLayoutAppWidget phoneTextInputLayout = (TextInputLayoutAppWidget) mView.findViewById(R.id.profile_signin_with_phone_TextInputLayoutAppWidget_phone);
+            phoneTextInputLayout.setLocale(mLocale);
+            phoneTextInputLayout.setText(phoneTextInputLayout.getText());
+            phoneTextInputLayout.getEditText().setSelection(phoneTextInputLayout.getText().length());
         }
     }
 
@@ -257,11 +233,11 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
     }
 
     private String getFinalPhoneNumber() {
-        final EditText mNumberEditText = (EditText) mView.findViewById(R.id.profile_signin_with_phone_editText_number);
+        final TextInputLayoutAppWidget phoneTextInputLayout = (TextInputLayoutAppWidget) mView.findViewById(R.id.profile_signin_with_phone_TextInputLayoutAppWidget_phone);
         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
         Phonenumber.PhoneNumber inputNumber;
         try {
-            inputNumber = phoneUtil.parse(mNumberEditText.getText().toString(), mLocale.getCountry());
+            inputNumber = phoneUtil.parse(phoneTextInputLayout.getText(), mLocale.getCountry());
         } catch (NumberParseException e) {
             inputNumber = null;
             Log.i(TAG, "Caught exception :" + e);

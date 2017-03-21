@@ -16,25 +16,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:inputMode="password_define"
-            app:errorColorTyping="@color/md_lime_500"
-            app:errorColorFinal="@color/md_red_500"
-            app:hasShadow="false"
-            app:hint="password"
-            android:id="@+id/custonTextInputLayout"/>
-        <com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:errorColorTyping="@color/md_lime_500"
-            app:errorColorFinal="@color/md_red_500"
-            app:hint="email"
-            app:hasShadow="false"
-            app:inputMode="email"
-            android:id="@+id/customTextInputLayout2"/>
-
 
         <Button
             android:layout_width="fill_parent"

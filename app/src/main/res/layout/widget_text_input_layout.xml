@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="5dp"
+    android:layout_marginTop="0dp"
     app:hasShadow= "false"
     app:inputMode="email"
     app:errorColorTyping="@color/md_lime_500"
@@ -34,16 +34,5 @@
             android:hint="hint"
             android:id="@+id/widget_text_input_layout_EditText_shadow" />
     </android.support.design.widget.TextInputLayout>
-<!--    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/profile_create_names_TextInputLayout_lastName">
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:ems="10"
-            android:id="@+id/profile_create_names_editText_lastName"
-            android:hint="Last name" />
-    </android.support.design.widget.TextInputLayout>-->
+
 </LinearLayout>

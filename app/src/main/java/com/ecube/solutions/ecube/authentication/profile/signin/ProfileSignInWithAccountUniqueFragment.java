@@ -23,6 +23,7 @@ import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.general.AppGeneral;
+import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 
 
 /**
@@ -83,8 +84,7 @@ public class ProfileSignInWithAccountUniqueFragment extends FragmentAbstract{
         final TextView nameTextView = (TextView) v.findViewById(R.id.profile_signin_with_account_unique_name);
         final TextView emailTextView = (TextView) v.findViewById(R.id.profile_signin_with_account_unique_email);
         final ImageView avatarImageView = (ImageView) v.findViewById(R.id.profile_signin_with_account_unique_ImageView_avatar);
-        //final EditText passwordEditText = (EditText) v.findViewById(R.id.profile_signin_with_account_unique_EditText_password);
-        final TextInputLayout passwordTextInputLayout = (TextInputLayout) v.findViewById(R.id.profile_signin_with_account_unique_TextInputLayout_password);
+        final TextInputLayoutAppWidget passwordTextInputLayout = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_signin_with_account_unique_TextInputLayoutAppWidget_password);
         final TextView otherAccountTextView = (TextView) v.findViewById(R.id.profile_signin_with_account_unique_TextView_other);
 
         //Do not show the see several accounts if there is only one
@@ -100,12 +100,10 @@ public class ProfileSignInWithAccountUniqueFragment extends FragmentAbstract{
         v.findViewById(R.id.profile_signin_with_account_unique_Button_submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (DEBUG) Log.i(TAG, "Submitting credentials to account manager !");
-                passwordTextInputLayout.setError("");
-                passwordTextInputLayout.refreshDrawableState();
+
                 //hide input keyboard
                 hideInputKeyBoard();
-                    if (User.checkPasswordInput(passwordTextInputLayout,mView,mActivity)) {
+                    if (passwordTextInputLayout.isValidInput()) {
                         if (DEBUG) Log.i(TAG, "We are now checking with server !");
                         //TODO do the actual login with the server
                         User myUser = new User();
@@ -125,7 +123,7 @@ public class ProfileSignInWithAccountUniqueFragment extends FragmentAbstract{
                                 dialog.dismiss();
                                 if (result.hasExtra(AccountAuthenticator.KEY_ERROR_CODE)) {
                                     if (result.getStringExtra(AccountAuthenticator.KEY_ERROR_CODE).equals(AppGeneral.KEY_CODE_ERROR_INVALID_PASSWORD)) {
-                                         passwordTextInputLayout.setError("Invalid password");
+                                         passwordTextInputLayout.setError("Invalid password",R.color.md_red_500);
                                     } else {
                                         passwordTextInputLayout.setError("");
                                         Toast.makeText(getContext(), result.getStringExtra(AccountAuthenticator.KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();

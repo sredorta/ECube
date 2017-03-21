@@ -123,21 +123,20 @@ public class TextInputLayoutAppWidget extends LinearLayout {
         typedArray.recycle();
 
         View root = LayoutInflater.from(context).inflate(R.layout.widget_text_input_layout, this, true);
+
         mEditText = (EditText) root.findViewById(R.id.widget_text_input_layout_EditText);
         mEditTextShadow = (EditText) root.findViewById(R.id.widget_text_input_layout_EditText_shadow);
         mTextInputLayoutShadow = (TextInputLayout) root.findViewById(R.id.widget_text_input_layout_TextInputLayout_shadow);
         mTextInputLayout = (TextInputLayout) root.findViewById(R.id.widget_text_input_layout_TextInputLayout);
         LinearLayout mLinearLayout = (LinearLayout) root.findViewById(R.id.widget_text_input_layout_LinearLayout);
-
-
         if (isInEditMode()) {   // If we are in development we stop here
-
-            if (mHasShadow) {
-            //    mTextInputLayoutShadow.setWillNotDraw(false);
-            //    mTextInputLayoutShadow.setVisibility(VISIBLE);
+            if (!mHasShadow) {
+                    mTextInputLayoutShadow.setVisibility(GONE);
             }
             return;
         }
+
+
 
 
         if (!mHasShadow) {
@@ -429,6 +428,18 @@ public class TextInputLayoutAppWidget extends LinearLayout {
     }
 
 
+    //set Error message
+    public void setError(String errorStr) {
+        mTextInputLayout.setError(errorStr);
+    }
+
+    public void setError(String errorStr, int color) {
+        mErrorColor = ContextCompat.getColor(getContext(), color);
+        setErrorTextColor(mTextInputLayout, mErrorColor);
+        mTextInputLayout.setError(errorStr);
+        mTextInputLayout.refreshDrawableState();
+    }
+
     //Set locale for phone
     public void setLocale(Locale locale) {
         mLocale = locale;
@@ -608,6 +619,10 @@ public class TextInputLayoutAppWidget extends LinearLayout {
                     result = true;
                 break;
             case 3: //Define Password
+                if (getPasswordQuality(getText())> 70)
+                    result = true;
+                break;
+            case 4: //Confirm Password
                 if (getPasswordQuality(getText())> 70)
                     result = true;
                 break;
