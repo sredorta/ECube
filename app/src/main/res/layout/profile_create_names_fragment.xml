@@ -35,32 +35,7 @@
     android:layout_marginTop="20dp"
     android:layout_marginBottom="20dp"
     android:gravity="center_horizontal" />
- <!--   <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/profile_create_names_TextInputLayout_firstName">
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/profile_create_names_editText_firstName"
-        android:hint="First name" />
-    </android.support.design.widget.TextInputLayout>
-        </com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget>
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/profile_create_names_TextInputLayout_lastName">
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/profile_create_names_editText_lastName"
-        android:hint="Last name" />
-    </android.support.design.widget.TextInputLayout>
--->
+
     <com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

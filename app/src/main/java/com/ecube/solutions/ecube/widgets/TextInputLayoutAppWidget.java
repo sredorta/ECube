@@ -129,15 +129,6 @@ public class TextInputLayoutAppWidget extends LinearLayout {
         mTextInputLayoutShadow = (TextInputLayout) root.findViewById(R.id.widget_text_input_layout_TextInputLayout_shadow);
         mTextInputLayout = (TextInputLayout) root.findViewById(R.id.widget_text_input_layout_TextInputLayout);
         LinearLayout mLinearLayout = (LinearLayout) root.findViewById(R.id.widget_text_input_layout_LinearLayout);
-        if (isInEditMode()) {   // If we are in development we stop here
-            if (!mHasShadow) {
-                    mTextInputLayoutShadow.setVisibility(GONE);
-            }
-            return;
-        }
-
-
-
 
         if (!mHasShadow) {
             mTextInputLayoutShadow.setVisibility(GONE);
@@ -145,6 +136,20 @@ public class TextInputLayoutAppWidget extends LinearLayout {
             mTextInputLayoutShadow.setVisibility(VISIBLE);
             mTextInputLayoutShadow.setHint("Confirm " + mHintText);
         }
+        mTextInputLayout.setHint(mHintText);
+
+        //Allow Error reporting
+        mTextInputLayout.setErrorEnabled(true);
+        mTextInputLayout.setHintAnimationEnabled(true);
+        mTextInputLayout.setError("");
+        if (isInEditMode()) {   // If we are in development we stop here
+            return;
+        }
+
+
+
+
+
         //setSaveEnabled(true);   // Tell android that we want to save status of children
 /*
         mLinearLayout.setMinimumHeight(mTextInputLayout.getMinimumHeight());
@@ -185,12 +190,7 @@ public class TextInputLayoutAppWidget extends LinearLayout {
         });
 */
 
-        mTextInputLayout.setHint(mHintText);
 
-        //Allow Error reporting
-        mTextInputLayout.setErrorEnabled(true);
-        mTextInputLayout.setHintAnimationEnabled(true);
-        mTextInputLayout.setError("");
 
 
         final TextWatcher mTextWatcher;
