@@ -125,7 +125,7 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
                 if (phoneTextInputLayout.isValidInput()) {
                     if (passwordTextInputLayout.isValidInput()) {
                         User myUser = new User();
-                        myUser.setPhone(getFinalPhoneNumber());
+                        myUser.setPhone(phoneTextInputLayout.getFinalPhoneNumber());
                         myUser.setPassword(passwordTextInputLayout.getText());
                         Log.i(TAG, "Restoring user...");
                         AccountAuthenticator ag = new AccountAuthenticator(getContext(), myUser);
@@ -211,37 +211,5 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
 
         final ImageView mCountryFlag = (ImageView) mView.findViewById(R.id.profile_create_country_display_ImageView_flag);
         mCountryFlag.setImageBitmap(Internationalization.getCountryFlagBitmapFromAsset(getContext(),mLocale));
-    }
-
-    private boolean checkPhoneNumber(String phone) {
-        Boolean isValid = false;
-        if ((phone.matches("[0-9]+") && phone.length() > 0)) {
-            //We only start checking if number is valid once length is larger than 2 to avoid crash
-            if (phone.length()>2) {
-                PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-                Phonenumber.PhoneNumber inputNumber;
-                try {
-                    inputNumber = phoneUtil.parse(phone, mLocale.getCountry());
-                } catch (NumberParseException e) {
-                    inputNumber = null;
-                    Log.i(TAG, "Caught exception :" + e);
-                }
-                isValid = phoneUtil.isValidNumber(inputNumber);
-            }
-        }
-        return isValid;
-    }
-
-    private String getFinalPhoneNumber() {
-        final TextInputLayoutAppWidget phoneTextInputLayout = (TextInputLayoutAppWidget) mView.findViewById(R.id.profile_signin_with_phone_TextInputLayoutAppWidget_phone);
-        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-        Phonenumber.PhoneNumber inputNumber;
-        try {
-            inputNumber = phoneUtil.parse(phoneTextInputLayout.getText(), mLocale.getCountry());
-        } catch (NumberParseException e) {
-            inputNumber = null;
-            Log.i(TAG, "Caught exception :" + e);
-        }
-        return phoneUtil.format(inputNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
     }
 }

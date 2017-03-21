@@ -158,28 +158,13 @@ public class ProfileCreatePhoneFragment extends FragmentAbstract {
                 //Hide keyboard if exists
                 hideInputKeyBoard();
                 if (phoneTextInputLayout.isValidInput()) {
-                    putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_PHONE_NUMBER, getFinalPhoneNumber());
+                    putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_PHONE_NUMBER, phoneTextInputLayout.getFinalPhoneNumber());
                     sendResult(Activity.RESULT_OK);
                 }
             }
         });
         return v;
     }
-
-
-    private String getFinalPhoneNumber() {
-        final TextInputLayoutAppWidget phoneTextInputLayout = (TextInputLayoutAppWidget) mView.findViewById(R.id.profile_create_phone_TextInputLayoutAppWidget_phone);
-        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-        Phonenumber.PhoneNumber inputNumber;
-        try {
-            inputNumber = phoneUtil.parse(phoneTextInputLayout.getText(), mLocale.getCountry());
-        } catch (NumberParseException e) {
-            inputNumber = null;
-            Log.i(TAG, "Caught exception :" + e);
-        }
-        return phoneUtil.format(inputNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
-    }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

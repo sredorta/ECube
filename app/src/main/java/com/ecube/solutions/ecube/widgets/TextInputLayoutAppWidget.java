@@ -743,5 +743,16 @@ public class TextInputLayoutAppWidget extends LinearLayout {
         return isValid;
     }
 
+    public String getFinalPhoneNumber() {
+        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+        Phonenumber.PhoneNumber inputNumber;
+        try {
+            inputNumber = phoneUtil.parse(mEditText.getText().toString(), mLocale.getCountry());
+        } catch (NumberParseException e) {
+            inputNumber = null;
+            Log.i(TAG, "Caught exception :" + e);
+        }
+        return phoneUtil.format(inputNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
+    }
 
 }
