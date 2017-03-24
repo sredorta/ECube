@@ -1,10 +1,14 @@
 package com.ecube.solutions.ecube.authentication.authenticator;
 
+import android.util.Log;
+
 import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.network.CloudFetchr;
 import com.ecube.solutions.ecube.network.Encryption;
 import com.ecube.solutions.ecube.network.JsonItem;
+
+import static android.content.ContentValues.TAG;
 
 
 /**
@@ -80,14 +84,42 @@ public class ServerAuthenticateClass implements ServerAuthenticate {
     public JsonItem userCheckPassword(User user) {
         //TODO fix this... I don't know why language is null !
         user.setLanguage("fra");
-        user.print("User before CheckPassword :");
         JsonItem item =  new CloudFetchr().userCheckPassword(user.getId(), user.getPassword(),
                 AccountAuthenticator.ACCOUNT_TYPE, user.getAccountAccess(), user.getLanguage());
 
         return item;
     }
+    //Send to the Server id,token and password (sha1) + newPassword (sha1) and update if matches with server
+    @Override
+    public JsonItem userChangePassword(User user, String newPassword) {
+        //TODO fix this... I don't know why language is null !
+        user.setLanguage("fra");
+        JsonItem item =  new CloudFetchr().userChangePassword(user.getId(), user.getPassword(), newPassword,
+                AccountAuthenticator.ACCOUNT_TYPE, user.getAccountAccess(), user.getLanguage());
 
+        return item;
+    }
 
+    //Send to the Server id,token and password (sha1) + newPassword (sha1) and update if matches with server
+    @Override
+    public JsonItem userChangeEmail(User user, String newEmail) {
+        //TODO fix this... I don't know why language is null !
+        user.setLanguage("fra");
+        JsonItem item =  new CloudFetchr().userChangeEmail(user.getId(), user.getPassword(), newEmail,
+                AccountAuthenticator.ACCOUNT_TYPE, user.getAccountAccess(), user.getLanguage());
+
+        return item;
+    }
+    //Send to the Server id,token and password (sha1) phone and update if matches with server
+    @Override
+    public JsonItem userChangePhone(User user, String newPhone) {
+        //TODO fix this... I don't know why language is null !
+        user.setLanguage("fra");
+        JsonItem item =  new CloudFetchr().userChangePhone(user.getId(), user.getPassword(), newPhone,
+                AccountAuthenticator.ACCOUNT_TYPE, user.getAccountAccess(), user.getLanguage());
+
+        return item;
+    }
 
 
 

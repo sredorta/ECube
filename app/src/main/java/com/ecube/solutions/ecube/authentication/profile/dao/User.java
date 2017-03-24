@@ -1,43 +1,26 @@
 package com.ecube.solutions.ecube.authentication.profile.dao;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.PorterDuff;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 import android.util.Log;
-import android.util.Patterns;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ProgressBar;
 
 
 import com.ecube.solutions.ecube.R;
-import com.ecube.solutions.ecube.helpers.TextInputLayoutHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.Type;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 /**
  * Created by sredorta on 2/28/2017.
@@ -184,7 +167,26 @@ public class User implements Parcelable {
     }
 
 
+    public Integer getCreationTime() {
+        return mCreationTimeStamp;
+    }
+    public void setCreationTime(Integer timestamp) {
+        mCreationTimeStamp = timestamp;
+    }
+    public String getCreationTimeFormatted() {
+        Log.i(TAG, "getCreationTime !!!!!!!!!");
+        try{
+            Log.i(TAG, "From server: " + mCreationTimeStamp);
+            DateFormat sdf = DateFormat.getDateTimeInstance(); //Based on Locale
+            //DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy  HH:mm");
+            Date netDate = (new Date(mCreationTimeStamp * 1000L));
 
+            Log.i(TAG, "Returning date : " + sdf.format(netDate));
+            return sdf.format(netDate);
+        } catch(Exception ex){
+            return "xx";
+        }
+    }
 
     // Gets the Avatar string
     public String getAvatar() {return mAvatar;}
@@ -226,6 +228,7 @@ public class User implements Parcelable {
         if (data.getToken() != null) this.setToken(data.getToken());
         if (data.getAccountAccess() != null) this.setAccountAccess(data.getAccountAccess());
         if (data.getLanguage() != null) this.setLanguage(data.getLanguage());
+        if (data.getCreationTime() != null) this.setCreationTime(data.getCreationTime());
 
     }
 
@@ -243,6 +246,7 @@ public class User implements Parcelable {
             Log.i(TAG, "mPassword      =   " + mPassword);
             Log.i(TAG, "mAccountAccess =   " + mAccountAccess);
             Log.i(TAG, "mToken         =   " + mToken);
+            Log.i(TAG, "mCreationTime  =   " + mCreationTimeStamp);
             Log.i(TAG, "-----------------------------------------");
         }
     }
@@ -279,6 +283,8 @@ public class User implements Parcelable {
         parcel.writeString(mToken);
         parcel.writeString(mPassword);
         parcel.writeString(mAvatar);
+        if (mCreationTimeStamp== null) mCreationTimeStamp = 0;
+        parcel.writeInt(mCreationTimeStamp);
         //parcel.writeParcelable(mAvatarString, i);
     }
     //Constructor for CREATOR of parcel
@@ -293,6 +299,7 @@ public class User implements Parcelable {
         mToken = in.readString();
         mPassword = in.readString();
         mAvatar = in.readString();
+        mCreationTimeStamp = in.readInt();
         //mAvatarBitmap = in.readParcelable(Bitmap.class.getClassLoader());
     }
 

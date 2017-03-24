@@ -1,26 +1,15 @@
 package com.ecube.solutions.ecube.authentication.profile.create;
 
 import android.app.Activity;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.content.ContextCompat;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
-import com.ecube.solutions.ecube.authentication.profile.dao.User;
-import com.ecube.solutions.ecube.helpers.TextInputLayoutHelper;
 import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 
 

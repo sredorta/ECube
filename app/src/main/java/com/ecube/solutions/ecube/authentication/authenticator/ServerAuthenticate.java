@@ -12,4 +12,7 @@ public interface ServerAuthenticate {
     public JsonItem userSignUp(User user);
     public JsonItem userSignIn(User user);
     public JsonItem userCheckPassword(User user);
+    public JsonItem userChangePassword(User user, String newPassword);
+    public JsonItem userChangeEmail(User user, String newEmail);
+    public JsonItem userChangePhone(User user, String newPhone);
 }

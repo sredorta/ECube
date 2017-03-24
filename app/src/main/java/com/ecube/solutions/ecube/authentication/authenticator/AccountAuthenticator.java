@@ -4,6 +4,7 @@ import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.NetworkErrorException;
@@ -33,6 +34,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
+import static android.accounts.AccountManager.get;
 
 /**
  * Created by sredorta on 3/1/2017.
@@ -71,6 +73,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
     public final static String PARAM_USER_EMAIL = "USER_EMAIL";
     public final static String PARAM_USER_PHONE = "USER_PHONE";
     public final static String PARAM_USER_AVATAR = "USER_AVATAR";
+    public final static String PARAM_USER_CREATION_TIME = "USER_CREATION_TIMESTAMP";
     public final static String PARAM_USER_ACCOUNT_ACTIVE = "ACTIVE_ACCOUNT";    //Stores latest used account
     public final static String ACCOUNT_INACTIVE = "account.inactive";           //Defines account as inactive
     public final static String ACCOUNT_ACTIVE = "account.active";               //Defines account as active (latest logged in)
@@ -344,6 +347,9 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
             if (mUser.getAvatar() != null) {
                 mAccountManager.setUserData(account, PARAM_USER_AVATAR, mUser.getAvatar());
             }
+            if (mUser.getCreationTime() != null) {
+                mAccountManager.setUserData(account, PARAM_USER_CREATION_TIME, String.valueOf(mUser.getCreationTime()));
+            }
         }
     }
 
@@ -357,6 +363,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
         mUser.setEmail(mAccountManager.getUserData(myAccount, PARAM_USER_EMAIL));
         mUser.setPhone(mAccountManager.getUserData(myAccount, PARAM_USER_PHONE));
         mUser.setAvatar(mAccountManager.getUserData(myAccount, PARAM_USER_AVATAR));
+        mUser.setCreationTime(Integer.valueOf(mAccountManager.getUserData(myAccount,PARAM_USER_CREATION_TIME)));
         //System parameters
         mUser.setPassword(mAccountManager.getPassword(myAccount));
         mUser.setAccountAccess(mAccountManager.getUserData(myAccount, PARAM_USER_ACCOUNT_AUTH_TYPE));
@@ -543,6 +550,108 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
         }.execute();
     }
 
+    //Change password
+    public void changePassword(final String newPassword, AsyncTaskInterface<JsonItem> myAsyncTaskInterface, final Activity activity) {
+        new AsyncTaskAbstract<Void, Void, JsonItem>(myAsyncTaskInterface,700) {
+            JsonItem item;
+            @Override
+            protected JsonItem doInBackground(Void... params) {
+                super.doInBackground();
+                Log.i(TAG, "Started checking password");
 
+                item = sServerAuthenticate.userChangePassword(mUser,newPassword);
+                //Check that account and user password matches
+                if (item.getResult()) {
+                    //We need to now set the password in the account locally
+                    mAccountManager.setPassword(getAccount(mUser), Encryption.getSHA1(newPassword));
+                    Log.i(TAG, "Password set also in local account ! to : " + Encryption.getSHA1(newPassword));
+                    //item.setKeyError(AppGeneral.KEY_CODE_ERROR_INVALID_PASSWORD);
+                }
+                //Check that server has same password
+                return item;
+            }
+
+            @Override
+            protected void onPostExecute(JsonItem result) {
+                super.onPostExecute(result);
+
+            }
+        }.execute();
+    }
+
+    //Change password
+    public void changeEmail(final String newEmail, AsyncTaskInterface<JsonItem> myAsyncTaskInterface, final Activity activity) {
+        new AsyncTaskAbstract<Void, Void, JsonItem>(myAsyncTaskInterface,700) {
+            JsonItem item;
+            @Override
+            protected JsonItem doInBackground(Void... params) {
+                super.doInBackground();
+                Log.i(TAG, "Started checking password");
+
+                item = sServerAuthenticate.userChangeEmail(mUser,newEmail);
+                getDataFromDeviceAccount(getAccount(mUser));
+                //Check that account and user password matches
+                if (item.getResult()) {
+                    //We need to now set the password in the account locally
+                    final AccountManagerFuture<Account> future = mAccountManager.renameAccount(getAccount(mUser),newEmail, new AccountManagerCallback<Account>() {
+                        @Override
+                        public void run(AccountManagerFuture<Account> future) {
+                            try {
+                                Account newAccount = future.getResult();
+                                //We need to store all data we had before
+                                mUser.setEmail(newEmail);
+                                setUserDataToDeviceAccount();
+                            } catch (Exception e) {
+                                Log.i(TAG, "Caught exception : " + e);
+                            }
+                        }
+                    }, null);
+                    //item.setKeyError(AppGeneral.KEY_CODE_ERROR_INVALID_PASSWORD);
+                }
+                //Check that server has same password
+                return item;
+            }
+
+            @Override
+            protected void onPostExecute(JsonItem result) {
+                super.onPostExecute(result);
+
+            }
+        }.execute();
+    }
+    //Change password
+    public void changePhone(final String newPhone, AsyncTaskInterface<JsonItem> myAsyncTaskInterface, final Activity activity) {
+        new AsyncTaskAbstract<Void, Void, JsonItem>(myAsyncTaskInterface,700) {
+            JsonItem item;
+            @Override
+            protected JsonItem doInBackground(Void... params) {
+                super.doInBackground();
+                Log.i(TAG, "Started checking password");
+
+                item = sServerAuthenticate.userChangePhone(mUser,newPhone);
+
+                //Check that account and user password matches
+                if (item.getResult()) {
+                    mUser.setPhone(newPhone);
+                    mAccountManager.setUserData(getAccount(mUser), PARAM_USER_PHONE, mUser.getPhone());
+                }
+                //Check that server has same password
+                return item;
+            }
+
+            @Override
+            protected void onPostExecute(JsonItem result) {
+                super.onPostExecute(result);
+
+            }
+        }.execute();
+    }
+
+
+
+    //Only for Debug
+    public String getPassword() {
+        return mAccountManager.getPassword(getAccount(mUser));
+    }
 
 }

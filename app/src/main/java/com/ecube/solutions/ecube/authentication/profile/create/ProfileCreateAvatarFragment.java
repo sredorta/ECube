@@ -192,7 +192,6 @@ public class ProfileCreateAvatarFragment extends FragmentAbstract {
         if (hiddenPanel.getVisibility() == View.INVISIBLE || hiddenPanel.getVisibility() == View.GONE) {
             // Show the panel
             Animation bottomUp = AnimationUtils.loadAnimation(getContext(), R.anim.enter_from_bottom);
-
             hiddenPanel.startAnimation(bottomUp);
             hiddenPanel.setVisibility(View.VISIBLE);
             mPanelVisible = true;

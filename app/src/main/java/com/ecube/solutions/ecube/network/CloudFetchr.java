@@ -36,9 +36,12 @@ public class CloudFetchr {
     private static final String URI_BASE_GOOGLE = "http://clients3.google.com/generate_204";    // Only required to check if internet is available
     private static final String PHP_CONNECTION_CHECK = "locker.connection.check.php";           // Params required : none
     private static final String PHP_USER_REMOVE = "locker.users.remove.php";                    // Params required : phone,email,user_table
-    private static final String PHP_USER_SIGNIN = "user.signin.php";                    // Params required : user,password,user_table and returns token
-    private static final String PHP_USER_SIGNUP = "user.signup.php";                    // Params required : user,password,email,user_table and returns token
-    private static final String PHP_USER_CHECK_PASSWORD = "user.check_password.php";    //Params required: id, token,password...
+    private static final String PHP_USER_SIGNIN = "user.signin.php";                            // Params required : user,password,user_table and returns token
+    private static final String PHP_USER_SIGNUP = "user.signup.php";                            // Params required : user,password,email,user_table and returns token
+    private static final String PHP_USER_CHECK_PASSWORD = "user.check_password.php";            //Params required: id, token,password...
+    private static final String PHP_USER_CHANGE_PASSWORD = "user.change_password.php";          //Params required: id, token,password, new pass,...
+    private static final String PHP_USER_CHANGE_EMAIL = "user.change_email.php";          //Params required: id, token,password, new pass,...
+    private static final String PHP_USER_CHANGE_PHONE = "user.change_phone.php";          //Params required: id, token,password, new pass,...
 
     private static final String PHP_USER_PASSWORD = "locker.users.setpassword.php";                    // Params required : user,password,email,user_table and returns token
     private static final String PHP_USER_TOKEN = "locker.users.checktoken.php";                 // Params required : email,token and returns if token is valid or not
@@ -402,8 +405,49 @@ public class CloudFetchr {
         URL url = buildUrl(PHP_USER_CHECK_PASSWORD,parameters);
         return getJSON(url,parameters);
     }
+    //Checks if the user is registered and returns all Details
+    public JsonItem userChangePassword(String userID, String password, String newPassword, String type, String auth_type, String lang) {
+        this.SEND_METHOD="POST";
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("id", userID);
+        parameters.put("password", password);
+        parameters.put("new_password", newPassword);
+        parameters.put("account_type", type);
+        parameters.put("account_access", auth_type);
+        parameters.put("language", lang);
 
+        URL url = buildUrl(PHP_USER_CHANGE_PASSWORD,parameters);
+        return getJSON(url,parameters);
+    }
 
+    //Checks if the user is registered and returns all Details
+    public JsonItem userChangeEmail(String userID, String password, String newEmail, String type, String auth_type, String lang) {
+        this.SEND_METHOD="POST";
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("id", userID);
+        parameters.put("password", password);
+        parameters.put("new_email", newEmail);
+        parameters.put("account_type", type);
+        parameters.put("account_access", auth_type);
+        parameters.put("language", lang);
+
+        URL url = buildUrl(PHP_USER_CHANGE_EMAIL,parameters);
+        return getJSON(url,parameters);
+    }
+    //Checks if the user is registered and returns all Details
+    public JsonItem userChangePhone(String userID, String password, String newPhone, String type, String auth_type, String lang) {
+        this.SEND_METHOD="POST";
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("id", userID);
+        parameters.put("password", password);
+        parameters.put("new_phone", newPhone);
+        parameters.put("account_type", type);
+        parameters.put("account_access", auth_type);
+        parameters.put("language", lang);
+
+        URL url = buildUrl(PHP_USER_CHANGE_PHONE,parameters);
+        return getJSON(url,parameters);
+    }
 
 
 

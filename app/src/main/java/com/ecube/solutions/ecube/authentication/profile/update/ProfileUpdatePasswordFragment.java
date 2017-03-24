@@ -1,6 +1,7 @@
 package com.ecube.solutions.ecube.authentication.profile.update;
 
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -44,6 +45,7 @@ public class ProfileUpdatePasswordFragment extends FragmentAbstract {
 
     //Fragment arguments
     public static final String FRAGMENT_INPUT_PARAM_USER_CURRENT = "user.current.in";
+    public static final String FRAGMENT_OUTPUT_PARAM_USER_PASSWORD = "user.password.out";    //String
 
     //In case of rotations
     public static final String KEY_CURRENT_USER = "user.save";
@@ -95,30 +97,35 @@ public class ProfileUpdatePasswordFragment extends FragmentAbstract {
             public void onClick(View view) {
                 //TODO Need to check if fields are ok...
                 if (passwordOldTextInputLayout.isValidInput()) {
-                    final WaitDialogFragment dialog = WaitDialogFragment.newInstance();
-                    //Check that old password is correct
-                    mUser.setPassword(passwordOldTextInputLayout.getText());
-                    AccountAuthenticator ag = new AccountAuthenticator(getContext(), mUser);
-                    ag.checkPassword(new AsyncTaskInterface<JsonItem>() {
-                        @Override
-                        public void processStart() {
-                            FragmentManager fm = getFragmentManager();
-                            dialog.show(fm, "DIALOG");
-                        }
+                    if (passwordNewTextInputLayout.isValidInput()) {
+                        final WaitDialogFragment dialog = WaitDialogFragment.newInstance();
+                        //Check that old password is correct
+                        mUser.setPassword(passwordOldTextInputLayout.getText());
+                        AccountAuthenticator ag = new AccountAuthenticator(getContext(), mUser);
+                        ag.changePassword(passwordNewTextInputLayout.getText(),new AsyncTaskInterface<JsonItem>() {
+                            @Override
+                            public void processStart() {
+                                FragmentManager fm = getFragmentManager();
+                                dialog.show(fm, "DIALOG");
+                            }
 
-                        @Override
-                        public void processFinish(JsonItem result) {
-                            dialog.dismiss();
-                            if (result.getKeyError().equals(AppGeneral.KEY_CODE_ERROR_INVALID_PASSWORD)) {
-                                passwordOldTextInputLayout.setError("Invalid password");
-                            } else {
-                                passwordOldTextInputLayout.setError("");
-                                if (!result.getKeyError().equals(AppGeneral.KEY_CODE_SUCCESS)) {
-                                    Toast.makeText(getContext(), result.getMessage(), Toast.LENGTH_SHORT).show();
+                            @Override
+                            public void processFinish(JsonItem result) {
+                                dialog.dismiss();
+                                if (result.getKeyError().equals(AppGeneral.KEY_CODE_ERROR_INVALID_PASSWORD)) {
+                                    passwordOldTextInputLayout.setError("Invalid password");
+                                } else {
+                                    passwordOldTextInputLayout.setError("");
+                                    if (!result.getKeyError().equals(AppGeneral.KEY_CODE_SUCCESS)) {
+                                        Toast.makeText(getContext(), result.getMessage(), Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_PASSWORD, passwordNewTextInputLayout.getText());
+                                        sendResult(Activity.RESULT_OK);
+                                    }
                                 }
                             }
-                        }
-                    }, mActivity);
+                        }, mActivity);
+                    }
                 }
 
             }

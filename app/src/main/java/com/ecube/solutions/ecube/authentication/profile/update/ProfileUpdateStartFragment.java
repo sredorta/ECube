@@ -31,6 +31,7 @@ import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreatePhon
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.authentication.profile.signin.ProfileSignInWithEmailFragment;
 import com.ecube.solutions.ecube.helpers.IconHelper;
+import com.ecube.solutions.ecube.network.Encryption;
 
 
 /**
@@ -38,7 +39,7 @@ import com.ecube.solutions.ecube.helpers.IconHelper;
  */
 public class ProfileUpdateStartFragment extends FragmentAbstract {
     //Logs
-    private static final String TAG = ProfileSignInWithEmailFragment.class.getSimpleName();
+    private static final String TAG = ProfileUpdateStartFragment.class.getSimpleName();
     private static final boolean DEBUG = true;
 
     //Fragment arguments
@@ -71,15 +72,17 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
         super.onCreate(savedInstanceState);
 
         String email = (String) getInputParam(ProfileUpdateStartFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT);
+        mUser = new User();
+        mUser.setEmail(email);
         //Get account details from the device
         myAccountAuthenticator = new AccountAuthenticator(getContext());
-        mUser = myAccountAuthenticator.getDataFromDeviceAccount(myAccountAuthenticator.getAccount(email));
         //Check that we have an account with current user and if not exit
 
         //Restore user in case of rotation
         if (savedInstanceState!= null) {
-            mUser = (User) savedInstanceState.getParcelable(KEY_CURRENT_USER);
+            mUser.setEmail((String) savedInstanceState.getString(KEY_CURRENT_USER));
         }
+        mUser = myAccountAuthenticator.getDataFromDeviceAccount(myAccountAuthenticator.getAccount(mUser));
 
     }
 
@@ -88,13 +91,7 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.profile_update_start, container, false);
         setCurrentView(v);
-        final TextView nameTextView = (TextView) v.findViewById(R.id.profile_update_start_TextView_name);
-        final TextView emailTextView = (TextView) v.findViewById(R.id.profile_update_start_TextView_email);
-        final ImageView avatarImageView = (ImageView) v.findViewById(R.id.profile_update_start_ImageView_avatar);
-
-        nameTextView.setText(mUser.getFirstName() + " " + mUser.getLastName());
-        emailTextView.setText(mUser.getEmail());
-        avatarImageView.setImageBitmap(mUser.getAvatar(getContext()));
+        initHeaderAccount();
 
         //Fields part
         final ImageView emailSettings = (ImageView) v.findViewById(R.id.profile_update_start_ImageView_email);
@@ -158,28 +155,44 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
         return v;
     }
 
-    //Save user in case of rotation
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(KEY_CURRENT_USER, mUser);
+    public void initHeaderAccount() {
+        final TextView nameTextView = (TextView) getCurrentView().findViewById(R.id.profile_update_start_TextView_name_header);
+        final TextView emailTextView = (TextView) getCurrentView().findViewById(R.id.profile_update_start_TextView_email_header);
+        final TextView phoneTextView = (TextView) getCurrentView().findViewById(R.id.profile_update_start_TextView_phone_header);
+        final TextView creationTextView = (TextView) getCurrentView().findViewById(R.id.profile_update_start_TextView_creation);
+        final ImageView avatarImageView = (ImageView) getCurrentView().findViewById(R.id.profile_update_start_ImageView_avatar);
+
+        nameTextView.setText(mUser.getFirstName() + " " + mUser.getLastName());
+        emailTextView.setText(mUser.getEmail());
+        phoneTextView.setText(mUser.getPhone());
+        creationTextView.setText(mUser.getCreationTimeFormatted());
+        avatarImageView.setImageBitmap(mUser.getAvatar(getContext()));
     }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         boolean needToUpdate = false;
         if (resultCode == Activity.RESULT_OK) {
             if( requestCode == REQUEST_DEFINE_PHONE) {
-                mUser.setPhone((String) data.getSerializableExtra(ProfileCreatePhoneFragment.FRAGMENT_OUTPUT_PARAM_USER_PHONE_NUMBER));
+                mUser.setPhone((String) data.getSerializableExtra(ProfileUpdatePhoneFragment.FRAGMENT_OUTPUT_PARAM_USER_PHONE));
+                mUser.print("After Phone !");
                 needToUpdate = true;
             } else if( requestCode == REQUEST_DEFINE_EMAIL) {
                 mUser.setEmail((String) data.getSerializableExtra(ProfileCreateEmailFragment.FRAGMENT_OUTPUT_PARAM_USER_EMAIL));
                 needToUpdate = true;
             } else if( requestCode == REQUEST_DEFINE_PASSWORD) {
-                mUser.setPassword((String) data.getSerializableExtra(ProfileCreatePasswordFragment.FRAGMENT_OUTPUT_PARAM_USER_PASSWORD));
+                mUser.setPassword((String) data.getSerializableExtra(ProfileUpdatePasswordFragment.FRAGMENT_OUTPUT_PARAM_USER_PASSWORD));
+                /*Log.i(TAG, "After change of password we have now: " + mUser.getPassword());
+                AccountAuthenticator ag = new AccountAuthenticator(getContext(), mUser);
+                Log.i(TAG, "In account : " + ag.getPassword());
+                Log.i(TAG, "Text sha1  : " + Encryption.getSHA1(mUser.getPassword()));*/
                 needToUpdate = true;
             }
             if (needToUpdate) {
+                //initHeaderAccount();
                 //Do the job !
                 Log.i(TAG, "Updating user phone :" + mUser.getPhone());
                 AccountAuthenticator ag = new AccountAuthenticator(getContext(), mUser);
@@ -197,14 +210,21 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
                     }
                 }, mActivity);*/
             }
+            // Reload our fragment
+            replaceFragment(this,this.getTag(),true);
+
         }
-        // Reload our fragment
-        replaceFragment(this,this.getTag(),true);
+
 
 
     }
 
-
+    //Save user in case of rotation
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_CURRENT_USER, mUser.getEmail());
+    }
 
 
 }
