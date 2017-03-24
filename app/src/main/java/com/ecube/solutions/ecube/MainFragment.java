@@ -7,6 +7,7 @@ import android.accounts.AccountManagerFuture;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticat
 import com.ecube.solutions.ecube.authentication.authenticator.AuthenticatorActivity;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
+import com.ecube.solutions.ecube.widgets.TextInputLayoutExtended;
 
 /**
  * Created by sredorta on 3/1/2017.
@@ -28,7 +30,7 @@ public class MainFragment extends FragmentAbstract {
     //Logs
     private static final String TAG = MainFragment.class.getSimpleName();
     private static final boolean DEBUG = true;
-
+    boolean kk = true;
     AccountAuthenticator myAccountAuthenticator = null;
 
     // Constructor
@@ -154,6 +156,7 @@ public class MainFragment extends FragmentAbstract {
             }
         });
 
+
         waitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -161,6 +164,16 @@ public class MainFragment extends FragmentAbstract {
                     final TextInputLayoutAppWidget test2 = (TextInputLayoutAppWidget) mView.findViewById(R.id.customTextInputLayout2);
                     test.isValidInput();
                     test2.isValidInput();*/
+ /*                  final TextInputLayoutExtended test = (TextInputLayoutAppWidget) mView.findViewById(R.id.myTest);
+                if (kk) {
+                    test.setError("Here we are",R.color.md_red_500);
+                    //test.setErrorTextColor(ContextCompat.getColor(getContext(), R.color.md_red_500));
+                    kk =false;
+                } else {
+                    test.setError("Or not",R.color.md_amber_500);
+                    test.setErrorTextColor(ContextCompat.getColor(getContext(), R.color.md_green_100));
+                    kk = true;
+                }*/
             }
         });
 

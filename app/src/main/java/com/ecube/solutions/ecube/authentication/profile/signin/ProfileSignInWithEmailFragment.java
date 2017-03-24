@@ -2,6 +2,7 @@ package com.ecube.solutions.ecube.authentication.profile.signin;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentManager;
@@ -75,6 +76,8 @@ public class ProfileSignInWithEmailFragment extends FragmentAbstract {
                             WaitDialogFragment dialog;
                             @Override
                             public void processStart() {
+                                emailTextInputLayout.setError("");
+                                passwordTextInputLayout.setError("");
                                 FragmentManager fm = getFragmentManager();
                                 dialog = WaitDialogFragment.newInstance();
                                 dialog.show(fm,"DIALOG");

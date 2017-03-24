@@ -15,69 +15,78 @@ android:layout_gravity="top"
 android:layout_margin="10dp"
 style="?attr/cardStyle">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:baselineAligned="false"
-    android:padding="10dp"    >
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Enter your credentials"
-        android:id="@+id/profile_signin_with_phone_title"
-        android:layout_gravity="center"
-        android:textStyle="bold"
-        android:gravity="center_horizontal" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Please enter your phone and password..."
-        android:id="@+id/profile_signin_with_phone_text"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:gravity="center_horizontal" />
-
-    <include
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/profile_create_phone_country_display"
-        layout="@layout/profile_create_country_display" />
-    <com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:inputMode="phone"
-        app:hasShadow="false"
-        app:hint="phone"
-        android:id="@+id/profile_signin_with_phone_TextInputLayoutAppWidget_phone"
-        android:gravity="center_horizontal"
-        android:layout_gravity="center_horizontal" />
-    <com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:inputMode="password_confirm"
-        app:hasShadow="false"
-        app:hint="password"
-        android:id="@+id/profile_signin_with_phone_TextInputLayoutAppWidget_password"
-        android:gravity="center_horizontal"
-        android:layout_gravity="center_horizontal" />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="NEXT"
-        android:id="@+id/profile_signin_with_phone_Button_submit"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp" />
+        android:baselineAligned="false"
+        android:orientation="vertical"
+        android:padding="10dp">
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/profile_signin_with_phone_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            android:text="Enter your credentials"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/profile_signin_with_phone_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:text="Please enter your phone and password..."
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/profile_create_phone_country_display"
+                layout="@layout/profile_create_country_display"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal" />
+
+            <com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget
+                android:id="@+id/profile_signin_with_phone_TextInputLayoutAppWidget_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:gravity="center_horizontal"
+                app:hasShadow="false"
+                app:hint="phone"
+                app:inputMode="phone" />
+
+            <com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget
+                android:id="@+id/profile_signin_with_phone_TextInputLayoutAppWidget_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                app:hasShadow="false"
+                app:hint="password"
+                app:inputMode="password_confirm" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/profile_signin_with_phone_Button_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:text="NEXT" />
+
+    </LinearLayout>
 </android.support.v7.widget.CardView>
 <LinearLayout
 android:orientation="vertical"

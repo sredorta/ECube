@@ -3,10 +3,13 @@ package com.ecube.solutions.ecube.widgets;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.AttrRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -22,6 +25,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Patterns;
 import android.util.SparseArray;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,40 +42,36 @@ import com.google.i18n.phonenumbers.Phonenumber;
 import java.lang.reflect.Field;
 import java.util.Locale;
 
+import static android.content.ContentValues.TAG;
+
 /**
- * Widget based on TextInputLayout that formats error message automatically
+ * Widget based on TextInputLayoutExtended that formats error message automatically for passwords, email...
  */
 public class TextInputLayoutAppWidget extends LinearLayout {
     private static final String TAG = TextInputLayoutAppWidget.class.getSimpleName();
     private static final boolean DEBUG = true;
 
-    private int mInputType;         //Type of input
-    private String mHintText;       //Hint text
+    private String mHintText;                                       //Hint text
     private int mErrorColor=0;
-    private Locale mLocale;         //Locale in order to process phone number
-    private EditText mEditText;     //EditText inside
-    private TextInputLayout mTextInputLayout;
+    private Locale mLocale;                                         //Locale in order to process phone number
+    private TextInputEditText mEditText;                            //EditText inside
+    private TextInputLayoutExtended mTextInputLayout;               //Main TextInputLayout
 
     //Handle shadow confirmation
-    private boolean mHasShadow;                         //Enables shadow visibility
-    private EditText mEditTextShadow;                   //Shadow for password confirm
-    private TextInputLayout mTextInputLayoutShadow;     //Shadow for password confirm
+    private boolean mHasShadow;                                     //Enables shadow visibility
+    private TextInputEditText mEditTextShadow;                      //Shadow for password confirm
+    private TextInputLayoutExtended mTextInputLayoutShadow;         //Shadow for password confirm
 
-    private int mColorErrorTyping;                      //Error message color when typing
-    private int mColorErrorFinal;                       //Error message color final
+    private int mColorErrorTyping = 0;                              //Error message color when typing
+    private int mColorErrorFinal;                                   //Error message color final
+    private int mColorTextActive;                                   //EditText text color when active
+    private int mColorTextInactive;                                 //EditText text color when inactive
 
-
-    private int mInputMode; //Input mode
-    /*
-    <enum name ="name" value="0"/>
-    <enum name ="email" value="1"/>
-    <enum name ="phone" value="2"/>
-    <enum name ="password_define" value="3"/>
-    <enum name ="password_confirm" value="4"/>
-    */
+    private int mInputMode;                                         //Input mode
 
     //Handle rotations
-    private static final String KEY_SAVE_COLOR_ERROR_TEXT = "error_text.color";
+    private static final String KEY_SAVE_LOCALE = "save.locale";
+
 
     public TextInputLayoutAppWidget(Context context) {
         this(context, null);
@@ -87,8 +87,11 @@ public class TextInputLayoutAppWidget extends LinearLayout {
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Get input attributes from XML
         ////////////////////////////////////////////////////////////////////////////////////////////
-        mColorErrorTyping = ContextCompat.getColor(getContext(), R.color.md_lime_500); //Default color
-        mColorErrorFinal = ContextCompat.getColor(getContext(),R.color.md_red_500);
+        //Default colors
+        mColorErrorTyping = ContextCompat.getColor(getContext(), R.color.md_lime_700);  //-5983189 Default color
+        mColorErrorFinal = ContextCompat.getColor(getContext(),R.color.md_red_500);     //-769226
+        mColorTextActive = ContextCompat.getColor(getContext(),R.color.md_green_A700);  //-16725933
+        mColorTextInactive = ContextCompat.getColor(getContext(),R.color.md_green_700); //-13070788
 
         TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.TextInputLayoutAppWidget, 0, 0);
         int n = typedArray.getIndexCount();
@@ -116,6 +119,17 @@ public class TextInputLayoutAppWidget extends LinearLayout {
                     if (myColor != 0 )
                         mColorErrorFinal = ContextCompat.getColor(getContext(),myColor);
                     break;
+                case R.styleable.TextInputLayoutAppWidget_textActiveColor:
+                    myColor = typedArray.getResourceId(R.styleable.TextInputLayoutAppWidget_textActiveColor,0);
+                    if (myColor != 0 )
+                        mColorTextActive = ContextCompat.getColor(getContext(),myColor);
+                    Log.i(TAG, "Got color: " + mColorTextActive);
+                    break;
+                case R.styleable.TextInputLayoutAppWidget_textInactiveColor:
+                    myColor = typedArray.getResourceId(R.styleable.TextInputLayoutAppWidget_textInactiveColor,0);
+                    if (myColor != 0 )
+                        mColorTextInactive = ContextCompat.getColor(getContext(),myColor);
+                    break;
                 default:
                     //Do nothing
             }
@@ -123,12 +137,10 @@ public class TextInputLayoutAppWidget extends LinearLayout {
         typedArray.recycle();
 
         View root = LayoutInflater.from(context).inflate(R.layout.widget_text_input_layout, this, true);
-
-        mEditText = (EditText) root.findViewById(R.id.widget_text_input_layout_EditText);
-        mEditTextShadow = (EditText) root.findViewById(R.id.widget_text_input_layout_EditText_shadow);
-        mTextInputLayoutShadow = (TextInputLayout) root.findViewById(R.id.widget_text_input_layout_TextInputLayout_shadow);
-        mTextInputLayout = (TextInputLayout) root.findViewById(R.id.widget_text_input_layout_TextInputLayout);
-        LinearLayout mLinearLayout = (LinearLayout) root.findViewById(R.id.widget_text_input_layout_LinearLayout);
+        mEditText = (TextInputEditText) root.findViewById(R.id.widget_text_input_layout_TextInputEditText);
+        mEditTextShadow = (TextInputEditText) root.findViewById(R.id.widget_text_input_layout_TextInputEditText_shadow);
+        mTextInputLayoutShadow = (TextInputLayoutExtended) root.findViewById(R.id.widget_text_input_layout_TextInputLayout_shadow);
+        mTextInputLayout = (TextInputLayoutExtended) root.findViewById(R.id.widget_text_input_layout_TextInputLayout);
 
         if (!mHasShadow) {
             mTextInputLayoutShadow.setVisibility(GONE);
@@ -137,11 +149,6 @@ public class TextInputLayoutAppWidget extends LinearLayout {
             mTextInputLayoutShadow.setHint("Confirm " + mHintText);
         }
         mTextInputLayout.setHint(mHintText);
-
-        //Allow Error reporting
-        mTextInputLayout.setErrorEnabled(true);
-        mTextInputLayout.setHintAnimationEnabled(true);
-        mTextInputLayout.setError("");
         if (isInEditMode()) {   // If we are in development we stop here
             return;
         }
@@ -149,23 +156,49 @@ public class TextInputLayoutAppWidget extends LinearLayout {
          //Set default Locale
         mLocale = Locale.getDefault();
 
-
-/*        //Get widht of the progress bar and reset cardView accordingly
-        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                // Here you can get the size
-                int width = mTextInputLayout.getMeasuredWidth();
-                int height = mTextInputLayout.getMeasuredHeight();
-                //Log.i(TAG, "TextInput layout : width = " + width + " height = :" + height);
-                width = mEditText.getMeasuredWidth();
-                height = mEditText.getMeasuredHeight();
-                //Log.i(TAG, "EditText layout : width = " + width + " height = :" + height);
-
+        //Handle Active/Inactive colors
+        int[][] states = new int[][] {
+                new int[] { android.R.attr.state_focused}, // enabled
+                new int[] {-android.R.attr.state_focused}, // disabled
+        };
+        int[] colors = new int[] {
+                mColorTextActive,
+                mColorTextActive
+        };
+        final ColorStateList myColorStateListActive = new ColorStateList(states, colors);
+        colors = new int[] {
+                mColorTextInactive,
+                mColorTextInactive
+        };
+        final ColorStateList myColorStateListInactive = new ColorStateList(states, colors);
+        mTextInputLayout.setPasswordVisibilityToggleTintList(myColorStateListInactive);
+        mTextInputLayoutShadow.setPasswordVisibilityToggleTintList(myColorStateListInactive);
+        //Set text color based on focus of the EditText !
+        mEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    mEditText.setTextColor(mColorTextActive);
+                    mTextInputLayout.setPasswordVisibilityToggleTintList(myColorStateListActive);
+                } else {
+                    mEditText.setTextColor(mColorTextInactive);
+                    mTextInputLayout.setPasswordVisibilityToggleTintList(myColorStateListInactive);
+                }
             }
         });
-*/
+        //Set text color based on focus of the EditText !
+        mEditTextShadow.setOnFocusChangeListener(new OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    mEditTextShadow.setTextColor(mColorTextActive);
+                    mTextInputLayoutShadow.setPasswordVisibilityToggleTintList(myColorStateListActive);
+                } else {
+                    mEditTextShadow.setTextColor(mColorTextInactive);
+                    mTextInputLayoutShadow.setPasswordVisibilityToggleTintList(myColorStateListInactive);
+                }
+            }
+        });
 
+        //Handle TextWatcher depending on inputMode
         final TextWatcher mTextWatcher;
         switch (mInputMode) {
             case 0:  //name case
@@ -177,17 +210,16 @@ public class TextInputLayoutAppWidget extends LinearLayout {
                     @Override
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                         mTextInputLayout.setError("");
-                        mErrorColor = mColorErrorTyping;
-                        setErrorTextColor(mTextInputLayout, mErrorColor);
                         if (charSequence.length() > 0) {
                             if (charSequence.toString().equals("") || charSequence.toString().length() < 3) {
-                                mTextInputLayout.setError("Invalid name");
+                                mTextInputLayout.setError("Invalid name", mColorErrorTyping);
                             } else {
                                 mTextInputLayout.setError("");
                             }
                         } else {
                             mTextInputLayout.setError("");
                         }
+
                     }
                     @Override
                     public void afterTextChanged(Editable editable) {}
@@ -202,18 +234,16 @@ public class TextInputLayoutAppWidget extends LinearLayout {
 
                     @Override
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        mTextInputLayout.setError("");
-                        mErrorColor = mColorErrorTyping;
-                        setErrorTextColor(mTextInputLayout, mErrorColor);
-                        if (charSequence.length() > 0) {
-                            if (!Patterns.EMAIL_ADDRESS.matcher(charSequence).matches()) {
-                                mTextInputLayout.setError("Invalid email");
+                            mTextInputLayout.setError("");
+                            if (charSequence.length() > 0) {
+                                if (!Patterns.EMAIL_ADDRESS.matcher(charSequence).matches()) {
+                                    mTextInputLayout.setError("Invalid email",mColorErrorTyping);
+                                } else {
+                                    mTextInputLayout.setError("");
+                                }
                             } else {
                                 mTextInputLayout.setError("");
                             }
-                        } else {
-                            mTextInputLayout.setError("");
-                        }
                     }
 
                     @Override
@@ -234,25 +264,26 @@ public class TextInputLayoutAppWidget extends LinearLayout {
 
                     @Override
                     public void afterTextChanged(Editable editable) {
-                        mTextInputLayout.setError("");
-                        mErrorColor = mColorErrorTyping;
-                        setErrorTextColor(mTextInputLayout, mErrorColor);
-                        if (editable.length() > 0) {
-                            if (checkPhoneNumber(getText())) {
-                                mTextInputLayout.setError("");
-                                hideInputKeyBoard();
-                            } else {
-                                mTextInputLayout.setError("Invalid phone number");
-                            }
-                            if ((editable.toString().matches("[0-9]+") && editable.toString().length() > 0)) {
-                                //Do nothing
-                            } else {
-                                //The input character was not a number so we remove it
-                                editable.delete(editable.length() - 1, editable.length());
-                            }
-                        } else {
                             mTextInputLayout.setError("");
-                        }
+                            if (editable.length() > 0 && editable.length() < 15) {
+                                if (checkPhoneNumber(getText())) {
+                                    mTextInputLayout.setError("");
+                                    hideInputKeyBoard();
+                                } else {
+                                    mTextInputLayout.setError("Invalid phone number",mColorErrorTyping);
+                                }
+                                if ((editable.toString().matches("[0-9]+") && editable.toString().length() > 0)) {
+                                    //Do nothing
+                                } else {
+                                    //The input character was not a number so we remove it
+                                    editable.delete(editable.length() - 1, editable.length());
+                                }
+                            } else if (editable.length() >= 15) {
+                                //Do not allow to enter more than 15 digits
+                                editable.delete(editable.length() - 1, editable.length());
+                            } else {
+                                mTextInputLayout.setError("");
+                            }
                     }
                 };
                 break;
@@ -265,30 +296,27 @@ public class TextInputLayoutAppWidget extends LinearLayout {
 
                     @Override
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-
                     }
 
                     @Override
                     public void afterTextChanged(Editable editable) {
-                        mTextInputLayout.setError("");
-                        mErrorColor = mColorErrorTyping;
-                        if (editable.length() > 0) {
-                            mTextInputLayout.setError("Password quality");
-                            int quality = getPasswordQuality(editable.toString());
-                            mTextInputLayout.setError(String.format("Password quality %s", quality).concat(" %"));
-                            if (quality < 50)
-                                mErrorColor = ContextCompat.getColor(getContext(), R.color.md_red_500);
-                            else if (quality >= 50 && quality < 70)
-                                mErrorColor = ContextCompat.getColor(getContext(), R.color.md_orange_500);
-                            else if (quality >= 70)
-                                mErrorColor = ContextCompat.getColor(getContext(), R.color.md_green_500);
-                        } else {
                             mTextInputLayout.setError("");
+                            mErrorColor = mColorErrorTyping;
+                            if (editable.length() > 0) {
+                                mTextInputLayout.setError("Password quality");
+                                int quality = getPasswordQuality(editable.toString());
+                                mTextInputLayout.setError(String.format("Password quality %s", quality).concat(" %"));
+                                if (quality < 50)
+                                    mErrorColor = ContextCompat.getColor(getContext(), R.color.md_red_500);
+                                else if (quality >= 50 && quality < 70)
+                                    mErrorColor = ContextCompat.getColor(getContext(), R.color.md_orange_500);
+                                else if (quality >= 70)
+                                    mErrorColor = ContextCompat.getColor(getContext(), R.color.md_green_500);
+                            } else {
+                                mTextInputLayout.setError("");
+                            }
+                            mTextInputLayout.setErrorTextColor(mErrorColor);
                         }
-                        setErrorTextColor(mTextInputLayout, mErrorColor);
-                        mTextInputLayout.refreshDrawableState();
-                    }
                 };
                 break;
             case 4:  //password_confirm
@@ -306,20 +334,18 @@ public class TextInputLayoutAppWidget extends LinearLayout {
 
                     @Override
                     public void afterTextChanged(Editable editable) {
-                        mTextInputLayout.setError("");
-                        mErrorColor = mColorErrorTyping;
-                        if (editable.length() > 0) {
-                            int quality = getPasswordQuality(editable.toString());
-
-                            if (quality < 70)
-                                mTextInputLayout.setError(String.format("Incomplete password"));
-                            else
-                                mTextInputLayout.setError(String.format(""));
-                        } else {
+                            //Log.i(TAG,"Text Watcher ! password_confirm");
                             mTextInputLayout.setError("");
-                        }
-                        setErrorTextColor(mTextInputLayout, mErrorColor);
-                        mTextInputLayout.refreshDrawableState();
+                            if (editable.length() > 0) {
+                                int quality = getPasswordQuality(editable.toString());
+
+                                if (quality < 70)
+                                    mTextInputLayout.setError("Incomplete password",mColorErrorTyping);
+                                else
+                                    mTextInputLayout.setError("");
+                            } else {
+                                mTextInputLayout.setError("");
+                            }
                     }
                 };
                 break;
@@ -351,7 +377,6 @@ public class TextInputLayoutAppWidget extends LinearLayout {
         mEditTextShadow.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -370,28 +395,17 @@ public class TextInputLayoutAppWidget extends LinearLayout {
                 if (mEditTextShadow.getText().length() > 0 && mEditText.getText().length() > 0) {
                     //Check if both strings matches
                     String tmpStr = mEditText.getText().toString().substring(0, mEditTextShadow.getText().length());
-                    Log.i(TAG, "tmpPassword = " + tmpStr);
                     if (mEditTextShadow.getText().toString().equals(tmpStr)) {
                         mTextInputLayoutShadow.setError("");
                     } else {
-                        mTextInputLayoutShadow.setError("Passwords not matching");
-                        mErrorColor = mColorErrorTyping;
+                        mTextInputLayoutShadow.setError("Passwords not matching", mColorErrorTyping);
                     }
-                    setErrorTextColor(mTextInputLayoutShadow, mErrorColor);
                 }
             }
         });
 
-
         //Password text listener
         mEditText.addTextChangedListener(mTextWatcher);
-    }
-
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-
     }
 
     //Hide input keyboard
@@ -401,18 +415,9 @@ public class TextInputLayoutAppWidget extends LinearLayout {
     }
 
 
-    //set Error message
-    public void setError(String errorStr) {
-        mTextInputLayout.setError(errorStr);
+    public TextInputLayout getTextInputLayout() {
+        return mTextInputLayout;
     }
-
-    public void setError(String errorStr, int color) {
-        mErrorColor = ContextCompat.getColor(getContext(), color);
-        setErrorTextColor(mTextInputLayout, mErrorColor);
-        mTextInputLayout.setError(errorStr);
-        mTextInputLayout.refreshDrawableState();
-    }
-
     //Set locale for phone
     public void setLocale(Locale locale) {
         mLocale = locale;
@@ -420,60 +425,32 @@ public class TextInputLayoutAppWidget extends LinearLayout {
 
     //Get EditText text
     public String getText() {
-        return mEditText.getText().toString();
+        return mTextInputLayout.getText();
     }
 
     //Set EditText text
     public void setText(String text) {
-        mEditText.setText(text);
+        mTextInputLayout.setText(text);
     }
 
     //get the editText respective
-    public EditText getEditText() {
+    public TextInputEditText getEditText() {
         return mEditText;
     }
 
-    public static void setErrorTextColor2(TextInputLayout textInputLayout, int color) {
-        try {
-            Field fErrorView = TextInputLayout.class.getDeclaredField("mErrorView");
-            fErrorView.setAccessible(true);
-            TextView mErrorView = (TextView) fErrorView.get(textInputLayout);
-            Field fCurTextColor = TextView.class.getDeclaredField("mCurTextColor");
-            fCurTextColor.setAccessible(true);
-            fCurTextColor.set(mErrorView, color);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+    //Set error
+    public void setError(String error_text) {
+        mTextInputLayout.setError("");
+        mTextInputLayout.setErrorEnabled(false);
+        mTextInputLayout.refreshDrawableState();
+        mTextInputLayout.setErrorEnabled(true);
+        mTextInputLayout.setErrorTextColor(mColorErrorFinal);
+        mTextInputLayout.setError(error_text, mColorErrorFinal);
+        //mTextInputLayout.refreshDrawableState();
+        this.refreshDrawableState();
     }
 
-    //Set error textcolor by reflection
-    public void setErrorTextColor(View myView, int color) {
-        try {
-            Field fErrorView = TextInputLayout.class.getDeclaredField("mErrorView");
-            fErrorView.setAccessible(true);
-            TextView mErrorView = (TextView) fErrorView.get(myView);
-            Field fCurTextColor = TextView.class.getDeclaredField("mCurTextColor");
-            fCurTextColor.setAccessible(true);
-            fCurTextColor.set(mErrorView, color);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    //Set error textcolor by reflection
-    public int getErrorTextColor(View myView) {
-        try {
-            Field fErrorView = TextInputLayout.class.getDeclaredField("mErrorView");
-            fErrorView.setAccessible(true);
-            TextView mErrorView = (TextView) fErrorView.get(myView);
-            Field fCurTextColor = TextView.class.getDeclaredField("mCurTextColor");
-            fCurTextColor.setAccessible(true);
-            return (int) fCurTextColor.get(mErrorView);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     // Save contents on rotation hierarchically
@@ -489,9 +466,9 @@ public class TextInputLayoutAppWidget extends LinearLayout {
 
         //Our View arguments we Save
         Bundle data = new Bundle();
-        data.putInt(KEY_SAVE_COLOR_ERROR_TEXT, mErrorColor);
-        data.putSerializable("LOCALE", mLocale);
+        data.putSerializable(KEY_SAVE_LOCALE, mLocale);
         ss.myDataToSave = data;
+        Log.i(TAG, "OnSaveInstance : Saved locale : " + mLocale.getDisplayCountry());
         return ss;
     }
 
@@ -499,21 +476,18 @@ public class TextInputLayoutAppWidget extends LinearLayout {
     public void onRestoreInstanceState(Parcelable state) {
         SavedState ss = (SavedState) state;
         super.onRestoreInstanceState(ss.getSuperState());
+
         for (int i = 0; i < getChildCount(); i++) {
             getChildAt(i).restoreHierarchyState(ss.childrenStates);
         }
 
         //Our View arguments we restore
         Bundle data = ss.myDataToSave;
-        mLocale = (Locale) data.getSerializable("LOCALE");
-        mErrorColor = data.getInt(KEY_SAVE_COLOR_ERROR_TEXT);
-        Log.i(TAG, "Restored color : " + mErrorColor);
-        Log.i(TAG, "Restored locale: " + mLocale.getDisplayCountry());
-        mTextInputLayout.setErrorEnabled(true);
-        TextInputLayoutAppWidget.setErrorTextColor2(mTextInputLayout, mErrorColor);
-        //setErrorTextColor(mTextInputLayout,mErrorColor);
-
+        Log.i(TAG, "OnRestoreInstance");
+        mLocale = (Locale) data.getSerializable(KEY_SAVE_LOCALE);
+        Log.i(TAG, "OnRestoreInstance : Restored locale : " + mLocale.getDisplayCountry());
     }
+
 
     @Override
     protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
@@ -528,9 +502,6 @@ public class TextInputLayoutAppWidget extends LinearLayout {
     static class SavedState extends BaseSavedState {
         SparseArray childrenStates;          // Handle hierarchies
         Bundle myDataToSave = new Bundle();  // Bundle used to transfer our View arguments
-       // int ErrorTextColor;
-
-       // Locale mLocale;
 
         SavedState(Parcelable superState) {
             super(superState);
@@ -613,16 +584,10 @@ public class TextInputLayoutAppWidget extends LinearLayout {
                 result = false;
         }
         if (!result) {
-            mErrorColor = mColorErrorFinal;
-            setErrorTextColor(mTextInputLayout, mErrorColor);
-            mTextInputLayout.setError("Invalid field");
-            mTextInputLayout.refreshDrawableState();
+            mTextInputLayout.setError("Invalid field", mColorErrorFinal);
         }
         if (!shadowMatches()) {
-            mErrorColor = mColorErrorFinal;
-            setErrorTextColor(mTextInputLayoutShadow, mErrorColor);
-            mTextInputLayoutShadow.setError("Invalid field");
-            mTextInputLayoutShadow.refreshDrawableState();
+            mTextInputLayoutShadow.setError("Invalid field",mColorErrorFinal);
             result = false;
         }
 

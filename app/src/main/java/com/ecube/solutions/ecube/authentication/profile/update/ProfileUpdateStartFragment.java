@@ -123,8 +123,8 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(ProfileCreateEmailFragment.FRAGMENT_INPUT_PARAM_USER_EMAIL, mUser.getEmail());
-                ProfileCreateEmailFragment fragment = ProfileCreateEmailFragment.newInstance(bundle);
+                bundle.putSerializable(ProfileUpdateEmailFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
+                ProfileUpdateEmailFragment fragment = ProfileUpdateEmailFragment.newInstance(bundle);
                 fragment.setTargetFragment(ProfileUpdateStartFragment.this, REQUEST_DEFINE_EMAIL);
                 replaceFragment(fragment);  //This comes from abstract
             }
@@ -135,8 +135,8 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(ProfileCreatePhoneFragment.FRAGMENT_INPUT_PARAM_USER_PHONE_NUMBER, mUser.getPhone());
-                ProfileCreatePhoneFragment fragment = ProfileCreatePhoneFragment.newInstance(bundle);
+                bundle.putSerializable(ProfileUpdatePhoneFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
+                ProfileUpdatePhoneFragment fragment = ProfileUpdatePhoneFragment.newInstance(bundle);
                 fragment.setTargetFragment(ProfileUpdateStartFragment.this, REQUEST_DEFINE_PHONE);
                 replaceFragment(fragment);  //This comes from abstract
             }

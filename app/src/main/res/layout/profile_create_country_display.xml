@@ -14,7 +14,7 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:baselineAligned="false"
-    android:paddingLeft="10dp"
+    android:paddingLeft="5dp"
     android:paddingRight="10dp"
     android:paddingTop="2dp"
     android:paddingBottom="2dp"
@@ -22,33 +22,35 @@
     android:id="@+id/profile_create_country_display_LinearLayout">
 
     <ImageView
-        android:layout_width="0dp"
-        android:layout_height="20dp"
         android:id="@+id/profile_create_country_display_ImageView_flag"
-        android:src="@drawable/icon_delete"
-        android:layout_weight="1"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_gravity="center"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp" />
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="2dp"
+        android:layout_weight="1"
+        android:src="@drawable/icon_delete" />
 
     <TextView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="+33"
         android:id="@+id/profile_create_country_display_TextView_prefix"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
         android:gravity="center_vertical"
+        android:layout_gravity="center_vertical"
         android:paddingLeft="20dp"
-        android:layout_weight="2" />
+        android:text="+33"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Country"
         android:id="@+id/profile_create_country_display_TextView_country"
-        android:paddingLeft="20dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="4"
-        android:gravity="center_vertical" />
+        android:gravity="center_vertical"
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:text="Country"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 </LinearLayout>
 </android.support.v7.widget.CardView>

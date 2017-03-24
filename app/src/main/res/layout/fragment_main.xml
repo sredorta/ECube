@@ -15,8 +15,21 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+<!--
+        <com.ecube.solutions.ecube.widgets.TextInputLayoutExtended
+            android:id="@+id/myTest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/widget_text_input_layout_TextInputEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="hint"
+                android:inputType="textEmailAddress"/>
+        </com.ecube.solutions.ecube.widgets.TextInputLayoutExtended>
+-->
         <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

@@ -52,9 +52,9 @@
     </style>
 
     <style name="myCardStyle" parent="CardView">
-        <item name="cardBackgroundColor">@color/md_green_50</item>
-        <item name="cardElevation">22dp</item>
-        <item name="cardCornerRadius">10dp</item>
+        <!--<item name="cardBackgroundColor">@color/md_green_50</item>-->
+        <item name="cardElevation">5dp</item>
+        <item name="cardCornerRadius">5dp</item>
     </style>
 
 
@@ -71,7 +71,7 @@
 
     <style name="myEditTextStyle" parent="android:Widget.EditText">
         <item name="android:backgroundTint">@color/md_green_800</item>
-        <item name="android:textColor">@color/md_green_A700</item>
+        <item name="android:textColor">@color/md_green_800</item>
         <item name="android:textColorHint">@color/md_green_300</item>
     </style>
 

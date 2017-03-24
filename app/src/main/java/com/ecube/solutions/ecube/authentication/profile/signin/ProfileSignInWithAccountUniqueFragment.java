@@ -123,7 +123,7 @@ public class ProfileSignInWithAccountUniqueFragment extends FragmentAbstract{
                                 dialog.dismiss();
                                 if (result.hasExtra(AccountAuthenticator.KEY_ERROR_CODE)) {
                                     if (result.getStringExtra(AccountAuthenticator.KEY_ERROR_CODE).equals(AppGeneral.KEY_CODE_ERROR_INVALID_PASSWORD)) {
-                                         passwordTextInputLayout.setError("Invalid password",R.color.md_red_500);
+                                         passwordTextInputLayout.setError("Invalid password");
                                     } else {
                                         passwordTextInputLayout.setError("");
                                         Toast.makeText(getContext(), result.getStringExtra(AccountAuthenticator.KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();

@@ -26,67 +26,68 @@ android:focusableInTouchMode="true">
         android:baselineAligned="false">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center"
             android:layout_weight="1"
-            android:layout_gravity="top|center">
+            android:orientation="vertical">
 
             <android.support.v7.widget.CardView
+                android:id="@+id/profile_create_avatar_cardView"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:elevation="12dp"
-                android:id="@+id/profile_create_avatar_cardView"
-                app:cardCornerRadius="50dp"
                 android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:elevation="12dp"
+                android:focusable="false"
                 android:innerRadius="0dp"
                 android:shape="ring"
                 android:thicknessRatio="1.9"
-                android:focusable="false"
-                android:layout_gravity="center">
+                app:cardCornerRadius="50dp">
+
                 <ImageView
-                    android:layout_height="100dp"
-                    android:layout_width="match_parent"
                     android:id="@+id/profile_signin_with_account_unique_ImageView_avatar"
-                    android:src="@drawable/profile_user_default"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
                     android:scaleType="fitXY"
-                    android:layout_gravity="center">
-                </ImageView>
+                    android:src="@drawable/profile_user_default"></ImageView>
             </android.support.v7.widget.CardView>
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2">
+            android:layout_weight="2"
+            android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="test"
                 android:id="@+id/profile_signin_with_account_unique_name"
-                android:layout_gravity="left|center"
-                android:textStyle="bold"
-                android:gravity="center_horizontal" />
-
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="test@email"
+                android:layout_gravity="left|center"
+                android:gravity="center_horizontal"
+                android:text="test"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/profile_signin_with_account_unique_email"
-                android:layout_gravity="left|bottom|center_horizontal"
-                android:gravity="center_horizontal" />
-            <com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:inputMode="password_confirm"
+                android:layout_gravity="left|bottom|center_horizontal"
+                android:gravity="center_horizontal"
+                android:text="test@email"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget
+                android:id="@+id/profile_signin_with_account_unique_TextInputLayoutAppWidget_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 app:hasShadow="false"
                 app:hint="password"
-                android:id="@+id/profile_signin_with_account_unique_TextInputLayoutAppWidget_password"
-                />
+                app:inputMode="password_confirm" />
             <!--
             <android.support.design.widget.TextInputLayout
                 android:layout_width="wrap_content"
@@ -113,12 +114,12 @@ android:focusableInTouchMode="true">
             android:gravity="fill_horizontal|center">
 
             <Button
+                android:id="@+id/profile_signin_with_account_unique_Button_submit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="NEXT"
-                android:id="@+id/profile_signin_with_account_unique_Button_submit"
-                android:layout_gravity="left|center"
-                android:layout_marginBottom="10dp" />
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:text="NEXT" />
         </LinearLayout>
 
     </LinearLayout>

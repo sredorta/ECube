@@ -2,6 +2,7 @@ package com.ecube.solutions.ecube.authentication.profile.signin;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -266,14 +267,19 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
             mAccountNameTextView.setText(mAccountManager.getUserData(account, AccountAuthenticator.PARAM_USER_EMAIL));
             mUser.setAvatar(mAccountManager.getUserData(account, AccountAuthenticator.PARAM_USER_AVATAR));
             mAvatarImageView.setImageBitmap(mUser.getAvatar(getContext()));
+
             //Define color for active or not active account (last log-in)
             if (mUser.getEmail() != null) {
                 if (mUser.getEmail().equals(account.name)) {
                     itemView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.md_lime_50));
                     buttonViewOption.setEnabled(true);
+                    mUserFullNameTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+                    mAccountNameTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
                     IconHelper.colorize(getContext(), buttonViewOption, R.color.md_lime_300);
                 } else {
-                    itemView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.md_white_1000));
+                    itemView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.md_grey_100));
+                    mUserFullNameTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.md_grey_500));
+                    mAccountNameTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.md_grey_500));
                     IconHelper.colorize(getContext(), buttonViewOption, R.color.md_grey_300);
                     buttonViewOption.setEnabled(false);
                 }

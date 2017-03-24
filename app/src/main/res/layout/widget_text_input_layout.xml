@@ -8,35 +8,36 @@
     android:orientation="vertical"
     app:errorColorFinal="@color/md_red_500"
     app:errorColorTyping="@color/md_lime_500"
+    app:textActiveColor="@color/md_green_A700"
+    app:textInactiveColor="@color/md_green_700"
     app:hasShadow="false"
     app:inputMode="email">
 
-    <android.support.design.widget.TextInputLayout
+    <com.ecube.solutions.ecube.widgets.TextInputLayoutExtended
         android:id="@+id/widget_text_input_layout_TextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/widget_text_input_layout_EditText"
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/widget_text_input_layout_TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="hint"
             android:inputType="textEmailAddress" />
-    </android.support.design.widget.TextInputLayout>
+    </com.ecube.solutions.ecube.widgets.TextInputLayoutExtended>
 
-    <android.support.design.widget.TextInputLayout
+    <com.ecube.solutions.ecube.widgets.TextInputLayoutExtended
         android:id="@+id/widget_text_input_layout_TextInputLayout_shadow"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <EditText
-            android:id="@+id/widget_text_input_layout_EditText_shadow"
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/widget_text_input_layout_TextInputEditText_shadow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="hint"
             android:inputType="textEmailAddress" />
-    </android.support.design.widget.TextInputLayout>
+    </com.ecube.solutions.ecube.widgets.TextInputLayoutExtended>
 
 </LinearLayout>
