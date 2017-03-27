@@ -40,8 +40,9 @@ public class CloudFetchr {
     private static final String PHP_USER_SIGNUP = "user.signup.php";                            // Params required : user,password,email,user_table and returns token
     private static final String PHP_USER_CHECK_PASSWORD = "user.check_password.php";            //Params required: id, token,password...
     private static final String PHP_USER_CHANGE_PASSWORD = "user.change_password.php";          //Params required: id, token,password, new pass,...
-    private static final String PHP_USER_CHANGE_EMAIL = "user.change_email.php";          //Params required: id, token,password, new pass,...
-    private static final String PHP_USER_CHANGE_PHONE = "user.change_phone.php";          //Params required: id, token,password, new pass,...
+    private static final String PHP_USER_CHANGE_EMAIL = "user.change_email.php";                //Params required: id, token,password, new pass,...
+    private static final String PHP_USER_CHANGE_PHONE = "user.change_phone.php";                //Params required: id, token,password, new pass,...
+    private static final String PHP_USER_RESET_PASSWORD = "user.reset_password.php";            //Params required: email,language...
 
     private static final String PHP_USER_PASSWORD = "locker.users.setpassword.php";                    // Params required : user,password,email,user_table and returns token
     private static final String PHP_USER_TOKEN = "locker.users.checktoken.php";                 // Params required : email,token and returns if token is valid or not
@@ -449,7 +450,16 @@ public class CloudFetchr {
         return getJSON(url,parameters);
     }
 
+    //Checks if the user is registered and returns all Details
+    public JsonItem userResetPassword(String userEmail, String lang) {
+        this.SEND_METHOD="POST";
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("email", userEmail);
+        parameters.put("language", lang);
 
+        URL url = buildUrl(PHP_USER_RESET_PASSWORD, parameters);
+        return getJSON(url,parameters);
+    }
 
 /*
     //Checks if the user is registered and returns token only

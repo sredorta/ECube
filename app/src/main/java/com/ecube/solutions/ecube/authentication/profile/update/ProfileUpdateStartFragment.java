@@ -3,6 +3,7 @@ package com.ecube.solutions.ecube.authentication.profile.update;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
@@ -11,6 +12,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,10 +32,17 @@ import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateEmai
 import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateNamesFragment;
 import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreatePasswordFragment;
 import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreatePhoneFragment;
+import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
+import com.ecube.solutions.ecube.authentication.profile.dialogs.CountryPickerFragment;
 import com.ecube.solutions.ecube.authentication.profile.signin.ProfileSignInWithEmailFragment;
 import com.ecube.solutions.ecube.helpers.IconHelper;
 import com.ecube.solutions.ecube.network.Encryption;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -55,6 +66,12 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
 
     private AccountAuthenticator myAccountAuthenticator;
     private User mUser;
+
+    private ProfileUpdateStartFragment.MenuListAdapter mAdapter;
+    private RecyclerView mMenuRecycleViewer;
+    private List<MenuItem> mMenuItems = new ArrayList<>();
+
+
 
     // Constructor
     public static ProfileUpdateStartFragment newInstance() {
@@ -84,7 +101,36 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
         }
         mUser = myAccountAuthenticator.getDataFromDeviceAccount(myAccountAuthenticator.getAccount(mUser));
 
+        //Init the List of items
+        initMenuItems();
     }
+
+    private void initMenuItems() {
+        MenuItem myItem = new MenuItem();
+        myItem.setText("Change email");
+        myItem.setDrawable(IconHelper.colorize(getContext(),R.drawable.icon_settings_email,R.color.md_lime_700));
+        myItem.setAction("email");
+        mMenuItems.add(myItem);
+
+        myItem = new MenuItem();
+        myItem.setText("Change phone");
+        myItem.setDrawable(IconHelper.colorize(getContext(),R.drawable.icon_settings_phone,R.color.md_lime_700));
+        myItem.setAction("phone");
+        mMenuItems.add(myItem);
+
+        myItem = new MenuItem();
+        myItem.setText("Change password");
+        myItem.setDrawable(IconHelper.colorize(getContext(),R.drawable.icon_settings_password,R.color.md_lime_700));
+        myItem.setAction("password");
+        mMenuItems.add(myItem);
+
+        myItem = new MenuItem();
+        myItem.setText("Change access type");
+        myItem.setDrawable(IconHelper.colorize(getContext(),R.drawable.icon_settings_account,R.color.md_lime_700));
+        myItem.setAction("access");
+        mMenuItems.add(myItem);
+    }
+
 
     @Nullable
     @Override
@@ -93,6 +139,11 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
         setCurrentView(v);
         initHeaderAccount();
 
+        //Update the RecycleView
+        mMenuRecycleViewer = (RecyclerView) v.findViewById(R.id.profile_update_start_RecycleViewer);
+        mMenuRecycleViewer.setLayoutManager(new LinearLayoutManager(mActivity));
+        updateMenuRecycleViewer();
+/*
         //Fields part
         final ImageView emailSettings = (ImageView) v.findViewById(R.id.profile_update_start_ImageView_email);
         IconHelper.colorize(getContext(), emailSettings, R.color.md_lime_700);
@@ -115,42 +166,8 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
         final TextView accessTypeSettingsTextView = (TextView) v.findViewById(R.id.profile_update_start_TextView_access);
         accessTypeSettingsTextView.setTextColor(ContextCompat.getColor(getContext(),R.color.md_grey_900));
 
-        //Listeners
-        v.findViewById(R.id.profile_update_start_email_cardView).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(ProfileUpdateEmailFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
-                ProfileUpdateEmailFragment fragment = ProfileUpdateEmailFragment.newInstance(bundle);
-                fragment.setTargetFragment(ProfileUpdateStartFragment.this, REQUEST_DEFINE_EMAIL);
-                replaceFragment(fragment);  //This comes from abstract
-            }
-        });
 
-        //Listeners
-        v.findViewById(R.id.profile_update_start_phone_cardView).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(ProfileUpdatePhoneFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
-                ProfileUpdatePhoneFragment fragment = ProfileUpdatePhoneFragment.newInstance(bundle);
-                fragment.setTargetFragment(ProfileUpdateStartFragment.this, REQUEST_DEFINE_PHONE);
-                replaceFragment(fragment);  //This comes from abstract
-            }
-        });
-
-        //Listeners
-        v.findViewById(R.id.profile_update_start_password_cardView).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(ProfileUpdatePasswordFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
-                ProfileUpdatePasswordFragment fragment = ProfileUpdatePasswordFragment.newInstance(bundle);
-                fragment.setTargetFragment(ProfileUpdateStartFragment.this, REQUEST_DEFINE_PASSWORD);
-                replaceFragment(fragment);  //This comes from abstract
-            }
-        });
-
+*/
 
         return v;
     }
@@ -185,10 +202,6 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
                 needToUpdate = true;
             } else if( requestCode == REQUEST_DEFINE_PASSWORD) {
                 mUser.setPassword((String) data.getSerializableExtra(ProfileUpdatePasswordFragment.FRAGMENT_OUTPUT_PARAM_USER_PASSWORD));
-                /*Log.i(TAG, "After change of password we have now: " + mUser.getPassword());
-                AccountAuthenticator ag = new AccountAuthenticator(getContext(), mUser);
-                Log.i(TAG, "In account : " + ag.getPassword());
-                Log.i(TAG, "Text sha1  : " + Encryption.getSHA1(mUser.getPassword()));*/
                 needToUpdate = true;
             }
             if (needToUpdate) {
@@ -224,6 +237,118 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(KEY_CURRENT_USER, mUser.getEmail());
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // RecycleViewer part
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //Updates the recycleview
+    private void updateMenuRecycleViewer() {
+        mAdapter = new ProfileUpdateStartFragment.MenuListAdapter(mMenuItems);
+        mMenuRecycleViewer.setAdapter(mAdapter);
+    }
+
+    private class MenuListHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private CardView mMenuCardView;
+        private TextView mMenuTextView;
+        private ImageView mMenuImageView;
+        private String mAction = "default";
+
+
+        private MenuListHolder(View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(this);
+            mMenuCardView = (CardView) itemView.findViewById(R.id.general_menu_item_cardView);
+            mMenuTextView = (TextView) itemView.findViewById(R.id.general_menu_item_TextView_title);
+            mMenuImageView = (ImageView) itemView.findViewById(R.id.general_menu_item_ImageView);
+        }
+
+
+        @Override
+        public void onClick(View view) {
+
+            if (mAction.equals("email")) {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(ProfileUpdateEmailFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
+                    ProfileUpdateEmailFragment fragment = ProfileUpdateEmailFragment.newInstance(bundle);
+                    fragment.setTargetFragment(ProfileUpdateStartFragment.this, REQUEST_DEFINE_EMAIL);
+                    replaceFragment(fragment);  //This comes from abstract
+            } else if( mAction.equals("phone")) {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(ProfileUpdatePhoneFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
+                    ProfileUpdatePhoneFragment fragment = ProfileUpdatePhoneFragment.newInstance(bundle);
+                    fragment.setTargetFragment(ProfileUpdateStartFragment.this, REQUEST_DEFINE_PHONE);
+                    replaceFragment(fragment);  //This comes from abstract
+            } else if (mAction.equals("password")) {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(ProfileUpdatePasswordFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
+                    ProfileUpdatePasswordFragment fragment = ProfileUpdatePasswordFragment.newInstance(bundle);
+                    fragment.setTargetFragment(ProfileUpdateStartFragment.this, REQUEST_DEFINE_PASSWORD);
+                    replaceFragment(fragment);  //This comes from abstract
+            }
+        }
+
+
+        public void bindMenuItem(MenuItem myItem, ProfileUpdateStartFragment.MenuListHolder holder ) {
+            mMenuTextView.setText(myItem.getText());
+            mMenuImageView.setImageDrawable(myItem.getDrawable());
+            mAction = myItem.getAction();
+        }
+
+
+    }
+
+    private class MenuListAdapter extends RecyclerView.Adapter<ProfileUpdateStartFragment.MenuListHolder> {
+
+        public MenuListAdapter(List<MenuItem> menuItems) {
+            mMenuItems = menuItems;
+        }
+
+        @Override
+        public ProfileUpdateStartFragment.MenuListHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater layoutInflater = LayoutInflater.from(mActivity);
+            View view = layoutInflater.inflate(R.layout.general_menu_item, parent,false);
+            return new ProfileUpdateStartFragment.MenuListHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(ProfileUpdateStartFragment.MenuListHolder holder, int position) {
+            MenuItem menuItem = mMenuItems.get(position);
+            holder.bindMenuItem(menuItem,holder);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mMenuItems.size();
+        }
+    }
+
+    private class MenuItem {
+        Drawable mDrawable;
+        String mText;
+        String mAction;
+
+        public void setDrawable(Drawable drawable) {
+            mDrawable = drawable;
+        }
+        public Drawable getDrawable() {
+            return mDrawable;
+        }
+        public void setText(String text) {
+            mText = text;
+        }
+
+        public String getText() {
+            return mText;
+        }
+        public void setAction(String text) {
+            mAction = text;
+        }
+
+        public String getAction() {
+            return mAction;
+        }
+
     }
 
 

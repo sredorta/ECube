@@ -646,7 +646,35 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
             }
         }.execute();
     }
+    //Reset password and send email with new password
+    public void resetPassword(AsyncTaskInterface<JsonItem> myAsyncTaskInterface, final Activity activity) {
+        new AsyncTaskAbstract<Void, Void, JsonItem>(myAsyncTaskInterface,700) {
+            JsonItem item;
+            @Override
+            protected JsonItem doInBackground(Void... params) {
+                super.doInBackground();
+                Log.i(TAG, "Started checking password");
 
+                item = sServerAuthenticate.userResetPassword(mUser);
+                //Check that account and user password matches
+                if (item.getResult()) {
+                    //We need to now set the password in the account locally
+                    mAccountManager.setPassword(getAccount(mUser), mUser.getPassword());
+                    mAccountManager.setAuthToken(getAccount(mUser),AccountAuthenticator.AUTHTOKEN_TYPE_STANDARD, null); //Reset token
+                    Log.i(TAG, "Password set also in local account ! to : " + mUser.getPassword());
+                    //item.setKeyError(AppGeneral.KEY_CODE_ERROR_INVALID_PASSWORD);
+                }
+                //Check that server has same password
+                return item;
+            }
+
+            @Override
+            protected void onPostExecute(JsonItem result) {
+                super.onPostExecute(result);
+
+            }
+        }.execute();
+    }
 
 
     //Only for Debug

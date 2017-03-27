@@ -1,5 +1,6 @@
 package com.ecube.solutions.ecube.authentication.profile.signin;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
+import com.ecube.solutions.ecube.authentication.profile.update.ProfileResetPasswordFragment;
 import com.ecube.solutions.ecube.general.AppGeneral;
 import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 
@@ -42,6 +44,7 @@ public class ProfileSignInWithAccountUniqueFragment extends FragmentAbstract{
 
     //Request to connect to another account in case several accounts are available
     private static final int REQ_SIGNIN_WITH_ACCOUNTS = 1;
+    private static final int REQ_RESET_PASSWORD =2;
 
     private AccountAuthenticator myAccountAuthenticator;
     private User mUser;
@@ -86,6 +89,7 @@ public class ProfileSignInWithAccountUniqueFragment extends FragmentAbstract{
         final ImageView avatarImageView = (ImageView) v.findViewById(R.id.profile_signin_with_account_unique_ImageView_avatar);
         final TextInputLayoutAppWidget passwordTextInputLayout = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_signin_with_account_unique_TextInputLayoutAppWidget_password);
         final TextView otherAccountTextView = (TextView) v.findViewById(R.id.profile_signin_with_account_unique_TextView_other);
+        final TextView forgotPasswordTextView = (TextView) v.findViewById(R.id.profile_signin_with_account_unique_TextView_forgot);
 
         //Do not show the see several accounts if there is only one
         if (myAccountAuthenticator.getAccountsCount()<2) {
@@ -144,8 +148,28 @@ public class ProfileSignInWithAccountUniqueFragment extends FragmentAbstract{
                 replaceFragment(fragment, AppGeneral.KEY_FRAGMENT_STACK_LEVEL_UNDEFINED, true);  //This comes from abstract
             }
         });
+
+        //In case we forgot the password
+        forgotPasswordTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle data = new Bundle();
+                data.putString(ProfileResetPasswordFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
+                ProfileResetPasswordFragment fragment = ProfileResetPasswordFragment.newInstance(data);
+                fragment.setTargetFragment(ProfileSignInWithAccountUniqueFragment.this, REQ_RESET_PASSWORD);
+                replaceFragment(fragment, AppGeneral.KEY_FRAGMENT_STACK_LEVEL_UNDEFINED, true);  //This comes from abstract
+            }
+        });
+
         return v;
     }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            // Reload our fragment
+            replaceFragment(this, AppGeneral.KEY_FRAGMENT_STACK_LEVEL_0,true);
+
+    }
+
 
     //Save user in case of rotation
     @Override

@@ -1,12 +1,15 @@
 package com.ecube.solutions.ecube.helpers;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
@@ -28,5 +31,13 @@ public class IconHelper {
         mDrawable.setColorFilter(porterDuffColorFilter);
         imageView.setImageDrawable(mDrawable);
     }
+    public static Drawable colorize(Context context, @DrawableRes int resource, @ColorRes int color) {
+        Drawable mDrawable = mDrawable = context.getResources().getDrawable(resource, context.getTheme()).mutate();
+        PorterDuffColorFilter porterDuffColorFilter;
+        porterDuffColorFilter = new PorterDuffColorFilter(ContextCompat.getColor(context, color), PorterDuff.Mode.SRC_ATOP);
+        mDrawable.setColorFilter(porterDuffColorFilter);
+        return mDrawable;
+    }
+
 
 }

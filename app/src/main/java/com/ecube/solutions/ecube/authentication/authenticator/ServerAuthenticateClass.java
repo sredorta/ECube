@@ -121,7 +121,18 @@ public class ServerAuthenticateClass implements ServerAuthenticate {
         return item;
     }
 
-
+    //Send to the Server request of reset password and get new password
+    @Override
+    public JsonItem userResetPassword(User user) {
+        JsonItem item =  new CloudFetchr().userResetPassword(user.getEmail(), user.getLanguage());
+        if (item.getAccountDetails() != null) {
+            User myUser = User.parseJSON(item.getAccountDetails());
+            //Update the fields that we have got from the server we will get the new password
+            user.update(myUser);
+        }
+        user.print("After Json parse");
+        return item;
+    }
 
     /*
     //Send to the server all fields and create a new user and get the token
