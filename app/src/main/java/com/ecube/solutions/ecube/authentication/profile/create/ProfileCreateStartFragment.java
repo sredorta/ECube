@@ -3,7 +3,6 @@ package com.ecube.solutions.ecube.authentication.profile.create;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -14,15 +13,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.ecube.solutions.ecube.MainFragment;
 import com.ecube.solutions.ecube.R;
-import com.ecube.solutions.ecube.WaitDialogFragment;
+import com.ecube.solutions.ecube.dialogs.WaitDialogFragment;
 import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
-import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
-import com.ecube.solutions.ecube.general.AppGeneral;
 import com.ecube.solutions.ecube.helpers.IntentHelper;
 
 
@@ -134,7 +130,7 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
                         IntentHelper.dumpIntent(result);
                         dialog.dismiss();
                         if (result.hasExtra(AccountAuthenticator.KEY_ERROR_MESSAGE)) {
-                                Toast.makeText(getContext(), result.getStringExtra(AccountAuthenticator.KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mActivity, result.getStringExtra(AccountAuthenticator.KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                         }
                     }
                 }, mActivity);

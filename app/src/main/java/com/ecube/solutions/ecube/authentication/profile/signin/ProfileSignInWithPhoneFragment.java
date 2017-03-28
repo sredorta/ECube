@@ -2,26 +2,20 @@ package com.ecube.solutions.ecube.authentication.profile.signin;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
-import android.telephony.PhoneNumberFormattingTextWatcher;
-import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ecube.solutions.ecube.R;
-import com.ecube.solutions.ecube.WaitDialogFragment;
+import com.ecube.solutions.ecube.dialogs.WaitDialogFragment;
 import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
@@ -31,9 +25,7 @@ import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.authentication.profile.dialogs.CountryPickerFragment;
 import com.ecube.solutions.ecube.general.AppGeneral;
 import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
-import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.util.Locale;
 
@@ -49,7 +41,7 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
     private User mUser;
     private final int REQ_SIGNUP = 1;
     private final int REQ_SIGNIN_WITH_EMAIL = 2;
-
+    private final int REQ_FORGOT_PASSWORD = 3;
 
     //For rotation
     private static String KEY_CURRENT_LOCALE = "user.current.locale";
@@ -146,7 +138,7 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
                                     } else if (result.getStringExtra(AccountAuthenticator.KEY_ERROR_CODE).equals(AppGeneral.KEY_CODE_ERROR_INVALID_PASSWORD)) {
                                         passwordTextInputLayout.setError("Invalid password");
                                     } else {
-                                        Toast.makeText(getContext(), result.getStringExtra(AccountAuthenticator.KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(mActivity, result.getStringExtra(AccountAuthenticator.KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }
@@ -177,6 +169,22 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
                 replaceFragment(fragment);  //This comes from abstract
             }
         });
+/*
+        //Go for forgot password
+        v.findViewById(R.id.profile_signin_with_phone_TextView_forgot_password).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (phoneTextInputLayout.isValidInput()) {
+
+                    Bundle data = new Bundle();
+                    data.putString(ProfileResetPasswordFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
+                    ProfileResetPasswordFragment fragment = ProfileResetPasswordFragment.newInstance(data);
+                    fragment.setTargetFragment(ProfileSignInWithPhoneFragment.this, REQ_FORGOT_PASSWORD);
+                    replaceFragment(fragment);  //This comes from abstract
+                }
+            }
+        });
+        */
         return v;
     }
 
@@ -190,6 +198,8 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
             phoneTextInputLayout.setLocale(mLocale);
             phoneTextInputLayout.setText(phoneTextInputLayout.getText());
             phoneTextInputLayout.getEditText().setSelection(phoneTextInputLayout.getText().length());
+        } else if (resultCode == REQ_FORGOT_PASSWORD) {
+//            replaceFragment(this,this.getTag(),true);
         }
     }
 

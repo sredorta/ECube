@@ -1,37 +1,23 @@
 package com.ecube.solutions.ecube.authentication.profile.update;
 
-import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ecube.solutions.ecube.R;
-import com.ecube.solutions.ecube.WaitDialogFragment;
+import com.ecube.solutions.ecube.dialogs.WaitDialogFragment;
 import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
-import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateEmailFragment;
-import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreatePasswordFragment;
-import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreatePhoneFragment;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
-import com.ecube.solutions.ecube.authentication.profile.signin.ProfileSignInWithEmailFragment;
 import com.ecube.solutions.ecube.general.AppGeneral;
-import com.ecube.solutions.ecube.helpers.IconHelper;
-import com.ecube.solutions.ecube.network.Encryption;
 import com.ecube.solutions.ecube.network.JsonItem;
 import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 
@@ -46,6 +32,9 @@ public class ProfileUpdatePasswordFragment extends FragmentAbstract {
     //Fragment arguments
     public static final String FRAGMENT_INPUT_PARAM_USER_CURRENT = "user.current.in";
     public static final String FRAGMENT_OUTPUT_PARAM_USER_PASSWORD = "user.password.out";    //String
+
+    //Request to other fragments
+    private static final int REQ_RESET_PASSWORD =1;
 
     //In case of rotations
     public static final String KEY_CURRENT_USER = "user.save";
@@ -117,7 +106,7 @@ public class ProfileUpdatePasswordFragment extends FragmentAbstract {
                                 } else {
                                     passwordOldTextInputLayout.setError("");
                                     if (!result.getKeyError().equals(AppGeneral.KEY_CODE_SUCCESS)) {
-                                        Toast.makeText(getContext(), result.getMessage(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(mActivity, result.getMessage(), Toast.LENGTH_SHORT).show();
                                     } else {
                                         putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_PASSWORD, passwordNewTextInputLayout.getText());
                                         sendResult(Activity.RESULT_OK);
@@ -131,9 +120,25 @@ public class ProfileUpdatePasswordFragment extends FragmentAbstract {
             }
         });
 
-
+        v.findViewById(R.id.profile_update_password_TextView_forgot).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle data = new Bundle();
+                data.putString(ProfileUpdateResetPasswordFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
+                ProfileUpdateResetPasswordFragment fragment = ProfileUpdateResetPasswordFragment.newInstance(data);
+                fragment.setTargetFragment(ProfileUpdatePasswordFragment.this, REQ_RESET_PASSWORD);
+                replaceFragment(fragment, AppGeneral.KEY_FRAGMENT_STACK_LEVEL_UNDEFINED, true);  //This comes from abstract
+            }
+        });
 
         return v;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Reload our fragment
+        replaceFragment(this,this.getTag(),true);
+
     }
 
     //Save user in case of rotation

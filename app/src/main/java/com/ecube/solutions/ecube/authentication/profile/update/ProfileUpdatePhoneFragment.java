@@ -16,11 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ecube.solutions.ecube.R;
-import com.ecube.solutions.ecube.WaitDialogFragment;
+import com.ecube.solutions.ecube.dialogs.WaitDialogFragment;
 import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
-import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreatePhoneFragment;
 import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.authentication.profile.dialogs.CountryPickerFragment;
@@ -150,7 +149,7 @@ public class ProfileUpdatePhoneFragment extends FragmentAbstract {
                                 } else {
                                     passwordTextInputLayout.setError("");
                                     if (!result.getKeyError().equals(AppGeneral.KEY_CODE_SUCCESS)) {
-                                        Toast.makeText(getContext(), result.getMessage(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(mActivity, result.getMessage(), Toast.LENGTH_SHORT).show();
                                     } else {
                                         putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_PHONE, phoneTextInputLayout.getFinalPhoneNumber());
                                         sendResult(Activity.RESULT_OK);

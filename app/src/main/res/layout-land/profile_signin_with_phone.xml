@@ -68,14 +68,6 @@ style="?attr/cardStyle"
         android:id="@+id/profile_signin_with_phone_TextInputLayoutAppWidget_password"
         android:gravity="center_horizontal"
         android:layout_gravity="center_horizontal" />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="NEXT"
-        android:id="@+id/profile_signin_with_phone_Button_submit"
-        android:layout_gravity="center"
-        android:layout_marginTop="5dp" />
-
 </LinearLayout>
 </android.support.v7.widget.CardView>
 <LinearLayout
@@ -85,7 +77,13 @@ android:layout_height="match_parent"
 android:gravity="center_vertical|center_horizontal"
 android:layout_gravity="center_vertical"
     android:layout_weight="1">
-
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NEXT"
+        android:id="@+id/profile_signin_with_phone_Button_submit"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp" />
 <TextView
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"

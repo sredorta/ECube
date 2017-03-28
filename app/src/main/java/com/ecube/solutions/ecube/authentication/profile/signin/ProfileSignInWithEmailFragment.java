@@ -2,24 +2,23 @@ package com.ecube.solutions.ecube.authentication.profile.signin;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.ecube.solutions.ecube.R;
-import com.ecube.solutions.ecube.WaitDialogFragment;
+import com.ecube.solutions.ecube.dialogs.WaitDialogFragment;
 import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
 import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateStartFragment;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
+import com.ecube.solutions.ecube.authentication.profile.update.ProfileUpdateResetPasswordFragment;
 import com.ecube.solutions.ecube.general.AppGeneral;
 import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 
@@ -35,7 +34,7 @@ public class ProfileSignInWithEmailFragment extends FragmentAbstract {
     private User mUser;
     private final int REQ_SIGNUP = 1;
     private final int REQ_SIGNIN_WITH_PHONE = 2;
-
+    private final int REQ_FORGOT_PASSWORD = 3;
 
     // Constructor
     public static ProfileSignInWithEmailFragment newInstance() {
@@ -91,7 +90,7 @@ public class ProfileSignInWithEmailFragment extends FragmentAbstract {
                                     } else if (result.getStringExtra(AccountAuthenticator.KEY_ERROR_CODE).equals(AppGeneral.KEY_CODE_ERROR_INVALID_PASSWORD)) {
                                         passwordTextInputLayout.setError("Invalid password");
                                     } else {
-                                        Toast.makeText(getContext(), result.getStringExtra(AccountAuthenticator.KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(mActivity, result.getStringExtra(AccountAuthenticator.KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }
@@ -121,8 +120,30 @@ public class ProfileSignInWithEmailFragment extends FragmentAbstract {
                 replaceFragment(fragment);
             }
         });
-
+        //Go for forgot password
+        v.findViewById(R.id.profile_signin_with_email_TextView_forgot_password).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (emailTextInputLayout.isValidInput()) {
+                    Bundle data = new Bundle();
+                    data.putString(ProfileUpdateResetPasswordFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, emailTextInputLayout.getText());
+                    ProfileUpdateResetPasswordFragment fragment = ProfileUpdateResetPasswordFragment.newInstance(data);
+                    fragment.setTargetFragment(ProfileSignInWithEmailFragment.this, REQ_FORGOT_PASSWORD);
+                    replaceFragment(fragment);  //This comes from abstract
+                } else {
+                    Snackbar.make(mView,"Enter the email of the account you want to reset the password",Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        });
         return v;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode== REQ_FORGOT_PASSWORD) {
+            replaceFragment(this,this.getTag(),true);
+        }
     }
 }
 

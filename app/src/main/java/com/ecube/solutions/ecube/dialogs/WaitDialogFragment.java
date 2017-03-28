@@ -1,6 +1,5 @@
-package com.ecube.solutions.ecube;
+package com.ecube.solutions.ecube.dialogs;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.graphics.Color;
@@ -8,27 +7,15 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
+import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.DialogAbstract;
-import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by sredorta on 3/10/2017.
@@ -46,6 +33,7 @@ public class WaitDialogFragment extends DialogAbstract {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        setRetainInstance(true);        //Set dialog to be retained to avoid issues of rotation !
         View v = LayoutInflater.from(mActivity).inflate(R.layout.wait_fragment,null);
         mView = v;
         dialogCardView = (CardView)v.findViewById(R.id.wait_fragment_CardView);

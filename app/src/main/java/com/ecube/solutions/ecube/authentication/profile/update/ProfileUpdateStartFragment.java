@@ -2,16 +2,9 @@ package com.ecube.solutions.ecube.authentication.profile.update;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,26 +16,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ecube.solutions.ecube.R;
-import com.ecube.solutions.ecube.WaitDialogFragment;
-import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
-import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateAvatarFragment;
 import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateEmailFragment;
-import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateNamesFragment;
-import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreatePasswordFragment;
-import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreatePhoneFragment;
-import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
-import com.ecube.solutions.ecube.authentication.profile.dialogs.CountryPickerFragment;
-import com.ecube.solutions.ecube.authentication.profile.signin.ProfileSignInWithEmailFragment;
 import com.ecube.solutions.ecube.helpers.IconHelper;
-import com.ecube.solutions.ecube.network.Encryption;
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 
 /**
@@ -63,6 +44,7 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
     private static int REQUEST_DEFINE_PHONE = 2;
     private static int REQUEST_DEFINE_EMAIL = 3;
     private static int REQUEST_DEFINE_PASSWORD = 4;
+    private static int REQUEST_REMOVE_USER = 5;
 
     private AccountAuthenticator myAccountAuthenticator;
     private User mUser;
@@ -129,6 +111,13 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
         myItem.setDrawable(IconHelper.colorize(getContext(),R.drawable.icon_settings_account,R.color.md_lime_700));
         myItem.setAction("access");
         mMenuItems.add(myItem);
+
+        myItem = new MenuItem();
+        myItem.setText("Remove account");
+        myItem.setDrawable(IconHelper.colorize(getContext(),R.drawable.icon_settings_remove_account,R.color.md_lime_700));
+        myItem.setAction("remove");
+        mMenuItems.add(myItem);
+
     }
 
 
@@ -143,31 +132,6 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
         mMenuRecycleViewer = (RecyclerView) v.findViewById(R.id.profile_update_start_RecycleViewer);
         mMenuRecycleViewer.setLayoutManager(new LinearLayoutManager(mActivity));
         updateMenuRecycleViewer();
-/*
-        //Fields part
-        final ImageView emailSettings = (ImageView) v.findViewById(R.id.profile_update_start_ImageView_email);
-        IconHelper.colorize(getContext(), emailSettings, R.color.md_lime_700);
-        final TextView emailSettingsTextView = (TextView) v.findViewById(R.id.profile_update_start_TextView_email_change);
-        emailSettingsTextView.setTextColor(ContextCompat.getColor(getContext(),R.color.md_grey_900));
-
-
-        final ImageView phoneSettings = (ImageView) v.findViewById(R.id.profile_update_start_ImageView_phone);
-        IconHelper.colorize(getContext(), phoneSettings, R.color.md_lime_700);
-        final TextView phoneSettingsTextView = (TextView) v.findViewById(R.id.profile_update_start_TextView_phone);
-        phoneSettingsTextView.setTextColor(ContextCompat.getColor(getContext(),R.color.md_grey_900));
-
-        final ImageView passwordSettings = (ImageView) v.findViewById(R.id.profile_update_start_ImageView_password);
-        IconHelper.colorize(getContext(), passwordSettings, R.color.md_lime_700);
-        final TextView passSettingsTextView = (TextView) v.findViewById(R.id.profile_update_start_TextView_password);
-        passSettingsTextView.setTextColor(ContextCompat.getColor(getContext(),R.color.md_grey_900));
-
-        final ImageView accessTypeSettings = (ImageView) v.findViewById(R.id.profile_update_start_ImageView_access);
-        IconHelper.colorize(getContext(), accessTypeSettings, R.color.md_lime_700);
-        final TextView accessTypeSettingsTextView = (TextView) v.findViewById(R.id.profile_update_start_TextView_access);
-        accessTypeSettingsTextView.setTextColor(ContextCompat.getColor(getContext(),R.color.md_grey_900));
-
-
-*/
 
         return v;
     }
@@ -223,11 +187,9 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
                     }
                 }, mActivity);*/
             }
-            // Reload our fragment
-            replaceFragment(this,this.getTag(),true);
-
         }
-
+        // Reload our fragment in any case
+        replaceFragment(this,this.getTag(),true);
 
 
     }
@@ -285,6 +247,13 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
                     ProfileUpdatePasswordFragment fragment = ProfileUpdatePasswordFragment.newInstance(bundle);
                     fragment.setTargetFragment(ProfileUpdateStartFragment.this, REQUEST_DEFINE_PASSWORD);
                     replaceFragment(fragment);  //This comes from abstract
+            } else if (mAction.equals("remove")) {
+                //Case of remove account... in this case we need to be carefull as we lose mUser after
+                Bundle bundle = new Bundle();
+                bundle.putString(ProfileUpdateRemoveUserFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
+                ProfileUpdateRemoveUserFragment fragment = ProfileUpdateRemoveUserFragment.newInstance(bundle);
+                fragment.setTargetFragment(ProfileUpdateStartFragment.this, REQUEST_REMOVE_USER);
+                replaceFragment(fragment);  //This comes from abstract
             }
         }
 

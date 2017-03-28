@@ -24,10 +24,14 @@ public class ServerAuthenticateClass implements ServerAuthenticate {
         return item;
     }
 
+
+
     @Override
-    public Boolean userRemove(User user) {
-        Boolean isUserRemoved = new CloudFetchr().userRemove(user.getId(),"users");
-        return isUserRemoved;
+    public JsonItem userRemove(User user) {
+        //TODO fix this... I don't know why language is null !
+        user.setLanguage("fra");
+        JsonItem item = new CloudFetchr().userRemove(user.getEmail(), user.getLanguage());
+        return item;
     }
 
     @Override

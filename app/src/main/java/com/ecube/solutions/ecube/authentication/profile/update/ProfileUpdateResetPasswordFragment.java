@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -14,20 +12,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ecube.solutions.ecube.R;
-import com.ecube.solutions.ecube.WaitDialogFragment;
+import com.ecube.solutions.ecube.dialogs.WaitDialogFragment;
 import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.general.AppGeneral;
 import com.ecube.solutions.ecube.network.JsonItem;
-import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
+
+import java.util.Locale;
 
 /**
  * Created by sredorta on 3/27/2017.
  */
 
-public class ProfileResetPasswordFragment extends FragmentAbstract {
+public class ProfileUpdateResetPasswordFragment extends FragmentAbstract {
     //Logs
     private static final String TAG = ProfileUpdateEmailFragment.class.getSimpleName();
     private static final boolean DEBUG = true;
@@ -42,12 +41,12 @@ public class ProfileResetPasswordFragment extends FragmentAbstract {
     private AccountAuthenticator myAccountAuthenticator;
 
     // Constructor
-    public static ProfileResetPasswordFragment newInstance() {
-        return new ProfileResetPasswordFragment();
+    public static ProfileUpdateResetPasswordFragment newInstance() {
+        return new ProfileUpdateResetPasswordFragment();
     }
 
-    public static ProfileResetPasswordFragment newInstance(Bundle data) {
-        ProfileResetPasswordFragment fragment = ProfileResetPasswordFragment.newInstance();
+    public static ProfileUpdateResetPasswordFragment newInstance(Bundle data) {
+        ProfileUpdateResetPasswordFragment fragment = ProfileUpdateResetPasswordFragment.newInstance();
         fragment.setArguments(data);
         return fragment;
     }
@@ -56,13 +55,17 @@ public class ProfileResetPasswordFragment extends FragmentAbstract {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String email = (String) getInputParam(ProfileResetPasswordFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT);
+        String email = (String) getInputParam(ProfileUpdateResetPasswordFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT);
         mUser = new User();
         mUser.setEmail(email);
 
         //Restore user in case of rotation
         if (savedInstanceState != null) {
             mUser.setEmail((String) savedInstanceState.getString(KEY_CURRENT_USER));
+        }
+        //In case we restore account we default to device language
+        if (mUser.getLanguage() == null) {
+            mUser.setLanguage(Locale.getDefault().getISO3Language());
         }
 
     }
@@ -71,7 +74,7 @@ public class ProfileResetPasswordFragment extends FragmentAbstract {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.profile_reset_password, container, false);
+        View v = inflater.inflate(R.layout.profile_update_reset_password, container, false);
         setCurrentView(v);
         TextView emailTextView = (TextView) v.findViewById(R.id.profile_reset_password_email);
         Button resetButton = (Button) v.findViewById(R.id.profile_reset_password_Button_submit);
@@ -104,7 +107,7 @@ public class ProfileResetPasswordFragment extends FragmentAbstract {
                     public void processFinish(JsonItem result) {
                         dialog.dismiss();
                         if (!result.getKeyError().equals(AppGeneral.KEY_CODE_SUCCESS)) {
-                            Toast.makeText(getContext(), result.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mActivity, result.getMessage(), Toast.LENGTH_SHORT).show();
                         } else {
                             sendResult(Activity.RESULT_OK);
                         }

@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.ecube.solutions.ecube.R;
-import com.ecube.solutions.ecube.WaitDialogFragment;
+import com.ecube.solutions.ecube.dialogs.WaitDialogFragment;
 import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
@@ -100,7 +100,8 @@ public class ProfileUpdateEmailFragment extends FragmentAbstract {
                                 } else {
                                     passwordTextInputLayout.setError("");
                                     if (!result.getKeyError().equals(AppGeneral.KEY_CODE_SUCCESS)) {
-                                        Toast.makeText(getContext(), result.getMessage(), Toast.LENGTH_SHORT).show();
+                                        //Need to set the toast on mActivity and not context as we could get a crash during rotation
+                                        Toast.makeText(mActivity, result.getMessage(), Toast.LENGTH_SHORT).show();
                                     } else {
                                         putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_EMAIL, emailTextInputLayout.getText());
                                         sendResult(Activity.RESULT_OK);

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:orientation="vertical"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:padding="10dp">
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/profile_update_remove_user_cardView"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:layout_marginLeft="0dp"
+    android:layout_marginRight="0dp"
+    android:clipToPadding="false"
+    android:elevation="12dp"
+    android:orientation="vertical"
+    card_view:cardCornerRadius="0dp"
+    card_view:cardUseCompatPadding="true"
+    card_view:contentPadding="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/profile_update_remove_user_TextView_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Account removal:"
+            android:textColor="@color/md_lime_700"
+            android:layout_marginBottom="20dp"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/profile_update_remove_user_TextView_text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Be carefull, if you remove the account all data associated will be lost" />
+        <TextView
+            android:id="@+id/profile_update_remove_user_TextView_text2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/md_red_500"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:text="Remove account: " />
+
+        <TextView
+            android:id="@+id/profile_update_remove_user_TextView_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/md_red_500"
+            android:layout_weight="1"
+            android:text="test@mail.com" />
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <Button
+            android:id="@+id/profile_update_remove_user_Button_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:text="CANCEL" />
+
+        <Button
+            android:id="@+id/profile_update_remove_user_Button_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:text="APPLY" />
+    </LinearLayout>
+
+
+</LinearLayout>

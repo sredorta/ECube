@@ -35,7 +35,7 @@ public class CloudFetchr {
 
     private static final String URI_BASE_GOOGLE = "http://clients3.google.com/generate_204";    // Only required to check if internet is available
     private static final String PHP_CONNECTION_CHECK = "locker.connection.check.php";           // Params required : none
-    private static final String PHP_USER_REMOVE = "locker.users.remove.php";                    // Params required : phone,email,user_table
+    private static final String PHP_USER_REMOVE = "user.remove.php";                            // Params required : email,language
     private static final String PHP_USER_SIGNIN = "user.signin.php";                            // Params required : user,password,user_table and returns token
     private static final String PHP_USER_SIGNUP = "user.signup.php";                            // Params required : user,password,email,user_table and returns token
     private static final String PHP_USER_CHECK_PASSWORD = "user.check_password.php";            //Params required: id, token,password...
@@ -338,17 +338,7 @@ public class CloudFetchr {
         return (networkAnswer.getResult());
     }
 
-    //Checks if the station is registered
-    public Boolean userRemove(String account, String table) {
-        this.SEND_METHOD="POST";
-        HashMap<String, String> parameters = new HashMap<>();
-        parameters.put("account", account);
-        parameters.put("table_users", table);
 
-        URL url = buildUrl(PHP_USER_REMOVE,parameters);
-        JsonItem networkAnswer = getJSON(url,parameters);
-        return (networkAnswer.getResult());
-    }
 
     //Checks if the user is registered and returns all details of the answer with full JsonItem
     public JsonItem userSignUp(String phone, String email, String password, String firstName, String lastName, String avatar, String type, String auth_type, String lang) {
@@ -461,28 +451,17 @@ public class CloudFetchr {
         return getJSON(url,parameters);
     }
 
-/*
-    //Checks if the user is registered and returns token only
-    public String userSignIn(String user,  String password, String table) {
-        JsonItem networkAnswer = userSignInDetails(user,password,table);
-        return (networkAnswer.getToken());
-    }
-*/
-
-
-
-    //Checks if the user is registered and returns all details of the answer with full JsonItem
-    public Boolean userSetPassword(String account, String password, String table) {
+    //Remove a user
+    public JsonItem userRemove(String userEmail, String lang) {
         this.SEND_METHOD="POST";
         HashMap<String, String> parameters = new HashMap<>();
-        parameters.put("account", account);
-        parameters.put("password", password);
-        parameters.put("table_users", table);
+        parameters.put("email", userEmail);
+        parameters.put("language", lang);
 
-        URL url = buildUrl(PHP_USER_PASSWORD,parameters);
-        JsonItem networkAnswer = getJSON(url,parameters);
-        return networkAnswer.getResult();
+        URL url = buildUrl(PHP_USER_REMOVE,parameters);
+        return getJSON(url,parameters);
     }
+
 
 
 
@@ -499,63 +478,7 @@ public class CloudFetchr {
         URL url = buildUrl(PHP_USER_TOKEN,parameters);
         return getJSON(url,parameters);
     }
-/*
-    public void debugEncryption() {
-        Logs.i("DEBUG encrypt:");
-        this.SEND_METHOD="POST";
-        new AsyncTask<Void,Void,Void>() {
-            byte[] network;
-            @Override
-            protected Void doInBackground(Void... voids) {
 
-                HashMap<String, String> parameters = new HashMap<>();
-               // parameters.put("param1", "value1");
-               // parameters.put("param2", "value2");
-                URL url = buildUrl(PHP_USER_TEST,parameters);
-                try {
-                    network = getURLBytes(url, parameters);
-                } catch (IOException e) {
-                    Logs.i("Caught exception: " + e);
-                }
-                Logs.i("End of on background...");
-
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                String netStr = new String(network);
-                Logs.i(netStr);
-                netStr = Encryption.hexToString(netStr);
-                Integer l = netStr.length();
-                Log.i("TEST", "Length is : " + l);
-                Log.i("TEST","Recieved from network : " + netStr);
-
-                try {
-                    Logs.i("decripting...");
-                    Encryption mcrypt = new Encryption();
-                    String decrypted = new String( mcrypt.decrypt( netStr ) );
-
-                    //String res = new String( mcrypt.decrypt(test), "UTF-8" );
-                    //res = URLDecoder.decode(res,"UTF-8");
-                    Logs.i("Decrypted result: " + decrypted);
-                } catch (Exception e) {
-                    Logs.i("Caught exception: " + e);
-                }
-
-                super.onPostExecute(aVoid);
-            }
-        }.execute();
-
-    }
-    private String myTest(byte[] myresponse) {
-      if (myresponse == null) {
-        return "";
-      } else {
-        return new String(myresponse);
-      }
-    }
-*/
 
 }
 

@@ -6,7 +6,11 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 android:orientation="vertical"
 android:baselineAligned="false"
 android:focusableInTouchMode="true">
-
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:baselineAligned="false">
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -74,18 +78,17 @@ android:focusableInTouchMode="true">
             android:id="@+id/profile_signin_with_account_unique_TextInputLayoutAppWidget_password"
             android:gravity="center_horizontal"
             android:layout_gravity="center_horizontal" />
+    </LinearLayout>
+</android.support.v7.widget.CardView>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="NEXT"
             android:id="@+id/profile_signin_with_account_unique_Button_submit"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp" />
-
-    </LinearLayout>
-</android.support.v7.widget.CardView>
-
+        </LinearLayout>
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"

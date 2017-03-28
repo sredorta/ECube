@@ -2,14 +2,9 @@ package com.ecube.solutions.ecube.authentication.profile.signin;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,23 +15,21 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ecube.solutions.ecube.R;
-import com.ecube.solutions.ecube.WaitDialogFragment;
+import com.ecube.solutions.ecube.dialogs.WaitDialogFragment;
 import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
 import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateStartFragment;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
+import com.ecube.solutions.ecube.authentication.profile.update.ProfileUpdateResetPasswordFragment;
 import com.ecube.solutions.ecube.general.AppGeneral;
 import com.ecube.solutions.ecube.helpers.IconHelper;
 import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +45,7 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
     //Request to other fragments
     private static final int REQ_SIGNUP = 1;
     private static final int REQ_SIGNIN = 2;
-
+    private static final int REQ_FORGOT_PASSWORD = 3;
     // In case of rotation
     private final String KEY_CURRENT_USER = "user.current";
 
@@ -152,7 +145,7 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
                                     passwordTextInputLayout.setError("Invalid password");
                                 } else {
                                     passwordTextInputLayout.setError("");
-                                    Toast.makeText(getContext(), result.getStringExtra(AccountAuthenticator.KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mActivity, result.getStringExtra(AccountAuthenticator.KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
@@ -161,10 +154,28 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
             }
         });
 
+        //Go for forgot password
+        v.findViewById(R.id.profile_signin_with_account_TextView_forgot_password).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle data = new Bundle();
+                data.putString(ProfileUpdateResetPasswordFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
+                ProfileUpdateResetPasswordFragment fragment = ProfileUpdateResetPasswordFragment.newInstance(data);
+                fragment.setTargetFragment(ProfileSignInWithAccountFragment.this, REQ_FORGOT_PASSWORD);
+                replaceFragment(fragment);  //This comes from abstract
+            }
+        });
 
         return v;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode== REQ_FORGOT_PASSWORD) {
+            replaceFragment(this,this.getTag(),true);
+        }
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

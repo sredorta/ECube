@@ -12,15 +12,10 @@ import android.accounts.OperationCanceledException;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
-import com.ecube.solutions.ecube.WaitDialogFragment;
 import com.ecube.solutions.ecube.abstracts.AsyncTaskAbstract;
 import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
 import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
@@ -34,7 +29,6 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
-import static android.accounts.AccountManager.get;
 
 /**
  * Created by sredorta on 3/1/2017.
@@ -672,6 +666,46 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
             protected void onPostExecute(JsonItem result) {
                 super.onPostExecute(result);
 
+            }
+        }.execute();
+    }
+    //Removes user from device and from server
+    public void removeServerAndDeviceAccount(AsyncTaskInterface<Intent> myAsyncTaskInterface,final Activity activity) {
+        new AsyncTaskAbstract<Void, Void, Intent>(myAsyncTaskInterface,700) {
+            @Override
+            protected Intent doInBackground(Void... params) {
+                super.doInBackground();
+                Bundle data = new Bundle();
+                boolean removeResult;
+                mUser.setLanguage(Internationalization.getLanguage(mContext));
+                JsonItem item = sServerAuthenticate.userRemove(mUser);
+                if (!item.getResult()) {
+                    data.putString(KEY_ERROR_MESSAGE, item.getMessage());
+                    data.putString(KEY_ERROR_CODE, item.getKeyError());
+                } else {
+                    if (!removeAccount(mUser)) {
+                        data.putString(KEY_ERROR_MESSAGE, "Could not remove device account !");
+                        data.putString(KEY_ERROR_CODE, "account.remove.error");
+                    }
+                }
+                //Settings for the Account AuthenticatorActivity, we return no account
+                data.putString(AccountManager.KEY_ACCOUNT_NAME, null);
+                data.putString(AccountManager.KEY_ACCOUNT_TYPE, null);
+                data.putString(AccountManager.KEY_AUTHTOKEN, null);
+
+                final Intent res = new Intent();
+                res.putExtras(data);
+                return res;
+            }
+
+            @Override
+            protected void onPostExecute(Intent intent) {
+                super.onPostExecute(intent);
+                if (!intent.hasExtra(KEY_ERROR_MESSAGE)) {
+                    activity.getIntent().putExtras(intent.getExtras());
+                    activity.setResult(Activity.RESULT_OK, intent);
+                    activity.finish();
+                }
             }
         }.execute();
     }

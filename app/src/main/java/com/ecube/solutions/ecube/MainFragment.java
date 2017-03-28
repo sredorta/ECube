@@ -101,7 +101,7 @@ public class MainFragment extends FragmentAbstract {
                     //If there is at least one account then we should go to confirm credentials
                     getAuthToken(account,"Standard access");
                 } else {
-                    Toast.makeText(getContext(),"Invalid account",Toast.LENGTH_LONG).show();
+                    Toast.makeText(mActivity,"Invalid account",Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -116,7 +116,7 @@ public class MainFragment extends FragmentAbstract {
                 if (account!= null) {
                     confirmCredentials(account);
                 } else {
-                    Toast.makeText(getContext(),"No accounts found",Toast.LENGTH_LONG).show();
+                    Toast.makeText(mActivity,"No accounts found",Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -134,7 +134,7 @@ public class MainFragment extends FragmentAbstract {
                     User myUser = myAccountAuthenticator.getDataFromDeviceAccount(account);
                     updateCredentials(account, myUser.getAccountAccess());
                 } else {
-                    Toast.makeText(getContext(),"Invalid account",Toast.LENGTH_LONG).show();
+                    Toast.makeText(mActivity,"Invalid account",Toast.LENGTH_LONG).show();
                 }
             }
         });

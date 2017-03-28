@@ -71,7 +71,10 @@ public class TextInputLayoutAppWidget extends LinearLayout {
 
     //Handle rotations
     private static final String KEY_SAVE_LOCALE = "save.locale";
-
+    private static final String KEY_SAVE_COLOR_ERROR_TEXT = "save.error.color";
+    private static final String KEY_SAVE_ERROR_TEXT = "save.error.text";
+    private static final String KEY_SAVE_COLOR_ERROR_TEXT_SHADOW = "save.shadow.error.color";
+    private static final String KEY_SAVE_ERROR_TEXT_SHADOW = "save.shadow.error.text";
 
     public TextInputLayoutAppWidget(Context context) {
         this(context, null);
@@ -467,6 +470,19 @@ public class TextInputLayoutAppWidget extends LinearLayout {
         //Our View arguments we Save
         Bundle data = new Bundle();
         data.putSerializable(KEY_SAVE_LOCALE, mLocale);
+        //Save error and color for main
+        data.putInt(KEY_SAVE_COLOR_ERROR_TEXT, mTextInputLayout.getErrorTextColor());
+        if (mTextInputLayout.getError()!= null)
+            data.putString(KEY_SAVE_ERROR_TEXT, mTextInputLayout.getError().toString());
+        else
+            data.putString(KEY_SAVE_ERROR_TEXT, "");
+        //Save error and color for shadow
+        data.putInt(KEY_SAVE_COLOR_ERROR_TEXT_SHADOW, mTextInputLayoutShadow.getErrorTextColor());
+        if (mTextInputLayoutShadow.getError()!= null)
+            data.putString(KEY_SAVE_ERROR_TEXT_SHADOW, mTextInputLayoutShadow.getError().toString());
+        else
+            data.putString(KEY_SAVE_ERROR_TEXT_SHADOW, "");
+
         ss.myDataToSave = data;
         Log.i(TAG, "OnSaveInstance : Saved locale : " + mLocale.getDisplayCountry());
         return ss;
@@ -485,12 +501,17 @@ public class TextInputLayoutAppWidget extends LinearLayout {
         Bundle data = ss.myDataToSave;
         Log.i(TAG, "OnRestoreInstance");
         mLocale = (Locale) data.getSerializable(KEY_SAVE_LOCALE);
+        mTextInputLayout.setError((String) data.getString(KEY_SAVE_ERROR_TEXT));
+        mTextInputLayout.setErrorTextColor((int) data.getInt(KEY_SAVE_COLOR_ERROR_TEXT));
+        mTextInputLayoutShadow.setError((String) data.getString(KEY_SAVE_ERROR_TEXT_SHADOW));
+        mTextInputLayoutShadow.setErrorTextColor((int) data.getInt(KEY_SAVE_COLOR_ERROR_TEXT_SHADOW));
         Log.i(TAG, "OnRestoreInstance : Restored locale : " + mLocale.getDisplayCountry());
     }
 
 
     @Override
     protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
+
         dispatchFreezeSelfOnly(container);
     }
 

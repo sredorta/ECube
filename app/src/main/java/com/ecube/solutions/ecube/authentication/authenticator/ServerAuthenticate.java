@@ -8,7 +8,7 @@ import com.ecube.solutions.ecube.network.JsonItem;
  */
 public interface ServerAuthenticate {
     public JsonItem isTokenValid(User user);
-    public Boolean userRemove(User user);
+    public JsonItem userRemove(User user);
     public JsonItem userSignUp(User user);
     public JsonItem userSignIn(User user);
     public JsonItem userCheckPassword(User user);

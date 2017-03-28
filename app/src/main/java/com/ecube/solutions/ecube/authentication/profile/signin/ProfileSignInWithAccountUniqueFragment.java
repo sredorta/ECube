@@ -1,29 +1,24 @@
 package com.ecube.solutions.ecube.authentication.profile.signin;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ecube.solutions.ecube.R;
-import com.ecube.solutions.ecube.WaitDialogFragment;
+import com.ecube.solutions.ecube.dialogs.WaitDialogFragment;
 import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
-import com.ecube.solutions.ecube.authentication.profile.update.ProfileResetPasswordFragment;
+import com.ecube.solutions.ecube.authentication.profile.update.ProfileUpdateResetPasswordFragment;
 import com.ecube.solutions.ecube.general.AppGeneral;
 import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 
@@ -130,7 +125,7 @@ public class ProfileSignInWithAccountUniqueFragment extends FragmentAbstract{
                                          passwordTextInputLayout.setError("Invalid password");
                                     } else {
                                         passwordTextInputLayout.setError("");
-                                        Toast.makeText(getContext(), result.getStringExtra(AccountAuthenticator.KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(mActivity, result.getStringExtra(AccountAuthenticator.KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }
@@ -154,8 +149,8 @@ public class ProfileSignInWithAccountUniqueFragment extends FragmentAbstract{
             @Override
             public void onClick(View v) {
                 Bundle data = new Bundle();
-                data.putString(ProfileResetPasswordFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
-                ProfileResetPasswordFragment fragment = ProfileResetPasswordFragment.newInstance(data);
+                data.putString(ProfileUpdateResetPasswordFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
+                ProfileUpdateResetPasswordFragment fragment = ProfileUpdateResetPasswordFragment.newInstance(data);
                 fragment.setTargetFragment(ProfileSignInWithAccountUniqueFragment.this, REQ_RESET_PASSWORD);
                 replaceFragment(fragment, AppGeneral.KEY_FRAGMENT_STACK_LEVEL_UNDEFINED, true);  //This comes from abstract
             }
@@ -165,8 +160,8 @@ public class ProfileSignInWithAccountUniqueFragment extends FragmentAbstract{
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            // Reload our fragment
-            replaceFragment(this, AppGeneral.KEY_FRAGMENT_STACK_LEVEL_0,true);
+        // Reload our fragment
+        replaceFragment(this,this.getTag(),true);
 
     }
 

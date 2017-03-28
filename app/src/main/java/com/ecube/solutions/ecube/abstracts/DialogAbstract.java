@@ -91,7 +91,9 @@ public abstract class DialogAbstract extends DialogFragment implements OnBackPre
     @Override
     public void dismiss() {
         //We need to access mDialog in case transaction is not completed, otherwise it would be null
-        mDialog.dismiss();
+        if (getFragmentManager() != null) super.dismiss();
+        else
+          mDialog.dismiss();
     }
 
     //To store the activity holding the fragment... and avoid nulls when transaction has not been completed

@@ -5,7 +5,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:baselineAligned="false">
-
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:baselineAligned="false">
     <android.support.v7.widget.CardView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -67,18 +71,17 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/profile_user_default"></ImageView>
         </android.support.v7.widget.CardView>
-
-        <Button
+    </LinearLayout>
+</android.support.v7.widget.CardView>
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="NEXT"
         android:id="@+id/profile_create_avatar_button"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp" />
-
     </LinearLayout>
-</android.support.v7.widget.CardView>
     <RelativeLayout
         android:id="@+id/profile_create_avatar_hidden_panel"
         android:layout_width="match_parent"
