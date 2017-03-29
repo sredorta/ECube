@@ -11,27 +11,29 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.ecube.solutions.ecube.R;
-import com.ecube.solutions.ecube.dialogs.WaitDialogFragment;
 import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
+import com.ecube.solutions.ecube.dialogs.WaitDialogFragment;
 import com.ecube.solutions.ecube.general.AppGeneral;
 import com.ecube.solutions.ecube.network.JsonItem;
 import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 
 /**
- * Created by sredorta on 3/22/2017.
+ * Created by sredorta on 3/29/2017.
  */
 
-public class ProfileUpdateEmailFragment extends FragmentAbstract {
+public class ProfileUpdateNamesFragment extends FragmentAbstract {
     //Logs
     private static final String TAG = ProfileUpdateEmailFragment.class.getSimpleName();
     private static final boolean DEBUG = true;
 
     //Fragment arguments
     public static final String FRAGMENT_INPUT_PARAM_USER_CURRENT = "user.current.in";
-    public static final String FRAGMENT_OUTPUT_PARAM_USER_EMAIL = "user.email.out";    //String
+    public static final String FRAGMENT_OUTPUT_PARAM_USER_FIRST_NAME = "user.first_name.out";    //String
+    public static final String FRAGMENT_OUTPUT_PARAM_USER_LAST_NAME = "user.last_name.out";    //String
+
 
     //In case of rotations
     public static final String KEY_CURRENT_USER = "user.save";
@@ -40,12 +42,12 @@ public class ProfileUpdateEmailFragment extends FragmentAbstract {
     private AccountAuthenticator myAccountAuthenticator;
 
     // Constructor
-    public static ProfileUpdateEmailFragment newInstance() {
-        return new ProfileUpdateEmailFragment();
+    public static ProfileUpdateNamesFragment newInstance() {
+        return new ProfileUpdateNamesFragment();
     }
 
-    public static ProfileUpdateEmailFragment newInstance(Bundle data) {
-        ProfileUpdateEmailFragment fragment = ProfileUpdateEmailFragment.newInstance();
+    public static ProfileUpdateNamesFragment newInstance(Bundle data) {
+        ProfileUpdateNamesFragment fragment = ProfileUpdateNamesFragment.newInstance();
         fragment.setArguments(data);
         return fragment;
     }
@@ -67,27 +69,33 @@ public class ProfileUpdateEmailFragment extends FragmentAbstract {
             mUser = myAccountAuthenticator.getDataFromDeviceAccount(myAccountAuthenticator.getAccount(email));
         }
 
+
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.profile_update_email, container, false);
+        View v = inflater.inflate(R.layout.profile_update_names, container, false);
         setCurrentView(v);
-        final TextInputLayoutAppWidget passwordTextInputLayout  = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_update_email_TextInputLayoutAppWidget_password);
-        final TextInputLayoutAppWidget emailTextInputLayout = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_update_email_TextInputLayoutAppWidget_email);
+        final TextInputLayoutAppWidget firstNameTextInputLayout  = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_update_names_TextInputLayoutAppWidget_firstName);
+        final TextInputLayoutAppWidget lastNameTextInputLayout = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_update_names_TextInputLayoutAppWidget_lastName);
+        //Set initial values if they exist
+        if (mUser.getFirstName()!= null)
+            firstNameTextInputLayout.setText(mUser.getFirstName());
+        if(mUser.getLastName()!= null)
+            lastNameTextInputLayout.setText(mUser.getLastName());
 
-        final Button submitButton = (Button) v.findViewById(R.id.profile_update_email_Button_submit);
+            final Button submitButton = (Button) v.findViewById(R.id.profile_update_names_Button_submit);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (passwordTextInputLayout.isValidInput()) {
-                    if (emailTextInputLayout.isValidInput()) {
+                if (firstNameTextInputLayout.isValidInput()) {
+                    if (lastNameTextInputLayout.isValidInput()) {
                         final WaitDialogFragment dialog = WaitDialogFragment.newInstance();
-                        //Check that old password is correct
-                        mUser.setPassword(passwordTextInputLayout.getText());
+                        mUser.setFirstName(firstNameTextInputLayout.getText());
+                        mUser.setLastName(lastNameTextInputLayout.getText());
                         AccountAuthenticator ag = new AccountAuthenticator(getContext(), mUser);
-                        ag.changeEmail(emailTextInputLayout.getText(),new AsyncTaskInterface<JsonItem>() {
+                        ag.changeNames(firstNameTextInputLayout.getText(), lastNameTextInputLayout.getText(), new AsyncTaskInterface<JsonItem>() {
                             @Override
                             public void processStart() {
                                 FragmentManager fm = getFragmentManager();
@@ -97,26 +105,21 @@ public class ProfileUpdateEmailFragment extends FragmentAbstract {
                             @Override
                             public void processFinish(JsonItem result) {
                                 dialog.dismiss();
-                                if (result.getKeyError().equals(AppGeneral.KEY_CODE_ERROR_INVALID_PASSWORD)) {
-                                    passwordTextInputLayout.setError("Invalid password");
-                                } else if (result.getKeyError().equals(AppGeneral.KEY_CODE_ERROR_INVALID_USER)) {
-                                    emailTextInputLayout.setError("Email address already in use");
-                                }else {
-                                    passwordTextInputLayout.setError("");
                                     if (!result.getKeyError().equals(AppGeneral.KEY_CODE_SUCCESS)) {
                                         //Need to set the toast on mActivity and not context as we could get a crash during rotation
                                         Toast.makeText(mActivity, result.getMessage(), Toast.LENGTH_SHORT).show();
                                     } else {
-                                        putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_EMAIL, emailTextInputLayout.getText());
+                                        putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_FIRST_NAME, firstNameTextInputLayout.getText());
+                                        putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_LAST_NAME, lastNameTextInputLayout.getText());
                                         sendResult(Activity.RESULT_OK);
                                     }
-                                }
                             }
                         }, mActivity);
                     }
                 }
             }
         });
+
         return v;
     }
     //Save user in case of rotation

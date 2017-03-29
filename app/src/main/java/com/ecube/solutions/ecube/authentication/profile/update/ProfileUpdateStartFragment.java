@@ -41,6 +41,7 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
     public static final String KEY_CURRENT_USER = "user.save";
 
     //Requests to other fragments
+    private static int REQUEST_DEFINE_NAMES = 1;
     private static int REQUEST_DEFINE_PHONE = 2;
     private static int REQUEST_DEFINE_EMAIL = 3;
     private static int REQUEST_DEFINE_PASSWORD = 4;
@@ -89,6 +90,12 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
 
     private void initMenuItems() {
         MenuItem myItem = new MenuItem();
+        myItem.setText("Change name");
+        myItem.setDrawable(IconHelper.colorize(getContext(),R.drawable.icon_settings_names,R.color.md_lime_700));
+        myItem.setAction("names");
+        mMenuItems.add(myItem);
+
+        myItem = new MenuItem();
         myItem.setText("Change email");
         myItem.setDrawable(IconHelper.colorize(getContext(),R.drawable.icon_settings_email,R.color.md_lime_700));
         myItem.setAction("email");
@@ -157,7 +164,12 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
 
         boolean needToUpdate = false;
         if (resultCode == Activity.RESULT_OK) {
-            if( requestCode == REQUEST_DEFINE_PHONE) {
+            if (requestCode == REQUEST_DEFINE_NAMES) {
+                mUser.setFirstName((String) data.getStringExtra(ProfileUpdateNamesFragment.FRAGMENT_OUTPUT_PARAM_USER_FIRST_NAME));
+                mUser.setLastName((String) data.getStringExtra(ProfileUpdateNamesFragment.FRAGMENT_OUTPUT_PARAM_USER_LAST_NAME));
+                mUser.print("Comming back from define names:");
+                needToUpdate = true;
+            } else if ( requestCode == REQUEST_DEFINE_PHONE) {
                 mUser.setPhone((String) data.getSerializableExtra(ProfileUpdatePhoneFragment.FRAGMENT_OUTPUT_PARAM_USER_PHONE));
                 mUser.print("After Phone !");
                 needToUpdate = true;
@@ -169,7 +181,7 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
                 needToUpdate = true;
             }
             if (needToUpdate) {
-                //initHeaderAccount();
+                initHeaderAccount();
                 //Do the job !
                 Log.i(TAG, "Updating user phone :" + mUser.getPhone());
                 AccountAuthenticator ag = new AccountAuthenticator(getContext(), mUser);
@@ -229,7 +241,13 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
         @Override
         public void onClick(View view) {
 
-            if (mAction.equals("email")) {
+            if (mAction.equals("names")) {
+                Bundle bundle = new Bundle();
+                bundle.putString(ProfileUpdateNamesFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
+                ProfileUpdateNamesFragment fragment = ProfileUpdateNamesFragment.newInstance(bundle);
+                fragment.setTargetFragment(ProfileUpdateStartFragment.this, REQUEST_DEFINE_NAMES);
+                replaceFragment(fragment);  //This comes from abstract
+            } else if (mAction.equals("email")) {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(ProfileUpdateEmailFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
                     ProfileUpdateEmailFragment fragment = ProfileUpdateEmailFragment.newInstance(bundle);

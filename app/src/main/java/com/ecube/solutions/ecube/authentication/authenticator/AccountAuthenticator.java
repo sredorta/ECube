@@ -709,7 +709,35 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
             }
         }.execute();
     }
+    //Change names
+    public void changeNames(final String firstName, final String lastName,AsyncTaskInterface<JsonItem> myAsyncTaskInterface, final Activity activity) {
+        new AsyncTaskAbstract<Void, Void, JsonItem>(myAsyncTaskInterface,700) {
+            JsonItem item;
+            @Override
+            protected JsonItem doInBackground(Void... params) {
+                super.doInBackground();
+                Log.i(TAG, "Started checking password");
 
+                item = sServerAuthenticate.userChangeNames(mUser);
+                getDataFromDeviceAccount(getAccount(mUser));
+                //Update local account
+                if (item.getResult()) {
+                    mUser.setFirstName(firstName);
+                    mUser.setLastName(lastName);
+                    mAccountManager.setUserData(getAccount(mUser), PARAM_USER_FIRST_NAME, firstName);
+                    mAccountManager.setUserData(getAccount(mUser), PARAM_USER_LAST_NAME, lastName);
+                }
+                //Check that server has same password
+                return item;
+            }
+
+            @Override
+            protected void onPostExecute(JsonItem result) {
+                super.onPostExecute(result);
+
+            }
+        }.execute();
+    }
 
     //Only for Debug
     public String getPassword() {

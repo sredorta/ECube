@@ -147,7 +147,7 @@ android:focusableInTouchMode="true">
             android:id="@+id/profile_signin_with_account_unique_TextView_forgot"
             android:alpha="0.8"
             android:layout_weight="1"
-            android:gravity="center_horizontal" />
+            android:gravity="center" />
 
     </LinearLayout>
 

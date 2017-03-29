@@ -16,4 +16,5 @@ public interface ServerAuthenticate {
     public JsonItem userChangeEmail(User user, String newEmail);
     public JsonItem userChangePhone(User user, String newPhone);
     public JsonItem userResetPassword(User user);
+    public JsonItem userChangeNames(User user);
 }

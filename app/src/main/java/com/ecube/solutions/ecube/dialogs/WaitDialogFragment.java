@@ -72,4 +72,6 @@ public class WaitDialogFragment extends DialogAbstract {
         return v;
     }
 
+
+
 }

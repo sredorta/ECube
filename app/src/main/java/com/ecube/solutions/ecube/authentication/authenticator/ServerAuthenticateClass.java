@@ -125,6 +125,17 @@ public class ServerAuthenticateClass implements ServerAuthenticate {
         return item;
     }
 
+    //Send to the Server id,token and password (sha1) phone and update if matches with server
+    @Override
+    public JsonItem userChangeNames(User user) {
+        //TODO fix this... I don't know why language is null !
+        user.setLanguage("fra");
+        JsonItem item =  new CloudFetchr().userChangeNames(user.getId(), user.getLanguage(), user.getFirstName(), user.getLastName());
+
+        return item;
+    }
+
+
     //Send to the Server request of reset password and get new password
     @Override
     public JsonItem userResetPassword(User user) {

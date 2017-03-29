@@ -42,6 +42,8 @@ public class CloudFetchr {
     private static final String PHP_USER_CHANGE_PASSWORD = "user.change_password.php";          //Params required: id, token,password, new pass,...
     private static final String PHP_USER_CHANGE_EMAIL = "user.change_email.php";                //Params required: id, token,password, new pass,...
     private static final String PHP_USER_CHANGE_PHONE = "user.change_phone.php";                //Params required: id, token,password, new pass,...
+    private static final String PHP_USER_CHANGE_NAMES = "user.change_names.php";                //Params required: id, lang, firstName, lastName,...
+
     private static final String PHP_USER_RESET_PASSWORD = "user.reset_password.php";            //Params required: email,language...
 
     private static final String PHP_USER_PASSWORD = "locker.users.setpassword.php";                    // Params required : user,password,email,user_table and returns token
@@ -437,6 +439,19 @@ public class CloudFetchr {
         parameters.put("language", lang);
 
         URL url = buildUrl(PHP_USER_CHANGE_PHONE,parameters);
+        return getJSON(url,parameters);
+    }
+
+    //Checks if the user is registered and returns all Details
+    public JsonItem userChangeNames(String userID, String lang, String firstName, String lastName) {
+        this.SEND_METHOD="POST";
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("id", userID);
+        parameters.put("language", lang);
+        parameters.put("first_name", firstName);
+        parameters.put("last_name", lastName);
+
+        URL url = buildUrl(PHP_USER_CHANGE_NAMES,parameters);
         return getJSON(url,parameters);
     }
 
