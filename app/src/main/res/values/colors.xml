@@ -8,6 +8,7 @@
 
 
     <!-- green -->
+    <color name="md_green_50_transparent">#80E8F5E9</color>
     <color name="md_green_50">#E8F5E9</color>
     <color name="md_green_100">#C8E6C9</color>
     <color name="md_green_200">#A5D6A7</color>

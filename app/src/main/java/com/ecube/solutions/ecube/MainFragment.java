@@ -4,9 +4,12 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
+import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,10 +19,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.ecube.solutions.ecube.abstracts.AsyncTaskAbstract;
+import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
 import com.ecube.solutions.ecube.authentication.authenticator.AuthenticatorActivity;
+import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
+import com.ecube.solutions.ecube.dialogs.WaitDialogFragment;
+import com.ecube.solutions.ecube.general.AppGeneral;
+import com.ecube.solutions.ecube.network.JsonItem;
 import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 import com.ecube.solutions.ecube.widgets.TextInputLayoutExtended;
 
@@ -116,7 +125,13 @@ public class MainFragment extends FragmentAbstract {
                 if (account!= null) {
                     confirmCredentials(account);
                 } else {
-                    Toast.makeText(mActivity,"No accounts found",Toast.LENGTH_LONG).show();
+                    //Pick frist account
+                    account = myAccountGeneral.getAccount();
+                    if (account == null) {
+                        Toast.makeText(mActivity, "No accounts found", Toast.LENGTH_LONG).show();
+                    } else {
+                        confirmCredentials(account);
+                    }
                 }
             }
         });
@@ -160,20 +175,33 @@ public class MainFragment extends FragmentAbstract {
         waitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                   /* final TextInputLayoutAppWidget test = (TextInputLayoutAppWidget) mView.findViewById(R.id.custonTextInputLayout);
-                    final TextInputLayoutAppWidget test2 = (TextInputLayoutAppWidget) mView.findViewById(R.id.customTextInputLayout2);
-                    test.isValidInput();
-                    test2.isValidInput();*/
- /*                  final TextInputLayoutExtended test = (TextInputLayoutAppWidget) mView.findViewById(R.id.myTest);
-                if (kk) {
-                    test.setError("Here we are",R.color.md_red_500);
-                    //test.setErrorTextColor(ContextCompat.getColor(getContext(), R.color.md_red_500));
-                    kk =false;
-                } else {
-                    test.setError("Or not",R.color.md_amber_500);
-                    test.setErrorTextColor(ContextCompat.getColor(getContext(), R.color.md_green_100));
-                    kk = true;
-                }*/
+                final WaitDialogFragment dialog = WaitDialogFragment.newInstance();
+                AsyncTaskInterface<JsonItem> myInterface= new AsyncTaskInterface<JsonItem>() {
+                    @Override
+                    public void processStart() {
+                        FragmentManager fm = getFragmentManager();
+                        dialog.show(fm, "DIALOG");
+                    }
+
+                    @Override
+                    public void processFinish(JsonItem result) {
+                        dialog.dismiss();
+                    }
+                };
+                new AsyncTaskAbstract<Void, Void, JsonItem>(myInterface,5000) {
+                    @Override
+                    protected JsonItem doInBackground(Void... params) {
+                        super.doInBackground();
+
+                        JsonItem res = new JsonItem();
+                        return res;
+                    }
+
+                    @Override
+                    protected void onPostExecute(JsonItem intent) {
+                        super.onPostExecute(intent);
+                    }
+                }.execute();
             }
         });
 
@@ -265,7 +293,33 @@ public class MainFragment extends FragmentAbstract {
         }, null);
     }
 
+private class waitSomeTime extends AsyncTask<Void,Void,Void> {
+    WaitDialogFragment dialog;
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
 
+        FragmentManager fm = getFragmentManager();
+        dialog = WaitDialogFragment.newInstance();
+        dialog.show(fm,"DIALOG");
+    }
+
+    @Override
+    protected Void doInBackground(Void... params) {
+        try {
+            wait(10000);
+        } catch (Exception e) {
+            Log.i("TEST", "Caught exception : " + e);
+        }
+        return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+        dialog.dismiss();
+    }
+}
 
 /*
     @Override

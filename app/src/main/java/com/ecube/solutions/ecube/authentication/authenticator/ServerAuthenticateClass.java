@@ -8,6 +8,8 @@ import com.ecube.solutions.ecube.network.CloudFetchr;
 import com.ecube.solutions.ecube.network.Encryption;
 import com.ecube.solutions.ecube.network.JsonItem;
 
+import java.util.Locale;
+
 import static android.content.ContentValues.TAG;
 
 
@@ -28,8 +30,6 @@ public class ServerAuthenticateClass implements ServerAuthenticate {
 
     @Override
     public JsonItem userRemove(User user) {
-        //TODO fix this... I don't know why language is null !
-        user.setLanguage("fra");
         JsonItem item = new CloudFetchr().userRemove(user.getEmail(), user.getLanguage());
         return item;
     }
@@ -70,6 +70,10 @@ public class ServerAuthenticateClass implements ServerAuthenticate {
         if(user.getPhone() != null)
                 userPhone = user.getPhone();
 
+        //It could be that we are restoring user from email... so it means that language is not set
+        if (user.getLanguage()== null)
+             user.setLanguage(Locale.getDefault().getISO3Language());
+
         user.print("User before signIn :");
         JsonItem item =  new CloudFetchr().userSignIn(userID, userEmail, userPhone, user.getPassword(),
                 AccountAuthenticator.ACCOUNT_TYPE, user.getAccountAccess(), user.getLanguage());
@@ -86,8 +90,6 @@ public class ServerAuthenticateClass implements ServerAuthenticate {
     //Send to the Server id,token and password (sha1) and check if matches with server
     @Override
     public JsonItem userCheckPassword(User user) {
-        //TODO fix this... I don't know why language is null !
-        user.setLanguage("fra");
         JsonItem item =  new CloudFetchr().userCheckPassword(user.getId(), user.getPassword(),
                 AccountAuthenticator.ACCOUNT_TYPE, user.getAccountAccess(), user.getLanguage());
 
@@ -96,8 +98,6 @@ public class ServerAuthenticateClass implements ServerAuthenticate {
     //Send to the Server id,token and password (sha1) + newPassword (sha1) and update if matches with server
     @Override
     public JsonItem userChangePassword(User user, String newPassword) {
-        //TODO fix this... I don't know why language is null !
-        user.setLanguage("fra");
         JsonItem item =  new CloudFetchr().userChangePassword(user.getId(), user.getPassword(), newPassword,
                 AccountAuthenticator.ACCOUNT_TYPE, user.getAccountAccess(), user.getLanguage());
 
@@ -107,8 +107,6 @@ public class ServerAuthenticateClass implements ServerAuthenticate {
     //Send to the Server id,token and password (sha1) + newPassword (sha1) and update if matches with server
     @Override
     public JsonItem userChangeEmail(User user, String newEmail) {
-        //TODO fix this... I don't know why language is null !
-        user.setLanguage("fra");
         JsonItem item =  new CloudFetchr().userChangeEmail(user.getId(), user.getPassword(), newEmail,
                 AccountAuthenticator.ACCOUNT_TYPE, user.getAccountAccess(), user.getLanguage());
 
@@ -117,8 +115,6 @@ public class ServerAuthenticateClass implements ServerAuthenticate {
     //Send to the Server id,token and password (sha1) phone and update if matches with server
     @Override
     public JsonItem userChangePhone(User user, String newPhone) {
-        //TODO fix this... I don't know why language is null !
-        user.setLanguage("fra");
         JsonItem item =  new CloudFetchr().userChangePhone(user.getId(), user.getPassword(), newPhone,
                 AccountAuthenticator.ACCOUNT_TYPE, user.getAccountAccess(), user.getLanguage());
 
@@ -128,8 +124,6 @@ public class ServerAuthenticateClass implements ServerAuthenticate {
     //Send to the Server id,token and password (sha1) phone and update if matches with server
     @Override
     public JsonItem userChangeNames(User user) {
-        //TODO fix this... I don't know why language is null !
-        user.setLanguage("fra");
         JsonItem item =  new CloudFetchr().userChangeNames(user.getId(), user.getLanguage(), user.getFirstName(), user.getLastName());
 
         return item;
@@ -148,32 +142,4 @@ public class ServerAuthenticateClass implements ServerAuthenticate {
         user.print("After Json parse");
         return item;
     }
-
-    /*
-    //Send to the server all fields and create a new user and get the token
-
-
-    //Send to the server all fields and create a new user and get the token
-    @Override
-    public Boolean userSetPassword(String account, String password, String authType) {
-        Boolean result = new CloudFetchr().userSetPassword(account,password,"users");
-        return result;
-    }
-
-
-    //Send to the Server username and password and get corresponding token
-    @Override
-    public JsonItem userSignIn(String user, String password, String authType) {
-        return new CloudFetchr().userSignIn(user,password, "users");
-
-    }
-
-
-
-    @Override
-    public Boolean userRemove(String account, String authType) {
-        Boolean isUserRemoved = new CloudFetchr().userRemove(account,"users");
-        return isUserRemoved;
-    }
-*/
 }

@@ -382,9 +382,10 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
     //Gets active account
     public Account getActiveAccount() {
         for (Account myAccount : mAccountManager.getAccountsByType(ACCOUNT_TYPE)) {
-            if (mAccountManager.getUserData(myAccount, PARAM_USER_ACCOUNT_ACTIVE).equals(ACCOUNT_ACTIVE)) {
+            if (mAccountManager.getUserData(myAccount, PARAM_USER_ACCOUNT_ACTIVE)!= null)
+              if (mAccountManager.getUserData(myAccount, PARAM_USER_ACCOUNT_ACTIVE).equals(ACCOUNT_ACTIVE)) {
                 return myAccount;
-            }
+              }
         }
         return null;
     }

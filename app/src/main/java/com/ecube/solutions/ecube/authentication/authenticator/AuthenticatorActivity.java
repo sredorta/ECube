@@ -75,6 +75,13 @@ public class AuthenticatorActivity extends ActivityAbstract {
     public void finish() {
         AuthenticatorActivity.setAccountAuthenticatorResult(getIntent().getExtras());
         IntentHelper.dumpIntent(getIntent());
+        if (getIntent().hasExtra(AccountManager.KEY_ACCOUNT_NAME)) {
+            if ((getIntent().getStringExtra(AccountManager.KEY_ACCOUNT_NAME))!= null ) {
+                Log.i(TAG, "Setting as active account : " + getIntent().getStringExtra(AccountManager.KEY_ACCOUNT_NAME));
+                AccountAuthenticator mAccountAuthenticator = new AccountAuthenticator(getApplicationContext());
+                mAccountAuthenticator.setActiveAccount(getIntent().getStringExtra(AccountManager.KEY_ACCOUNT_NAME));
+            }
+        }
         Log.i(TAG, "Finish of AuthenticatorActivity !");
         if (mAccountAuthenticatorResponse != null) {
              // send the result bundle back if set, otherwise send an error.
