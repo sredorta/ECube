@@ -53,7 +53,7 @@ public class ProfileUpdateEmailFragment extends FragmentAbstract {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setRetainInstance(true); // We are using async task so we need to retain it
         String email = (String) getInputParam(ProfileUpdateStartFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT);
         //Check that we have an account with current user and if not exit
 

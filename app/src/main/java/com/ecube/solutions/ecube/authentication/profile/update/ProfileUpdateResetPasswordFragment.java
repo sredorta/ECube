@@ -54,7 +54,7 @@ public class ProfileUpdateResetPasswordFragment extends FragmentAbstract {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setRetainInstance(true); // We are using async task so we need to retain it
         String email = (String) getInputParam(ProfileUpdateResetPasswordFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT);
         mUser = new User();
         mUser.setEmail(email);

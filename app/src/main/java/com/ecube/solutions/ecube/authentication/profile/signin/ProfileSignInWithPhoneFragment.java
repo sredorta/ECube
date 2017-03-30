@@ -64,6 +64,7 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true); // We are using async task so we need to retain it
         //Get account details from Singleton either from intent or from account of the device
         myAccountAuthenticator = new AccountAuthenticator(getContext());
         mUser = new User();

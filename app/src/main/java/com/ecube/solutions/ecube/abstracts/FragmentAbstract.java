@@ -3,6 +3,7 @@ package com.ecube.solutions.ecube.abstracts;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.AnimRes;
@@ -10,6 +11,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
@@ -47,8 +49,6 @@ public abstract class FragmentAbstract extends Fragment implements OnBackPressed
     private @AnimRes int mAnimPopExit   = R.anim.exit_fade;
 
     protected FragmentActivity mActivity;
-
-
 
     //Map for parsing input parameters
     private Map<String,Object> inputParams;
@@ -214,17 +214,24 @@ public abstract class FragmentAbstract extends Fragment implements OnBackPressed
 
     //Replace container with new fragment
     public void replaceFragment(Fragment fragment, @Nullable String tag, boolean animation, boolean addToBackStack){
-
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = mActivity.getSupportFragmentManager().beginTransaction();
         if (animation)
-            transaction.setCustomAnimations(mAnimEnter, mAnimExit, mAnimPopEnter, mAnimPopExit);
+                transaction.setCustomAnimations(mAnimEnter, mAnimExit, mAnimPopEnter, mAnimPopExit);
         transaction.replace(mContainer, fragment, tag);
         if (addToBackStack)
-            transaction.addToBackStack(tag);
-        if (DEBUG) Log.i(TAG, "Added fragment " + fragment.getClass().getSimpleName() + " with tag:" + tag);
+                transaction.addToBackStack(tag);
 
-        transaction.commit();
+        try {
+               transaction.commit();
+        } catch (IllegalStateException e) {
+                //It means that the activity is gone in rotation also... so we need to wait that activity is back and then commit
+                Log.i(TAG, "Exception during transaction commit !!! This fragment should be retained !!!!!!!!!!!!!");
+        }
+        if (DEBUG)
+            Log.i(TAG, "Added fragment " + fragment.getClass().getSimpleName() + " with tag:" + tag);
+
         if (DEBUG) Log.i(TAG, "Current fragment stack count :" + mActivity.getSupportFragmentManager().getBackStackEntryCount());
+
     }
     //Replace container with new fragment and add to backStack
     public void replaceFragment(Fragment fragment, @Nullable String tag, boolean animation){
@@ -245,8 +252,6 @@ public abstract class FragmentAbstract extends Fragment implements OnBackPressed
         transaction.remove(fragment);
         transaction.commit();
     }
-
-
 
 
     //Hide input keyboard

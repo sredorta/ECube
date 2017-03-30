@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,15 +24,14 @@ import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
  * Created by sredorta on 3/29/2017.
  */
 
-public class ProfileUpdateNamesFragment extends FragmentAbstract {
+public class ProfileUpdateAvatarFragment extends FragmentAbstract {
     //Logs
     private static final String TAG = ProfileUpdateEmailFragment.class.getSimpleName();
     private static final boolean DEBUG = true;
 
     //Fragment arguments
     public static final String FRAGMENT_INPUT_PARAM_USER_CURRENT = "user.current.in";
-    public static final String FRAGMENT_OUTPUT_PARAM_USER_FIRST_NAME = "user.first_name.out";    //String
-    public static final String FRAGMENT_OUTPUT_PARAM_USER_LAST_NAME = "user.last_name.out";    //String
+    public static final String FRAGMENT_OUTPUT_PARAM_USER_AVATAR = "user.avatar.out";    //String
 
 
     //In case of rotations
@@ -43,12 +41,12 @@ public class ProfileUpdateNamesFragment extends FragmentAbstract {
     private AccountAuthenticator myAccountAuthenticator;
 
     // Constructor
-    public static ProfileUpdateNamesFragment newInstance() {
-        return new ProfileUpdateNamesFragment();
+    public static ProfileUpdateAvatarFragment newInstance() {
+        return new ProfileUpdateAvatarFragment();
     }
 
-    public static ProfileUpdateNamesFragment newInstance(Bundle data) {
-        ProfileUpdateNamesFragment fragment = ProfileUpdateNamesFragment.newInstance();
+    public static ProfileUpdateAvatarFragment newInstance(Bundle data) {
+        ProfileUpdateAvatarFragment fragment = ProfileUpdateAvatarFragment.newInstance();
         fragment.setArguments(data);
         return fragment;
     }
@@ -76,9 +74,9 @@ public class ProfileUpdateNamesFragment extends FragmentAbstract {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.profile_update_names, container, false);
+        View v = inflater.inflate(R.layout.profile_update_avatar, container, false);
         setCurrentView(v);
-        final TextInputLayoutAppWidget firstNameTextInputLayout  = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_update_names_TextInputLayoutAppWidget_firstName);
+/*        final TextInputLayoutAppWidget firstNameTextInputLayout  = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_update_names_TextInputLayoutAppWidget_firstName);
         final TextInputLayoutAppWidget lastNameTextInputLayout = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_update_names_TextInputLayoutAppWidget_lastName);
         //Set initial values if they exist
         if (mUser.getFirstName()!= null)
@@ -86,11 +84,11 @@ public class ProfileUpdateNamesFragment extends FragmentAbstract {
         if(mUser.getLastName()!= null)
             lastNameTextInputLayout.setText(mUser.getLastName());
 
-            final Button submitButton = (Button) v.findViewById(R.id.profile_update_names_Button_submit);
+        final Button submitButton = (Button) v.findViewById(R.id.profile_update_names_Button_submit);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("SERGI SERGI:::", "Submitting !!!");
+
                 if (firstNameTextInputLayout.isValidInput()) {
                     if (lastNameTextInputLayout.isValidInput()) {
                         final WaitDialogFragment dialog = WaitDialogFragment.newInstance();
@@ -107,21 +105,21 @@ public class ProfileUpdateNamesFragment extends FragmentAbstract {
                             @Override
                             public void processFinish(JsonItem result) {
                                 dialog.dismiss();
-                                    if (!result.getKeyError().equals(AppGeneral.KEY_CODE_SUCCESS)) {
-                                        //Need to set the toast on mActivity and not context as we could get a crash during rotation
-                                        Toast.makeText(mActivity, result.getMessage(), Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_FIRST_NAME, firstNameTextInputLayout.getText());
-                                        putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_LAST_NAME, lastNameTextInputLayout.getText());
-                                        sendResult(Activity.RESULT_OK);
-                                    }
+                                if (!result.getKeyError().equals(AppGeneral.KEY_CODE_SUCCESS)) {
+                                    //Need to set the toast on mActivity and not context as we could get a crash during rotation
+                                    Toast.makeText(mActivity, result.getMessage(), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_FIRST_NAME, firstNameTextInputLayout.getText());
+                                    putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_LAST_NAME, lastNameTextInputLayout.getText());
+                                    sendResult(Activity.RESULT_OK);
+                                }
                             }
                         }, mActivity);
                     }
                 }
             }
         });
-
+*/
         return v;
     }
     //Save user in case of rotation
@@ -132,4 +130,3 @@ public class ProfileUpdateNamesFragment extends FragmentAbstract {
     }
 
 }
-

@@ -60,6 +60,7 @@ public class ProfileSignInWithAccountUniqueFragment extends FragmentAbstract{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true); // We are using async task so we need to retain it
 
         String email = (String) getInputParam(ProfileSignInWithAccountUniqueFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT);
         //Get account details from the device

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -46,6 +47,7 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
     private static int REQUEST_DEFINE_EMAIL = 3;
     private static int REQUEST_DEFINE_PASSWORD = 4;
     private static int REQUEST_REMOVE_USER = 5;
+    private static int REQUEST_DEFINE_AVATAR = 6;
 
     private AccountAuthenticator myAccountAuthenticator;
     private User mUser;
@@ -93,6 +95,12 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
         myItem.setText("Change name");
         myItem.setDrawable(IconHelper.colorize(getContext(),R.drawable.icon_settings_names,R.color.md_lime_700));
         myItem.setAction("names");
+        mMenuItems.add(myItem);
+
+        myItem = new MenuItem();
+        myItem.setText("Change avatar");
+        myItem.setDrawable(IconHelper.colorize(getContext(),R.drawable.icon_settings_avatar,R.color.md_lime_700));
+        myItem.setAction("avatar");
         mMenuItems.add(myItem);
 
         myItem = new MenuItem();
@@ -161,47 +169,25 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        boolean needToUpdate = false;
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_DEFINE_NAMES) {
-                mUser.setFirstName((String) data.getStringExtra(ProfileUpdateNamesFragment.FRAGMENT_OUTPUT_PARAM_USER_FIRST_NAME));
-                mUser.setLastName((String) data.getStringExtra(ProfileUpdateNamesFragment.FRAGMENT_OUTPUT_PARAM_USER_LAST_NAME));
+                mUser.setFirstName(data.getStringExtra(ProfileUpdateNamesFragment.FRAGMENT_OUTPUT_PARAM_USER_FIRST_NAME));
+                mUser.setLastName(data.getStringExtra(ProfileUpdateNamesFragment.FRAGMENT_OUTPUT_PARAM_USER_LAST_NAME));
                 mUser.print("Comming back from define names:");
-                needToUpdate = true;
+            } else if ( requestCode == REQUEST_DEFINE_AVATAR) {
+                String avatar = (data.getStringExtra(ProfileUpdateAvatarFragment.FRAGMENT_OUTPUT_PARAM_USER_AVATAR));
             } else if ( requestCode == REQUEST_DEFINE_PHONE) {
-                mUser.setPhone((String) data.getSerializableExtra(ProfileUpdatePhoneFragment.FRAGMENT_OUTPUT_PARAM_USER_PHONE));
-                mUser.print("After Phone !");
-                needToUpdate = true;
+                mUser.setPhone(data.getStringExtra(ProfileUpdatePhoneFragment.FRAGMENT_OUTPUT_PARAM_USER_PHONE));
             } else if( requestCode == REQUEST_DEFINE_EMAIL) {
-                mUser.setEmail((String) data.getSerializableExtra(ProfileCreateEmailFragment.FRAGMENT_OUTPUT_PARAM_USER_EMAIL));
-                needToUpdate = true;
+                mUser.setEmail(data.getStringExtra(ProfileCreateEmailFragment.FRAGMENT_OUTPUT_PARAM_USER_EMAIL));
             } else if( requestCode == REQUEST_DEFINE_PASSWORD) {
-                mUser.setPassword((String) data.getSerializableExtra(ProfileUpdatePasswordFragment.FRAGMENT_OUTPUT_PARAM_USER_PASSWORD));
-                needToUpdate = true;
-            }
-            if (needToUpdate) {
-                initHeaderAccount();
-                //Do the job !
-                Log.i(TAG, "Updating user phone :" + mUser.getPhone());
-                AccountAuthenticator ag = new AccountAuthenticator(getContext(), mUser);
-/*                ag.updateServerAndDeviceAccount(new AsyncTaskInterface() {
-                    WaitDialogFragment dialog;
-                    @Override
-                    public void processStart() {
-                        FragmentManager fm = getFragmentManager();
-                        dialog = WaitDialogFragment.newInstance();
-                        dialog.show(fm,"DIALOG");
-                    }
-                    @Override
-                    public void processFinish() {
-                        dialog.dismiss();
-                    }
-                }, mActivity);*/
+                mUser.setPassword(data.getStringExtra(ProfileUpdatePasswordFragment.FRAGMENT_OUTPUT_PARAM_USER_PASSWORD));
             }
         }
+        hideInputKeyBoard();
         // Reload our fragment in any case
         replaceFragment(this,this.getTag(),true);
+        Log.i(TAG, "Tried to replace fragment !!!!!!!!!!!!!");
 
 
     }
@@ -246,6 +232,12 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
                 bundle.putString(ProfileUpdateNamesFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
                 ProfileUpdateNamesFragment fragment = ProfileUpdateNamesFragment.newInstance(bundle);
                 fragment.setTargetFragment(ProfileUpdateStartFragment.this, REQUEST_DEFINE_NAMES);
+                replaceFragment(fragment);  //This comes from abstract
+            } else if (mAction.equals("avatar")) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(ProfileUpdateAvatarFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
+                ProfileUpdateAvatarFragment fragment = ProfileUpdateAvatarFragment.newInstance(bundle);
+                fragment.setTargetFragment(ProfileUpdateStartFragment.this, REQUEST_DEFINE_AVATAR);
                 replaceFragment(fragment);  //This comes from abstract
             } else if (mAction.equals("email")) {
                     Bundle bundle = new Bundle();

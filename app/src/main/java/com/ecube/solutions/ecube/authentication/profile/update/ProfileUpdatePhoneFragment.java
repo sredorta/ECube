@@ -72,7 +72,7 @@ public class ProfileUpdatePhoneFragment extends FragmentAbstract {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setRetainInstance(true); // We are using async task so we need to retain it
         String email = (String) getInputParam(ProfileUpdateStartFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT);
         //Get account details from the device
         myAccountAuthenticator = new AccountAuthenticator(getContext());
@@ -149,6 +149,9 @@ public class ProfileUpdatePhoneFragment extends FragmentAbstract {
                                 } else {
                                     passwordTextInputLayout.setError("");
                                     if (!result.getKeyError().equals(AppGeneral.KEY_CODE_SUCCESS)) {
+                                        if (result.getKeyError().equals(AppGeneral.KEY_CODE_ERROR_INVALID_USER)) {
+                                            phoneTextInputLayout.setError("Phone number already registered");
+                                        }
                                         Toast.makeText(mActivity, result.getMessage(), Toast.LENGTH_SHORT).show();
                                     } else {
                                         putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_PHONE, phoneTextInputLayout.getFinalPhoneNumber());

@@ -66,6 +66,8 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true); // We are using async task so we need to retain it
+
         myAccountAuthenticator = new AccountAuthenticator(getContext());
 
         mUser = new User();
