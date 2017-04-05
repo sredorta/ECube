@@ -84,7 +84,7 @@ public class ProfileUpdateResetPasswordFragment extends FragmentAbstract {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendResult(Activity.RESULT_CANCELED);
+                mActivity.onBackPressed();
             }
         });
 

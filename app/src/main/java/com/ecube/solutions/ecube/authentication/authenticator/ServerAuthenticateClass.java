@@ -129,6 +129,13 @@ public class ServerAuthenticateClass implements ServerAuthenticate {
         return item;
     }
 
+    //Send to the Server id,token and password (sha1) phone and update if matches with server
+    @Override
+    public JsonItem userChangeAvatar(User user) {
+        JsonItem item =  new CloudFetchr().userChangeAvatar(user.getId(), user.getLanguage(), user.getAvatar());
+
+        return item;
+    }
 
     //Send to the Server request of reset password and get new password
     @Override

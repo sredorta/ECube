@@ -16,5 +16,8 @@
         <attr name="textActiveColor" format="color"/>
         <attr name="textInactiveColor" format="color"/>
     </declare-styleable>
-
+    <declare-styleable name="AvatarAppWidget">
+        <attr name="src" format="reference"/>
+        <attr name="transitionName" format="string"/>
+    </declare-styleable>
 </resources>

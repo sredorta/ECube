@@ -5,13 +5,9 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +18,7 @@ import android.widget.TextView;
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.DialogAbstract;
 import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
-import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +28,7 @@ import java.util.Locale;
 /**
  * Created by sredorta on 2/22/2017.
  */
-public class CountryPickerFragment extends DialogAbstract {
+public class CountryPickerDialogFragment extends DialogAbstract {
 
     public static final String FRAGMENT_INPUT_PARAM_CURRENT_PHONE_COUNTRY = "user.current.phone.country";    //Locale
     public static final String FRAGMENT_OUTPUT_PARAM_SELECTED_PHONE_COUNTRY = "user.selected.phone.country"; //Locale
@@ -45,13 +39,13 @@ public class CountryPickerFragment extends DialogAbstract {
     private Locale mCurrentLocale;
 
     // Constructor
-    public static CountryPickerFragment newInstance() {
-        return new CountryPickerFragment();
+    public static CountryPickerDialogFragment newInstance() {
+        return new CountryPickerDialogFragment();
     }
 
     // Constructor with input arguments
-    public static CountryPickerFragment newInstance(Bundle data) {
-        CountryPickerFragment fragment = CountryPickerFragment.newInstance();
+    public static CountryPickerDialogFragment newInstance(Bundle data) {
+        CountryPickerDialogFragment fragment = CountryPickerDialogFragment.newInstance();
         fragment.setArguments(data);
         return fragment;
     }
@@ -119,7 +113,7 @@ public class CountryPickerFragment extends DialogAbstract {
         @Override
         public void onClick(View view) {
             //We need to update the user with the account data that has been selected
-            putOutputParam(CountryPickerFragment.FRAGMENT_OUTPUT_PARAM_SELECTED_PHONE_COUNTRY, mLocale);
+            putOutputParam(CountryPickerDialogFragment.FRAGMENT_OUTPUT_PARAM_SELECTED_PHONE_COUNTRY, mLocale);
             sendResult(Activity.RESULT_OK);
             mDialog.dismiss();
         }

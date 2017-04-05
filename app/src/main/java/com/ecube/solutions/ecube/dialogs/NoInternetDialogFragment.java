@@ -15,64 +15,59 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.DialogAbstract;
 
 /**
- * Created by sredorta on 3/10/2017.
+ * Created by sredorta on 4/3/2017.
  */
-public class WaitDialogFragment extends DialogAbstract {
+
+public class NoInternetDialogFragment extends DialogAbstract {
 
     // Constructor
-    public static WaitDialogFragment newInstance() {
-        return new WaitDialogFragment();
+    public static NoInternetDialogFragment newInstance() {
+        return new NoInternetDialogFragment();
     }
 
-    private CardView dialogCardView;
-    private ProgressBar dialogProgressBar;
+    private LinearLayout linearLayoutMain;
     private int requestedOrientationSave;
     private int width;
     private int height;
+    private int origin_x;
+    private int origin_y;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         setRetainInstance(true);        //Set dialog to be retained to avoid issues of rotation !
-        View v = LayoutInflater.from(mActivity).inflate(R.layout.dialog_wait_fragment,null);
-
-        //Avoid rotation of this fragment
-        requestedOrientationSave = mActivity.getRequestedOrientation();
-        mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+        View v = LayoutInflater.from(mActivity).inflate(R.layout.dialog_no_internet_fragment,null);
 
         mView = v;
-        dialogCardView = (CardView)v.findViewById(R.id.wait_fragment_CardView);
-        dialogProgressBar = (ProgressBar) v.findViewById(R.id.wait_fragment_ProgressBar);
+        linearLayoutMain = (LinearLayout) v.findViewById(R.id.dialog_no_internet_fragment_LinearLayout_main);
 
 
-        //Get widht of the progress bar and reset cardView accordingly
+        //Get position and size of dialog
         v.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 // Here you can get the size
 
-                width = dialogProgressBar.getMeasuredWidth();
-                height = dialogProgressBar.getMeasuredHeight();
-                int radius;
-                if (width < height) {
-                    radius = dialogProgressBar.getMeasuredWidth();
-
-                } else {
-                    radius = dialogProgressBar.getMeasuredHeight();
-                }
-                radius = radius / 2;
-                dialogCardView.setRadius(radius);
+                width = linearLayoutMain.getMeasuredWidth();
+                height = linearLayoutMain.getMeasuredHeight();
+                origin_y = linearLayoutMain.getBottom();
+                origin_x = linearLayoutMain.getLeft();
                 Log.i("TEST", "Measured sizes !!!!!!!!!!");
+                Log.i("TEST", "width : " + width);
+                Log.i("TEST", "height : " + height);
+                Log.i("TEST", "origin_x : " + origin_x);
+                Log.i("TEST", "origin_y : " + origin_y);
 
             }
         });
-        setCancelable(false);
+        setCancelable(true);
         return new AlertDialog.Builder(mActivity)
                 .setView(v)
                 .create();
@@ -83,18 +78,11 @@ public class WaitDialogFragment extends DialogAbstract {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
-        mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        //mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         return v;
     }
-
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        //Restore Orientation savings
-        mActivity.setRequestedOrientation(requestedOrientationSave);
-    }
+    
 
 
     @Override
@@ -131,7 +119,7 @@ public class WaitDialogFragment extends DialogAbstract {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         //We dismiss the dialog once the animation is finished
-                        WaitDialogFragment.super.dismiss();
+                        NoInternetDialogFragment.super.dismiss();
                     }
 
                     @Override
@@ -148,3 +136,4 @@ public class WaitDialogFragment extends DialogAbstract {
     }
 
 }
+

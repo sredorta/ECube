@@ -511,7 +511,6 @@ public class TextInputLayoutAppWidget extends LinearLayout {
 
     @Override
     protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
-
         dispatchFreezeSelfOnly(container);
     }
 

@@ -6,6 +6,8 @@ import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.ecube.solutions.ecube.abstracts.AsyncTaskAbstract;
@@ -29,6 +32,7 @@ import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.dialogs.WaitDialogFragment;
 import com.ecube.solutions.ecube.general.AppGeneral;
 import com.ecube.solutions.ecube.network.JsonItem;
+import com.ecube.solutions.ecube.widgets.AvatarAppWidget;
 import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 import com.ecube.solutions.ecube.widgets.TextInputLayoutExtended;
 
@@ -170,6 +174,10 @@ public class MainFragment extends FragmentAbstract {
                 startActivity(intent);
             }
         });
+
+
+
+
 
 
         waitButton.setOnClickListener(new View.OnClickListener() {

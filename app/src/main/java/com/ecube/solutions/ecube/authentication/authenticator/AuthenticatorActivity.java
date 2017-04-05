@@ -1,15 +1,23 @@
 package com.ecube.solutions.ecube.authentication.authenticator;
 
+import android.Manifest;
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Window;
+import android.widget.Toast;
 
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.ActivityAbstract;
@@ -20,6 +28,8 @@ import com.ecube.solutions.ecube.authentication.profile.signin.ProfileSignInWith
 import com.ecube.solutions.ecube.authentication.profile.update.ProfileUpdateStartFragment;
 import com.ecube.solutions.ecube.general.AppGeneral;
 import com.ecube.solutions.ecube.helpers.IntentHelper;
+
+import java.util.List;
 
 
 /**
@@ -160,5 +170,20 @@ public class AuthenticatorActivity extends ActivityAbstract {
             super.onBackPressed();
         }
     }
+
+    //This needs to be moved into the superActivity
+    private final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        if (fragments != null) {
+            for (Fragment fragment : fragments) {
+                fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            }
+        }
+    }
+
+
 
 }

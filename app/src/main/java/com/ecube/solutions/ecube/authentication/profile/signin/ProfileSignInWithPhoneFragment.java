@@ -22,7 +22,7 @@ import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticat
 import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateStartFragment;
 import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
-import com.ecube.solutions.ecube.authentication.profile.dialogs.CountryPickerFragment;
+import com.ecube.solutions.ecube.authentication.profile.dialogs.CountryPickerDialogFragment;
 import com.ecube.solutions.ecube.general.AppGeneral;
 import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
@@ -51,7 +51,7 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
 
     private String mPhoneNumber;                //Contains input phone number
     private Locale mLocale;                     //Current country Locale of the phone number
-    private CountryPickerFragment dialog;       //Dialog to choose another country
+    private CountryPickerDialogFragment dialog;       //Dialog to choose another country
 
 
 
@@ -96,9 +96,9 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(CountryPickerFragment.FRAGMENT_INPUT_PARAM_CURRENT_PHONE_COUNTRY, mLocale);
+                bundle.putSerializable(CountryPickerDialogFragment.FRAGMENT_INPUT_PARAM_CURRENT_PHONE_COUNTRY, mLocale);
                 FragmentManager fm = getFragmentManager();
-                dialog = CountryPickerFragment.newInstance(bundle);
+                dialog = CountryPickerDialogFragment.newInstance(bundle);
                 dialog.setTargetFragment(ProfileSignInWithPhoneFragment.this, REQUEST_COUNTRY);
                 dialog.show(fm,"DIALOG");
             }
@@ -192,7 +192,7 @@ public class ProfileSignInWithPhoneFragment extends FragmentAbstract {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == ProfileSignInWithPhoneFragment.REQUEST_COUNTRY) {
-            mLocale = (Locale) data.getSerializableExtra(CountryPickerFragment.FRAGMENT_OUTPUT_PARAM_SELECTED_PHONE_COUNTRY);
+            mLocale = (Locale) data.getSerializableExtra(CountryPickerDialogFragment.FRAGMENT_OUTPUT_PARAM_SELECTED_PHONE_COUNTRY);
             updateCurrentCountry();
             //In order to validate if with new country the phone is correct
             final TextInputLayoutAppWidget phoneTextInputLayout = (TextInputLayoutAppWidget) mView.findViewById(R.id.profile_signin_with_phone_TextInputLayoutAppWidget_phone);

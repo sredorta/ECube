@@ -12,6 +12,7 @@ import android.accounts.OperationCanceledException;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -739,6 +740,41 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
             }
         }.execute();
     }
+
+    //Change names
+    public void changeAvatar(final Bitmap avatar, AsyncTaskInterface<JsonItem> myAsyncTaskInterface, final Activity activity) {
+        new AsyncTaskAbstract<Void, Void, JsonItem>(myAsyncTaskInterface,700) {
+            JsonItem item;
+            @Override
+            protected JsonItem doInBackground(Void... params) {
+                super.doInBackground();
+                Log.i(TAG, "Started checking password");
+
+                item = sServerAuthenticate.userChangeAvatar(mUser);
+                getDataFromDeviceAccount(getAccount(mUser));
+                //Update local account
+                if (item.getResult()) {
+                    mUser.setAvatar(avatar);
+                    mAccountManager.setUserData(getAccount(mUser), PARAM_USER_AVATAR, mUser.getAvatar());
+                }
+                //Check that server has same password
+                return item;
+            }
+
+            @Override
+            protected void onPostExecute(JsonItem result) {
+                super.onPostExecute(result);
+
+            }
+        }.execute();
+    }
+
+
+
+
+
+
+
 
     //Only for Debug
     public String getPassword() {

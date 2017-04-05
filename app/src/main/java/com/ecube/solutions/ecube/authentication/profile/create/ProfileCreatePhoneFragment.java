@@ -2,22 +2,14 @@ package com.ecube.solutions.ecube.authentication.profile.create;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
-import android.telephony.PhoneNumberFormattingTextWatcher;
-import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,7 +17,7 @@ import android.widget.TextView;
 import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
-import com.ecube.solutions.ecube.authentication.profile.dialogs.CountryPickerFragment;
+import com.ecube.solutions.ecube.authentication.profile.dialogs.CountryPickerDialogFragment;
 import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
@@ -53,7 +45,7 @@ public class ProfileCreatePhoneFragment extends FragmentAbstract {
 
     private String mPhoneNumber;                //Contains input phone number
     private Locale mLocale;                     //Current country Locale of the phone number
-    private CountryPickerFragment dialog;       //Dialog to choose another country
+    private CountryPickerDialogFragment dialog;       //Dialog to choose another country
 
     // Constructor
     public static ProfileCreatePhoneFragment newInstance() {
@@ -138,9 +130,9 @@ public class ProfileCreatePhoneFragment extends FragmentAbstract {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(CountryPickerFragment.FRAGMENT_INPUT_PARAM_CURRENT_PHONE_COUNTRY, mLocale);
+                bundle.putSerializable(CountryPickerDialogFragment.FRAGMENT_INPUT_PARAM_CURRENT_PHONE_COUNTRY, mLocale);
                 FragmentManager fm = getFragmentManager();
-                dialog = CountryPickerFragment.newInstance(bundle);
+                dialog = CountryPickerDialogFragment.newInstance(bundle);
                 dialog.setTargetFragment(ProfileCreatePhoneFragment.this, REQUEST_COUNTRY);
                 dialog.show(fm,"DIALOG");
 
@@ -169,7 +161,7 @@ public class ProfileCreatePhoneFragment extends FragmentAbstract {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == ProfileCreatePhoneFragment.REQUEST_COUNTRY) {
-            mLocale = (Locale) data.getSerializableExtra(CountryPickerFragment.FRAGMENT_OUTPUT_PARAM_SELECTED_PHONE_COUNTRY);
+            mLocale = (Locale) data.getSerializableExtra(CountryPickerDialogFragment.FRAGMENT_OUTPUT_PARAM_SELECTED_PHONE_COUNTRY);
             updateCurrentCountry();
             //In order to validate if with new country the phone is correct
             final TextInputLayoutAppWidget phoneTextInputLayout = (TextInputLayoutAppWidget) mView.findViewById(R.id.profile_create_phone_TextInputLayoutAppWidget_phone);

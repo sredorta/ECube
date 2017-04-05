@@ -16,6 +16,7 @@ import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
 import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
+import com.ecube.solutions.ecube.dialogs.NoInternetDialogFragment;
 import com.ecube.solutions.ecube.dialogs.WaitDialogFragment;
 import com.ecube.solutions.ecube.general.AppGeneral;
 import com.ecube.solutions.ecube.network.JsonItem;
@@ -108,6 +109,9 @@ public class ProfileUpdateNamesFragment extends FragmentAbstract {
                             public void processFinish(JsonItem result) {
                                 dialog.dismiss();
                                     if (!result.getKeyError().equals(AppGeneral.KEY_CODE_SUCCESS)) {
+                                        NoInternetDialogFragment dialogNoInternet = NoInternetDialogFragment.newInstance();
+                                        FragmentManager fm = getFragmentManager();
+                                        dialogNoInternet.show(fm,"DIALOG2");
                                         //Need to set the toast on mActivity and not context as we could get a crash during rotation
                                         Toast.makeText(mActivity, result.getMessage(), Toast.LENGTH_SHORT).show();
                                     } else {

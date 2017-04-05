@@ -85,10 +85,6 @@ public class User implements Parcelable {
     @Expose(serialize = true, deserialize = true)
     private String mLanguage;
 
-//    private Bitmap mAvatarBitmap = null;   //User avatar bitmap
-
-
-
 
     public User() {}
 
@@ -174,14 +170,10 @@ public class User implements Parcelable {
         mCreationTimeStamp = timestamp;
     }
     public String getCreationTimeFormatted() {
-        Log.i(TAG, "getCreationTime !!!!!!!!!");
         try{
-            Log.i(TAG, "From server: " + mCreationTimeStamp);
             DateFormat sdf = DateFormat.getDateTimeInstance(); //Based on Locale
             //DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy  HH:mm");
             Date netDate = (new Date(mCreationTimeStamp * 1000L));
-
-            Log.i(TAG, "Returning date : " + sdf.format(netDate));
             return sdf.format(netDate);
         } catch(Exception ex){
             return "xx";

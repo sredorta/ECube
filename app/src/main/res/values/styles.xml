@@ -24,6 +24,13 @@
         <item name="android:alertDialogTheme">@style/myDialogTheme</item>
         <item name="cardStyle">@style/myCardStyle</item>
 
+        <!-- Try to get backgrounds transparents for transitions -->
+     <!--   <item name="android:windowIsTranslucent">true</item> -->
+     <!--   <item name="android:windowBackground">@android:color/transparent</item> -->
+      <!--  <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowContentTransitions">true</item>-->
 
         <!-- Window colors -->
         <item name="android:colorForeground">@color/foreground_material_light</item>

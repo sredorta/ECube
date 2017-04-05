@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ECube</string>
+    <string name="transitionSharedProfileUpdateStartProfileUpdateAvatar">transitionSharedProfileUpdateStartProfileUpdateAvatar</string>
 </resources>

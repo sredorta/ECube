@@ -2,17 +2,26 @@ package com.ecube.solutions.ecube.authentication.profile.update;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.ChangeBounds;
+import android.transition.Fade;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
+import android.transition.TransitionValues;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,7 +30,9 @@ import com.ecube.solutions.ecube.abstracts.FragmentAbstract;
 import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticator;
 import com.ecube.solutions.ecube.authentication.profile.create.ProfileCreateEmailFragment;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
+import com.ecube.solutions.ecube.general.AppGeneral;
 import com.ecube.solutions.ecube.helpers.IconHelper;
+import com.ecube.solutions.ecube.widgets.AvatarAppWidget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +63,10 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
     private AccountAuthenticator myAccountAuthenticator;
     private User mUser;
 
+    //GUI elements
+    private AvatarAppWidget avatarAvatarAppWidget;
+
+    //RecycleViewer part
     private ProfileUpdateStartFragment.MenuListAdapter mAdapter;
     private RecyclerView mMenuRecycleViewer;
     private List<MenuItem> mMenuItems = new ArrayList<>();
@@ -156,13 +171,13 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
         final TextView emailTextView = (TextView) getCurrentView().findViewById(R.id.profile_update_start_TextView_email_header);
         final TextView phoneTextView = (TextView) getCurrentView().findViewById(R.id.profile_update_start_TextView_phone_header);
         final TextView creationTextView = (TextView) getCurrentView().findViewById(R.id.profile_update_start_TextView_creation);
-        final ImageView avatarImageView = (ImageView) getCurrentView().findViewById(R.id.profile_update_start_ImageView_avatar);
+        avatarAvatarAppWidget = (AvatarAppWidget) getCurrentView().findViewById(R.id.profile_update_start_AvatarAppWidget_header);
 
         nameTextView.setText(mUser.getFirstName() + " " + mUser.getLastName());
         emailTextView.setText(mUser.getEmail());
         phoneTextView.setText(mUser.getPhone());
         creationTextView.setText(mUser.getCreationTimeFormatted());
-        avatarImageView.setImageBitmap(mUser.getAvatar(getContext()));
+        avatarAvatarAppWidget.setImageBitmap(mUser.getAvatar(getContext()));
     }
 
 
@@ -174,22 +189,31 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
                 mUser.setFirstName(data.getStringExtra(ProfileUpdateNamesFragment.FRAGMENT_OUTPUT_PARAM_USER_FIRST_NAME));
                 mUser.setLastName(data.getStringExtra(ProfileUpdateNamesFragment.FRAGMENT_OUTPUT_PARAM_USER_LAST_NAME));
                 mUser.print("Comming back from define names:");
+                replaceFragment(this,this.getTag(),true);
             } else if ( requestCode == REQUEST_DEFINE_AVATAR) {
-                String avatar = (data.getStringExtra(ProfileUpdateAvatarFragment.FRAGMENT_OUTPUT_PARAM_USER_AVATAR));
+                mUser.setAvatar((Bitmap) data.getParcelableExtra(ProfileUpdateAvatarFragment.FRAGMENT_OUTPUT_PARAM_USER_AVATAR_BITMAP));
+                Log.i(TAG, "Refreshed drawable !!!!!!!!!!!!!!!!!!!");
             } else if ( requestCode == REQUEST_DEFINE_PHONE) {
                 mUser.setPhone(data.getStringExtra(ProfileUpdatePhoneFragment.FRAGMENT_OUTPUT_PARAM_USER_PHONE));
+                replaceFragment(this,this.getTag(),true);
             } else if( requestCode == REQUEST_DEFINE_EMAIL) {
                 mUser.setEmail(data.getStringExtra(ProfileCreateEmailFragment.FRAGMENT_OUTPUT_PARAM_USER_EMAIL));
+                replaceFragment(this,this.getTag(),true);
             } else if( requestCode == REQUEST_DEFINE_PASSWORD) {
                 mUser.setPassword(data.getStringExtra(ProfileUpdatePasswordFragment.FRAGMENT_OUTPUT_PARAM_USER_PASSWORD));
+                replaceFragment(this,this.getTag(),true);
             }
         }
         hideInputKeyBoard();
         // Reload our fragment in any case
-        replaceFragment(this,this.getTag(),true);
-        Log.i(TAG, "Tried to replace fragment !!!!!!!!!!!!!");
 
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initHeaderAccount();
     }
 
     //Save user in case of rotation
@@ -235,10 +259,37 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
                 replaceFragment(fragment);  //This comes from abstract
             } else if (mAction.equals("avatar")) {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(ProfileUpdateAvatarFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
+                bundle.putParcelable(ProfileUpdateAvatarFragment.FRAGMENT_INPUT_PARAM_USER_AVATAR_BITMAP, mUser.getAvatar(getContext()));
+                bundle.putBoolean(ProfileUpdateAvatarFragment.FRAGMENT_INPUT_PARAM_USER_UPDATE_SERVER, true);
+                bundle.putString(ProfileUpdateAvatarFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
                 ProfileUpdateAvatarFragment fragment = ProfileUpdateAvatarFragment.newInstance(bundle);
                 fragment.setTargetFragment(ProfileUpdateStartFragment.this, REQUEST_DEFINE_AVATAR);
-                replaceFragment(fragment);  //This comes from abstract
+
+/////////////////////// Fragment replacement with sharedElement !
+                setSharedElementReturnTransition(TransitionInflater.from(
+                        mActivity).inflateTransition(R.transition.transition_shared_bound_and_scale).setDuration(500));
+                setExitTransition(TransitionInflater.from(
+                        mActivity).inflateTransition(android.R.transition.fade).setDuration(500));
+
+                fragment.setSharedElementEnterTransition(TransitionInflater.from(
+                        mActivity).inflateTransition(R.transition.transition_shared_bound_and_scale).setDuration(500));
+                fragment.setEnterTransition(TransitionInflater.from(
+                        mActivity).inflateTransition(android.R.transition.fade).setDuration(500));
+
+                FragmentTransaction transaction = mActivity.getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, fragment, AppGeneral.KEY_FRAGMENT_STACK_LEVEL_UNDEFINED);
+                transaction.addToBackStack(AppGeneral.KEY_FRAGMENT_STACK_LEVEL_UNDEFINED);
+                ViewCompat.setTransitionName(avatarAvatarAppWidget, getString(R.string.transitionSharedProfileUpdateStartProfileUpdateAvatar));
+                transaction.addSharedElement(avatarAvatarAppWidget, getString(R.string.transitionSharedProfileUpdateStartProfileUpdateAvatar));
+
+                try {
+                    transaction.commit();
+                } catch (IllegalStateException e) {
+                    //It means that the activity is gone in rotation also... so we need to wait that activity is back and then commit
+                    Log.i(TAG, "Exception during transaction commit !!! This fragment should be retained !!!!!!!!!!!!!");
+                }
+
+///////////////////////                replaceFragment(fragment, AppGeneral.KEY_FRAGMENT_STACK_LEVEL_UNDEFINED,false);  //This comes from abstract
             } else if (mAction.equals("email")) {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(ProfileUpdateEmailFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());

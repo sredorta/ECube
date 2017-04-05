@@ -71,10 +71,10 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
         myAccountAuthenticator = new AccountAuthenticator(getContext());
 
         mUser = new User();
-        //We should init the user from preferences... but now I'm just setting it
 
-        //If there was no account from preferences we just pick one
-        Account account = myAccountAuthenticator.getAccount(mUser);
+        //We take active account
+        Account account = myAccountAuthenticator.getActiveAccount();
+        //If there was no active account we just pick one
         if (account == null) account = myAccountAuthenticator.getAccount();
         mUser = myAccountAuthenticator.getDataFromDeviceAccount(account);
 
