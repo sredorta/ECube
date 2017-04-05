@@ -7,29 +7,16 @@ android:layout_margin="1dp"
 android:paddingLeft="10dp"
 android:paddingRight="10dp">
 
-<android.support.v7.widget.CardView
-    android:layout_width="40dp"
-    android:layout_height="40dp"
-    android:elevation="12dp"
-    android:id="@+id/profile_signin_with_account_display_account_cardView"
-    app:cardCornerRadius="20dp"
-    android:layout_centerHorizontal="true"
-    android:innerRadius="0dp"
-    android:shape="ring"
-    android:thicknessRatio="1.9"
-    android:layout_gravity="center"
-    android:layout_marginBottom="2dp"
-    android:layout_marginTop="2dp">
-    <ImageView
+
+    <com.ecube.solutions.ecube.widgets.AvatarAppWidget
+        android:id="@+id/profile_signin_with_account_display_account_AvatarAppWidget_avatar"
+        android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_width="match_parent"
-        android:id="@+id/profile_signin_with_account_display_account_ImageView_avatar"
-        android:src="@drawable/profile_user_default"
-        android:scaleType="fitXY"
         android:layout_gravity="center"
->
-    </ImageView>
-</android.support.v7.widget.CardView>
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="2dp"
+        app:src="@drawable/profile_user_default">
+    </com.ecube.solutions.ecube.widgets.AvatarAppWidget>
 
 
 

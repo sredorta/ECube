@@ -29,6 +29,7 @@ import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.authentication.profile.update.ProfileUpdateResetPasswordFragment;
 import com.ecube.solutions.ecube.general.AppGeneral;
 import com.ecube.solutions.ecube.helpers.IconHelper;
+import com.ecube.solutions.ecube.widgets.AvatarAppWidget;
 import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 
 import java.util.ArrayList;
@@ -225,7 +226,7 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
         private Account mAccount;
         private TextView mUserFullNameTextView;
         private TextView mAccountNameTextView;
-        private ImageView mAvatarImageView;
+        private AvatarAppWidget mAvatarImageView;
         private ImageView buttonViewOption;
 
         private AccountListHolder(View itemView) {
@@ -233,7 +234,7 @@ public class ProfileSignInWithAccountFragment extends FragmentAbstract {
             itemView.setOnClickListener(this);
             mUserFullNameTextView = (TextView) itemView.findViewById(R.id.profile_signin_with_account_display_account_TextView_user);
             mAccountNameTextView =  (TextView) itemView.findViewById(R.id.profile_signin_with_account_display_account_TextView_account);
-            mAvatarImageView = (ImageView) itemView.findViewById(R.id.profile_signin_with_account_display_account_ImageView_avatar);
+            mAvatarImageView = (AvatarAppWidget) itemView.findViewById(R.id.profile_signin_with_account_display_account_AvatarAppWidget_avatar);
             buttonViewOption = (ImageView) itemView.findViewById(R.id.profile_signin_with_account_display_account_ImageView_more);
 
             //Set default drawable to grey

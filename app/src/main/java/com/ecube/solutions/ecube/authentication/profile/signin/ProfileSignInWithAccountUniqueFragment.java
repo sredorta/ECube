@@ -20,6 +20,7 @@ import com.ecube.solutions.ecube.authentication.authenticator.AccountAuthenticat
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.authentication.profile.update.ProfileUpdateResetPasswordFragment;
 import com.ecube.solutions.ecube.general.AppGeneral;
+import com.ecube.solutions.ecube.widgets.AvatarAppWidget;
 import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 
 
@@ -82,7 +83,7 @@ public class ProfileSignInWithAccountUniqueFragment extends FragmentAbstract{
         setCurrentView(v);
         final TextView nameTextView = (TextView) v.findViewById(R.id.profile_signin_with_account_unique_name);
         final TextView emailTextView = (TextView) v.findViewById(R.id.profile_signin_with_account_unique_email);
-        final ImageView avatarImageView = (ImageView) v.findViewById(R.id.profile_signin_with_account_unique_ImageView_avatar);
+        final AvatarAppWidget avatarAppWidget = (AvatarAppWidget) v.findViewById(R.id.profile_signin_with_account_unique_AvatarAppWidget_avatar);
         final TextInputLayoutAppWidget passwordTextInputLayout = (TextInputLayoutAppWidget) v.findViewById(R.id.profile_signin_with_account_unique_TextInputLayoutAppWidget_password);
         final TextView otherAccountTextView = (TextView) v.findViewById(R.id.profile_signin_with_account_unique_TextView_other);
         final TextView forgotPasswordTextView = (TextView) v.findViewById(R.id.profile_signin_with_account_unique_TextView_forgot);
@@ -95,7 +96,7 @@ public class ProfileSignInWithAccountUniqueFragment extends FragmentAbstract{
 
         nameTextView.setText(mUser.getFirstName() + " " + mUser.getLastName());
         emailTextView.setText(mUser.getEmail());
-        avatarImageView.setImageBitmap(mUser.getAvatar(getContext()));
+        avatarAppWidget.setImageBitmap(mUser.getAvatar(getContext()));
 
         v.findViewById(R.id.profile_signin_with_account_unique_Button_submit).setOnClickListener(new View.OnClickListener() {
             @Override

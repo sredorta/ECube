@@ -14,31 +14,7 @@
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="10dp">
-        <!--
-        <android.support.v7.widget.CardView
-            android:id="@+id/profile_update_avatar_CardView_avatar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:transitionName="@string/transitionSharedProfileUpdateStartProfileUpdateAvatar"
-            android:layout_gravity="center"
-            android:elevation="12dp"
-            android:focusable="false"
-            android:innerRadius="0dp"
-            android:shape="ring"
-            android:thicknessRatio="1.9"
-            app:cardCornerRadius="40dp">
 
-        <ImageView
-            android:id="@+id/profile_update_avatar_ImageView_avatar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:scaleType="fitXY"
-            android:src="@drawable/profile_user_default"></ImageView>
-        </android.support.v7.widget.CardView>
-
-        -->
         <com.ecube.solutions.ecube.widgets.AvatarAppWidget
             android:id="@+id/profile_update_avatar_AvatarAppWidget"
             android:layout_width="250dp"

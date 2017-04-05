@@ -267,14 +267,14 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
 
 /////////////////////// Fragment replacement with sharedElement !
                 setSharedElementReturnTransition(TransitionInflater.from(
-                        mActivity).inflateTransition(R.transition.transition_shared_bound_and_scale).setDuration(500));
+                        mActivity).inflateTransition(R.transition.transition_shared_bound_and_scale).setDuration(300));
                 setExitTransition(TransitionInflater.from(
-                        mActivity).inflateTransition(android.R.transition.fade).setDuration(500));
+                        mActivity).inflateTransition(android.R.transition.fade).setDuration(300));
 
                 fragment.setSharedElementEnterTransition(TransitionInflater.from(
-                        mActivity).inflateTransition(R.transition.transition_shared_bound_and_scale).setDuration(500));
+                        mActivity).inflateTransition(R.transition.transition_shared_bound_and_scale).setDuration(300));
                 fragment.setEnterTransition(TransitionInflater.from(
-                        mActivity).inflateTransition(android.R.transition.fade).setDuration(500));
+                        mActivity).inflateTransition(android.R.transition.fade).setDuration(300));
 
                 FragmentTransaction transaction = mActivity.getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_container, fragment, AppGeneral.KEY_FRAGMENT_STACK_LEVEL_UNDEFINED);

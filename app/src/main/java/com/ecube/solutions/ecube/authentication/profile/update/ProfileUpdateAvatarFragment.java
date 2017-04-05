@@ -1,6 +1,7 @@
 package com.ecube.solutions.ecube.authentication.profile.update;
 
 import android.Manifest;
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -119,7 +120,6 @@ public class ProfileUpdateAvatarFragment extends FragmentAbstract {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true); // We are using async task so we need to retain it
 
         mAvatar = new Avatar(getContext());
         mUser = new User();
@@ -214,22 +214,60 @@ public class ProfileUpdateAvatarFragment extends FragmentAbstract {
                                 //Need to set the toast on mActivity and not context as we could get a crash during rotation
                                 Toast.makeText(mActivity, result.getMessage(), Toast.LENGTH_SHORT).show();
                             } else {
-                                putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_AVATAR_BITMAP, mAvatar.getBitmap());
-                                sendResult(Activity.RESULT_OK);
-                                mActivity.onBackPressed();
+                                finishFragment();
                             }
                         }
                     }, mActivity);
 
                 } else {
-                    putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_AVATAR_BITMAP, mAvatar.getBitmap());
-                    sendResult(Activity.RESULT_OK);
-                    mActivity.onBackPressed();
+                    finishFragment();
                 }
             }
         });
 
         return v;
+    }
+
+    private void finishFragment() {
+        final FloatingActionButton fabCamera = (FloatingActionButton) mView.findViewById(R.id.profile_update_avatar_FloatingActionButton_camera);
+        final FloatingActionButton fabGallery = (FloatingActionButton) mView.findViewById(R.id.profile_update_avatar_FloatingActionButton_gallery);
+        final FloatingActionButton fabDelete = (FloatingActionButton) mView.findViewById(R.id.profile_update_avatar_FloatingActionButton_delete);
+
+        fabCamera.setImageDrawable(IconHelper.colorize(getContext(),R.drawable.icon_add_photo,R.color.colorWhite));
+        fabGallery.setImageDrawable(IconHelper.colorize(getContext(),R.drawable.icon_gallery,R.color.colorWhite));
+        fabDelete.setImageDrawable(IconHelper.colorize(getContext(),R.drawable.icon_delete,R.color.colorWhite));
+
+        ObjectAnimator fadeOut = ObjectAnimator.ofFloat(fabCamera, "alpha", 1, 0).setDuration(300);
+        fadeOut.start();
+
+        fadeOut = ObjectAnimator.ofFloat(fabGallery, "alpha", 1, 0).setDuration(300);
+        fadeOut.start();
+
+        fadeOut = ObjectAnimator.ofFloat(fabDelete, "alpha", 1, 0).setDuration(300);
+        fadeOut.start();
+        fadeOut.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                putOutputParam(FRAGMENT_OUTPUT_PARAM_USER_AVATAR_BITMAP, mAvatar.getBitmap());
+                sendResult(Activity.RESULT_OK);
+                mActivity.onBackPressed();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
     }
 
     @Override

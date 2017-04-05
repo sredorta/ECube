@@ -48,6 +48,7 @@
         android:layout_marginBottom="20dp"
         android:gravity="center_horizontal" />
 
+        <!--
         <android.support.v7.widget.CardView
             android:layout_width="100dp"
             android:layout_height="100dp"
@@ -71,6 +72,15 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/profile_user_default"></ImageView>
         </android.support.v7.widget.CardView>
+                        -->
+        <com.ecube.solutions.ecube.widgets.AvatarAppWidget
+            android:id="@+id/profile_create_avatar_AvatarAppWidget"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            app:src="@drawable/profile_user_default"
+            app:transitionName="@string/transitionSharedProfileCreateAvatarProfileUpdateAvatar"></com.ecube.solutions.ecube.widgets.AvatarAppWidget>
+
     </LinearLayout>
 </android.support.v7.widget.CardView>
     <Button
@@ -82,47 +92,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp" />
     </LinearLayout>
-    <RelativeLayout
-        android:id="@+id/profile_create_avatar_hidden_panel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="#fcc"
-        android:visibility="visible"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentRight="false"
-        android:layout_alignParentBottom="true"
-        android:alpha="0.8">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp">
-
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/profile_create_avatar_imageView_gallery"
-                android:src="@drawable/icon_gallery"
-                android:layout_weight="1" />
-
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/profile_create_avatar_imageView_photo"
-                android:src="@drawable/icon_camera"
-                android:layout_weight="1" />
-
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/profile_create_avatar_imageView_delete"
-                android:src="@drawable/icon_delete"
-                android:layout_weight="1" />
-        </LinearLayout>
-    </RelativeLayout>
 
 
 </RelativeLayout>

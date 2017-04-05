@@ -219,13 +219,14 @@ public abstract class FragmentAbstract extends Fragment implements OnBackPressed
                 transaction.setCustomAnimations(mAnimEnter, mAnimExit, mAnimPopEnter, mAnimPopExit);
         transaction.replace(mContainer, fragment, tag);
         if (addToBackStack)
-                transaction.addToBackStack(tag);
+               transaction.addToBackStack(tag);
 
         try {
                transaction.commit();
         } catch (IllegalStateException e) {
                 //It means that the activity is gone in rotation also... so we need to wait that activity is back and then commit
                 Log.i(TAG, "Exception during transaction commit !!! This fragment should be retained !!!!!!!!!!!!!");
+                Log.i(TAG, "Exception : " + e);
         }
         if (DEBUG)
             Log.i(TAG, "Added fragment " + fragment.getClass().getSimpleName() + " with tag:" + tag);

@@ -57,6 +57,7 @@ public class Avatar implements Serializable {
     public void setBitmap(@Nullable  Bitmap bitmap) {
         if (bitmap == null) {
             mBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.profile_user_default);
+            Log.i(TAG, "Setting default bitmap as it was null !!!!");
         } else {
             mBitmap = bitmap;
         }
@@ -85,6 +86,7 @@ public class Avatar implements Serializable {
         } catch (IOException e) {
             Log.i(TAG, "Caught exception: " + e);
         }
+        Log.i(TAG, "Bitmap size: " + myBitmap.getByteCount());
         this.setBitmap(myBitmap);
     }
 
@@ -95,6 +97,7 @@ public class Avatar implements Serializable {
         myBitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath(), bmOptions);
         myBitmap = ThumbnailUtils.extractThumbnail(myBitmap, AVATAR_SIZE, AVATAR_SIZE);         // Crop image to 300x300
         myBitmap = this.rotateImage(myBitmap, photoFile.getAbsolutePath());
+        Log.i(TAG, "Bitmap size: " + myBitmap.getByteCount());
         this.setBitmap(myBitmap);
     }
 
