@@ -23,7 +23,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:textAppearance="?android:attr/textAppearanceLarge"
-    android:text="Enter your email"
+    android:text="@string/profile_create_email_title"
     android:id="@+id/profile_create_email_title"
     android:layout_gravity="center"
     android:textStyle="bold" />
@@ -32,7 +32,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:textAppearance="?android:attr/textAppearanceSmall"
-    android:text="Please enter your personal or professional email"
+    android:text="@string/profile_create_email_content"
     android:id="@+id/profile_create_email_text"
     android:layout_gravity="bottom|center_horizontal"
     android:layout_marginTop="20dp"
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         app:inputMode="email"
         app:hasShadow="false"
-        app:hint="email"
+        app:hint="@string/common_strings_email"
         android:id="@+id/profile_create_email_TextInputLayoutAppWidget_email"
         />
 
@@ -53,7 +53,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="NEXT"
+        android:text="@string/common_strings_next"
         android:id="@+id/profile_create_email_button"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"

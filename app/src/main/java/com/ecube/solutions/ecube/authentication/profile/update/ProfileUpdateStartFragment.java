@@ -107,43 +107,43 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
 
     private void initMenuItems() {
         MenuItem myItem = new MenuItem();
-        myItem.setText("Change name");
+        myItem.setText(getContext().getString(R.string.profile_update_change_name));
         myItem.setDrawable(IconHelper.colorize(getContext(),R.drawable.icon_settings_names,R.color.md_lime_700));
         myItem.setAction("names");
         mMenuItems.add(myItem);
 
         myItem = new MenuItem();
-        myItem.setText("Change avatar");
+        myItem.setText(getContext().getString(R.string.profile_update_change_avatar));
         myItem.setDrawable(IconHelper.colorize(getContext(),R.drawable.icon_settings_avatar,R.color.md_lime_700));
         myItem.setAction("avatar");
         mMenuItems.add(myItem);
 
         myItem = new MenuItem();
-        myItem.setText("Change email");
+        myItem.setText(getContext().getString(R.string.profile_update_change_email));
         myItem.setDrawable(IconHelper.colorize(getContext(),R.drawable.icon_settings_email,R.color.md_lime_700));
         myItem.setAction("email");
         mMenuItems.add(myItem);
 
         myItem = new MenuItem();
-        myItem.setText("Change phone");
+        myItem.setText(getContext().getString(R.string.profile_update_change_phone));
         myItem.setDrawable(IconHelper.colorize(getContext(),R.drawable.icon_settings_phone,R.color.md_lime_700));
         myItem.setAction("phone");
         mMenuItems.add(myItem);
 
         myItem = new MenuItem();
-        myItem.setText("Change password");
+        myItem.setText(getContext().getString(R.string.profile_update_change_password));
         myItem.setDrawable(IconHelper.colorize(getContext(),R.drawable.icon_settings_password,R.color.md_lime_700));
         myItem.setAction("password");
         mMenuItems.add(myItem);
 
         myItem = new MenuItem();
-        myItem.setText("Change access type");
+        myItem.setText(getContext().getString(R.string.profile_update_change_access_type));
         myItem.setDrawable(IconHelper.colorize(getContext(),R.drawable.icon_settings_account,R.color.md_lime_700));
         myItem.setAction("access");
         mMenuItems.add(myItem);
 
         myItem = new MenuItem();
-        myItem.setText("Remove account");
+        myItem.setText(getContext().getString(R.string.profile_update_remove_account));
         myItem.setDrawable(IconHelper.colorize(getContext(),R.drawable.icon_settings_remove_account,R.color.md_lime_700));
         myItem.setAction("remove");
         mMenuItems.add(myItem);

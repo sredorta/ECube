@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Enter your credentials"
+            android:text="@string/profile_signin_multiple_title"
             android:id="@+id/profile_signin_with_account_title"
             android:layout_gravity="center"
             android:textStyle="bold"
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Please select an account and enter according password..."
+            android:text="@string/profile_signin_multiple_content"
             android:id="@+id/profile_signin_with_account_text"
             android:layout_gravity="bottom|center_horizontal"
             android:layout_marginTop="20dp"
@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             app:inputMode="password_confirm"
             app:hasShadow="false"
-            app:hint="password"
+            app:hint="@string/common_strings_password"
             android:id="@+id/profile_signin_with_account_TextInputLayoutAppWidget_password"
             android:gravity="center_horizontal"
             android:layout_gravity="center_horizontal" />
@@ -68,7 +68,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="NEXT"
+        android:text="@string/common_strings_next"
         android:id="@+id/profile_signin_with_account_Button_submit"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
@@ -84,7 +84,7 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Connect to another account"
+        android:text="@string/account_common_strings_connect_to_another"
         android:id="@+id/profile_signin_with_account_TextView_use_without_account"
         android:alpha="0.8"
         android:gravity="center_vertical|center_horizontal"
@@ -93,7 +93,7 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Forgot password ?"
+        android:text="@string/account_common_strings_forgot_password"
         android:id="@+id/profile_signin_with_account_TextView_forgot_password"
         android:alpha="0.8"
         android:gravity="center_vertical|center_horizontal"
@@ -102,7 +102,7 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Create new account"
+        android:text="@string/account_common_strings_create_account"
         android:id="@+id/profile_signin_with_account_TextView_create"
         android:alpha="0.8"
         android:gravity="center_vertical|center_horizontal"

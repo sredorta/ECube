@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center"
                 android:gravity="center_horizontal"
-                android:text="test"
+                android:text=""
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textStyle="bold" />
 
@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|bottom|center_horizontal"
                 android:gravity="center_horizontal"
-                android:text="test@email"
+                android:text=""
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|bottom|center_horizontal"
                 android:gravity="center_horizontal"
-                android:text="myphone"
+                android:text=""
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textSize="14sp"/>
             <TextView
@@ -89,7 +89,7 @@
                 android:layout_marginTop="10dp"
                 android:gravity="bottom"
                 android:textColor="@color/md_lime_700"
-                android:text="Created on :"
+                android:text="@string/profile_update_created_on"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="italic" />
 
@@ -99,7 +99,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/md_lime_700"
                 android:gravity="bottom"
-                android:text="test"
+                android:text=""
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
 

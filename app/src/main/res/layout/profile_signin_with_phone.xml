@@ -33,7 +33,7 @@ style="?attr/cardStyle">
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center_horizontal"
-            android:text="Enter your credentials"
+            android:text="@string/profile_signin_multiple_title"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textStyle="bold" />
 
@@ -45,7 +45,7 @@ style="?attr/cardStyle">
             android:layout_marginBottom="20dp"
             android:layout_marginTop="20dp"
             android:gravity="center_horizontal"
-            android:text="Please enter your phone and password..."
+            android:text="@string/profile_signin_phone_content"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -69,7 +69,7 @@ style="?attr/cardStyle">
                 android:layout_marginTop="5dp"
                 android:gravity="center_horizontal"
                 app:hasShadow="false"
-                app:hint="phone"
+                app:hint="@string/common_strings_phone"
                 app:inputMode="phone" />
 
             <com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget
@@ -79,7 +79,7 @@ style="?attr/cardStyle">
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_horizontal"
                 app:hasShadow="false"
-                app:hint="password"
+                app:hint="@string/common_strings_password"
                 app:inputMode="password_confirm" />
         </LinearLayout>
     </LinearLayout>
@@ -90,7 +90,7 @@ style="?attr/cardStyle">
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:text="NEXT" />
+            android:text="@string/common_strings_next" />
         </LinearLayout>
 <LinearLayout
 android:orientation="vertical"
@@ -102,7 +102,7 @@ android:layout_gravity="center_vertical">
 <TextView
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:text="Login with email"
+    android:text="@string/profile_signin_with_email"
     android:id="@+id/profile_signin_with_phone_TextView_use_email"
     android:alpha="0.8"
     android:gravity="center_vertical|center_horizontal"
@@ -111,7 +111,7 @@ android:layout_gravity="center_vertical">
 <TextView
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:text="Forgot password ?"
+    android:text="@string/account_common_strings_forgot_password"
     android:id="@+id/profile_signin_with_phone_TextView_forgot_password"
     android:alpha="0.8"
     android:gravity="center_vertical|center_horizontal"
@@ -120,7 +120,7 @@ android:layout_gravity="center_vertical">
 <TextView
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:text="Create new account"
+    android:text="@string/account_common_strings_create_account"
     android:id="@+id/profile_signin_with_phone_TextView_create"
     android:alpha="0.8"
     android:gravity="center_vertical|center_horizontal"

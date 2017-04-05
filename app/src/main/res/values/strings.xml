@@ -1,5 +1,47 @@
 <resources>
     <string name="app_name">ECube</string>
-    <string name="transitionSharedProfileUpdateStartProfileUpdateAvatar">transitionSharedProfileUpdateStartProfileUpdateAvatar</string>
-    <string name="transitionSharedProfileCreateAvatarProfileUpdateAvatar">transitionSharedProfileUpdateStartProfileUpdateAvatar</string>
+    <string name="transitionSharedProfileUpdateStartProfileUpdateAvatar" translatable="false">transitionSharedProfileUpdateStartProfileUpdateAvatar</string>
+    <string name="transitionSharedProfileCreateAvatarProfileUpdateAvatar" translatable="false">transitionSharedProfileUpdateStartProfileUpdateAvatar</string>
+    <string name="profile_create_start_title">Welcome to eCube</string>
+    <string name="profile_create_start_content">We are very proud to see that you are using our services. We will help you in creating an account in few steps</string>
+    <string name="common_strings_next">Next</string>
+    <string name="profile_create_avatar_title">Select an avatar</string>
+    <string name="profile_create_avatar_content">This avatar will be seen by other users when you let comments for example. Click on the default avatar to change it</string>
+    <string name="profile_create_names_title">What\'s your name ?</string>
+    <string name="profile_create_names_content">These are the names seen by other users, so please use your real name</string>
+    <string name="common_strings_first_name">First name</string>
+    <string name="common_strings_last_name">Last name</string>
+    <string name="common_strings_invalid_field">Invalid field</string>
+    <string name="profile_create_phone_title">Enter your mobile phone number</string>
+    <string name="profile_create_phone_content">Please enter your phone number</string>
+    <string name="common_strings_phone">Phone</string>
+    <string name="profile_create_email_title">Enter your email address</string>
+    <string name="profile_create_email_content">Please enter your personal or professional email address. This address will be used for password recovery and notifications</string>
+    <string name="common_strings_email">Email address</string>
+    <string name="common_strings_password">Password</string>
+    <string name="profile_create_password_title">Enter your password</string>
+    <string name="profile_create_password_content">Define a password to get access to the application. Same password will be required on the web</string>
+    <string name="common_strings_password_confirm">Confirm password</string>
+    <string name="common_strings_password_quality">Password quality</string>
+    <string name="common_strings_password_incomplete">Incomplete password</string>
+    <string name="common_strings_password_not_matching">Passwords not matching</string>
+    <string name="account_common_strings_connect_to_another">Connect to another account</string>
+    <string name="account_common_strings_forgot_password">Forgot password ?</string>
+    <string name="account_common_strings_create_account">Create a new account</string>
+    <string name="profile_signin_multiple_title">Enter your credentials</string>
+    <string name="profile_signin_multiple_content">Please select an account and enter the corresponding password</string>
+    <string name="profile_update_created_on">Created on :</string>
+    <string name="profile_update_change_name">Change your name</string>
+    <string name="profile_update_change_avatar">Change avatar</string>
+    <string name="profile_update_change_email">Change email</string>
+    <string name="profile_update_change_password">Change my password</string>
+    <string name="profile_update_change_access_type">Change access type</string>
+    <string name="profile_update_remove_account">Remove this account</string>
+    <string name="profile_update_change_phone">Change phone</string>
+    <string name="common_strings_apply">Apply</string>
+    <string name="common_strings_cancel">Cancel</string>
+    <string name="profile_signin_email_content">Please enter your email address and corresponding password</string>
+    <string name="profile_signin_phone_content">Please enter your phone number and corresponding password</string>
+    <string name="profile_signin_with_email">Signin with email address</string>
+    <string name="profile_signin_with_phone">Signin with mobile phone number</string>
 </resources>

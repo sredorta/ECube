@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ECube</string>
+    <string name="profile_create_start_title">Bienvenido en eCube</string>
+    <string name="profile_create_start_content">Estamos muy contentos de ver que utilizas nuestros servicios. Ahora te ayudaremos a crear una cuenta en unas pocas etapas</string>
+    <string name="common_strings_next">Siguiente</string>
+    <string name="profile_create_avatar_title">Seleccione una foto</string>
+    <string name="profile_create_avatar_content">Esta imagen se vera por todos los otros cuando dejes comentarios. Haz click en la imagen por defecto si quieres personalizar-la</string>
+    <string name="common_strings_first_name">Nombre</string>
+    <string name="common_strings_last_name">Apellidos</string>
+    <string name="common_strings_invalid_field">Campo incorrecto</string>
+    <string name="profile_create_names_title">Como te llamas ?</string>
+    <string name="profile_create_names_content">Este nombre es el que se vera por los otros usuarios. Porfavor utiliza tu nombre verdadero</string>
+    <string name="profile_create_phone_title">Entre el numero de mobil</string>
+    <string name="profile_create_phone_content">Escrive tu numero de mobil</string>
+    <string name="common_strings_phone">Mobil</string>
+    <string name="profile_create_email_title">Entra tu correo electronico</string>
+    <string name="profile_create_email_content">Escribe tu correo personal o profesional. Este correo sera utilizado para recuperar el password y para otras notificaciones de la applicacion</string>
+    <string name="common_strings_email">Direccion email</string>
+    <string name="common_strings_password">Password</string>
+    <string name="profile_create_password_content">Define tu password para la aplicacion. El mismo password sera requerido si accedes a l\'aplicacion a traves del web</string>
+    <string name="profile_create_password_title">Define tu password</string>
+    <string name="common_strings_password_confirm">Confirma password</string>
+    <string name="common_strings_password_quality">Calidad de password</string>
+    <string name="common_strings_password_incomplete">Password a completar</string>
+    <string name="common_strings_password_not_matching">Passwords diferentes</string>
+    <string name="account_common_strings_forgot_password">Te has olvidado el password ?</string>
+    <string name="account_common_strings_create_account">Crear una nueva cuenta</string>
+    <string name="account_common_strings_connect_to_another">Connectarse a otra cuenta</string>
+    <string name="profile_signin_multiple_title">Entra tus credenciales</string>
+    <string name="profile_signin_multiple_content">Selecciona una cuenta y entra su password</string>
+    <string name="profile_update_created_on">Creado en :</string>
+    <string name="profile_update_change_name">Canvia nombre</string>
+    <string name="profile_update_change_avatar">Canvia foto de perfil</string>
+    <string name="profile_update_remove_account">Eliminar esta cuenta</string>
+    <string name="profile_update_change_password">Canvia tu password</string>
+    <string name="profile_update_change_email">Canviar email</string>
+    <string name="profile_update_change_access_type">Cambiar accesso</string>
+    <string name="profile_update_change_phone">Canvia tu mobil</string>
+    <string name="common_strings_apply">Aplica</string>
+    <string name="common_strings_cancel">Cancelar</string>
+    <string name="profile_signin_email_content">Entra la direccion de correo electronico y el password correspondiente</string>
+    <string name="profile_signin_phone_content">Entra tu numero de mobil y el password correspondiente</string>
+    <string name="profile_signin_with_email">Connectarse con email</string>
+    <string name="profile_signin_with_phone">Connectarse con el numero de mobil</string>
+</resources>

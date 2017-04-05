@@ -25,7 +25,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:textAppearance="?android:attr/textAppearanceLarge"
-    android:text="What's your name ?"
+    android:text="@string/profile_create_names_title"
     android:id="@+id/profile_create_names_title"
     android:layout_gravity="center"
     android:textStyle="bold" />
@@ -34,7 +34,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:textAppearance="?android:attr/textAppearanceSmall"
-    android:text="Other users will see this names, so please use real names"
+    android:text="@string/profile_create_names_content"
     android:id="@+id/profile_create_names_text"
     android:layout_gravity="bottom|center_horizontal"
     android:layout_marginTop="20dp"
@@ -54,7 +54,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="2"
             app:hasShadow="false"
-            app:hint="First name"
+            app:hint="@string/common_strings_first_name"
             app:inputMode="name" />
 
         <com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget
@@ -66,7 +66,7 @@
             android:layout_weight="3"
             android:gravity="center_horizontal"
             app:hasShadow="false"
-            app:hint="Last name"
+            app:hint="@string/common_strings_last_name"
             app:inputMode="name" />
     </LinearLayout>
 
@@ -75,7 +75,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="NEXT"
+        android:text="@string/common_strings_next"
         android:id="@+id/profile_create_names_button"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"

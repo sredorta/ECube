@@ -36,8 +36,7 @@ android:focusableInTouchMode="true">
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_gravity="center"
-                app:src="@drawable/profile_user_default">
-            </com.ecube.solutions.ecube.widgets.AvatarAppWidget>
+                app:src="@drawable/profile_user_default"/>
         </LinearLayout>
 
         <LinearLayout
@@ -72,23 +71,8 @@ android:focusableInTouchMode="true">
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 app:hasShadow="false"
-                app:hint="password"
+                app:hint="@string/common_strings_password"
                 app:inputMode="password_confirm" />
-            <!--
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left|center_horizontal"
-                android:id="@+id/profile_signin_with_account_unique_TextInputLayout_password">
-                <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:ems="10"
-                android:id="@+id/profile_signin_with_account_unique_EditText_password"
-                android:hint="password" />
-            </android.support.design.widget.TextInputLayout>
-            -->
         </LinearLayout>
 
         <LinearLayout
@@ -115,12 +99,12 @@ android:focusableInTouchMode="true">
             android:layout_gravity="center"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
-            android:text="NEXT" />
+            android:text="@string/common_strings_next" />
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:text="Connect to another account"
+            android:text="@string/account_common_strings_connect_to_another"
             android:id="@+id/profile_signin_with_account_unique_TextView_other"
             android:alpha="0.8"
             android:layout_weight="1"
@@ -129,7 +113,7 @@ android:focusableInTouchMode="true">
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:text="Forgot password ?"
+            android:text="@string/account_common_strings_forgot_password"
             android:id="@+id/profile_signin_with_account_unique_TextView_forgot"
             android:alpha="0.8"
             android:layout_weight="1"

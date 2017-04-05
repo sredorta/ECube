@@ -55,6 +55,7 @@ public class MainFragment extends FragmentAbstract {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(false);
         //We check what we need to do if start SignIn/SignInWithAccounts/SignUp
         myAccountAuthenticator = new AccountAuthenticator(getContext());
     }

@@ -127,7 +127,7 @@ public class ProfileUpdatePasswordFragment extends FragmentAbstract {
                 data.putString(ProfileUpdateResetPasswordFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT, mUser.getEmail());
                 ProfileUpdateResetPasswordFragment fragment = ProfileUpdateResetPasswordFragment.newInstance(data);
                 fragment.setTargetFragment(ProfileUpdatePasswordFragment.this, REQ_RESET_PASSWORD);
-                replaceFragment(fragment, AppGeneral.KEY_FRAGMENT_STACK_LEVEL_UNDEFINED, true);  //This comes from abstract
+                replaceFragment(fragment, AppGeneral.KEY_FRAGMENT_STACK_LEVEL_UNDEFINED,true);  //This comes from abstract
             }
         });
 

@@ -52,8 +52,7 @@ android:focusableInTouchMode="true">
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_gravity="center"
-            app:src="@drawable/profile_user_default">
-        </com.ecube.solutions.ecube.widgets.AvatarAppWidget>
+            app:src="@drawable/profile_user_default"/>
 
 
 
@@ -62,7 +61,7 @@ android:focusableInTouchMode="true">
             android:layout_height="wrap_content"
             app:inputMode="password_confirm"
             app:hasShadow="false"
-            app:hint="password"
+            app:hint="@string/common_strings_password"
             android:id="@+id/profile_signin_with_account_unique_TextInputLayoutAppWidget_password"
             android:gravity="center_horizontal"
             android:layout_gravity="center_horizontal" />
@@ -71,7 +70,7 @@ android:focusableInTouchMode="true">
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="NEXT"
+            android:text="@string/common_strings_next"
             android:id="@+id/profile_signin_with_account_unique_Button_submit"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
@@ -87,7 +86,7 @@ android:focusableInTouchMode="true">
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:text="Connect to another account"
+            android:text="@string/account_common_strings_connect_to_another"
             android:id="@+id/profile_signin_with_account_unique_TextView_other"
             android:alpha="0.8"
             android:layout_weight="1"
@@ -96,7 +95,7 @@ android:focusableInTouchMode="true">
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:text="Forgot password ?"
+            android:text="@string/account_common_strings_forgot_password"
             android:id="@+id/profile_signin_with_account_unique_TextView_forgot"
             android:alpha="0.8"
             android:layout_weight="1"

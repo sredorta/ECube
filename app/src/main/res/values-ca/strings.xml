@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ECube</string>
+    <string name="profile_create_start_title">Benvingut a eCube</string>
+    <string name="profile_create_start_content">Estem molt contents de veure que utilitzeu els nostres serveis. Ara us ajudarem a crear un compte en poques etapes</string>
+    <string name="common_strings_next">Sequent</string>
+    <string name="profile_create_avatar_title">Seleccioneu una foto</string>
+    <string name="profile_create_avatar_content">Aquesta imatge es veura pels altres quan deixis comentaris i altres. Fes click a l\'imatge per defecte si vols canviar-la</string>
+    <string name="common_strings_first_name">Nom</string>
+    <string name="common_strings_last_name">Cognoms</string>
+    <string name="common_strings_invalid_field">Camp incorrecte</string>
+    <string name="profile_create_names_title">Com et dius ?</string>
+    <string name="profile_create_names_content">Aquest nom es el que es veura pels altres utilitzadors. Siusplau utilitza el teu nom real.</string>
+    <string name="profile_create_phone_title">Entreu el numero de mobil</string>
+    <string name="profile_create_phone_content">Siusplau escriu el teu numero de mobil</string>
+    <string name="common_strings_phone">Mobil</string>
+    <string name="profile_create_email_title">Entra la teva adreca email</string>
+    <string name="profile_create_email_content">Escriu la teva adressa de correu personal o professional. Aquesta adressa sera utilitzada per restaura un password i per algunes notificacions</string>
+    <string name="common_strings_email">Adressa email</string>
+    <string name="common_strings_password">Password</string>
+    <string name="profile_create_password_content">Defineix el teu password per accedir a l\'applicacio. El mateix password sera demanat si accediu a l\'applicacio per internet</string>
+    <string name="profile_create_password_title">Defineix el teu password</string>
+    <string name="common_strings_password_confirm">Confirma password</string>
+    <string name="common_strings_password_incomplete">Password a completar</string>
+    <string name="common_strings_password_quality">Qualitat de password</string>
+    <string name="common_strings_password_not_matching">Passwords diferents</string>
+    <string name="account_common_strings_forgot_password">Password olvidat ?</string>
+    <string name="account_common_strings_create_account">Crear un nou compte</string>
+    <string name="account_common_strings_connect_to_another">Connectar-se a un altre compte</string>
+    <string name="profile_signin_multiple_title">Entra les credencials</string>
+    <string name="profile_signin_multiple_content">Selecciona un compte i entra el seu password</string>
+    <string name="profile_update_created_on">Creat el :</string>
+    <string name="profile_update_change_name">Canvia nom i cognoms</string>
+    <string name="profile_update_change_avatar">Canvia la foto de perfil</string>
+    <string name="profile_update_remove_account">Suprimir aquest compte</string>
+    <string name="profile_update_change_password">Canvia el meu password</string>
+    <string name="profile_update_change_email">Canviar email</string>
+    <string name="profile_update_change_access_type">Canviar access</string>
+    <string name="profile_update_change_phone">Canvia el numero de mobil</string>
+    <string name="common_strings_apply">Aplica</string>
+    <string name="common_strings_cancel">Cancel.lar</string>
+    <string name="profile_signin_email_content">Entra la teva adressa de correu i el password correspondent</string>
+    <string name="profile_signin_phone_content">Entra el teu numero de mobil i el password corresponent</string>
+    <string name="profile_signin_with_email">Connectar-se amb adressa email</string>
+    <string name="profile_signin_with_phone">Connectar-se amb numero de mobil</string>
+</resources>

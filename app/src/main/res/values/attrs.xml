@@ -11,6 +11,7 @@
         </attr>
         <attr name="hasShadow" format="boolean"/>
         <attr name="hint" format="string"/>
+        <attr name="hint_shadow" format="string"/>
         <attr name="errorColorTyping" format="color"/>
         <attr name="errorColorFinal" format="color"/>
         <attr name="textActiveColor" format="color"/>

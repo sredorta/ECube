@@ -52,6 +52,7 @@ public class TextInputLayoutAppWidget extends LinearLayout {
     private static final boolean DEBUG = true;
 
     private String mHintText;                                       //Hint text
+    private String mHintTextShadow;                                       //Hint text shadow
     private int mErrorColor=0;
     private Locale mLocale;                                         //Locale in order to process phone number
     private TextInputEditText mEditText;                            //EditText inside
@@ -95,7 +96,8 @@ public class TextInputLayoutAppWidget extends LinearLayout {
         mColorErrorFinal = ContextCompat.getColor(getContext(),R.color.md_red_500);     //-769226
         mColorTextActive = ContextCompat.getColor(getContext(),R.color.md_green_A700);  //-16725933
         mColorTextInactive = ContextCompat.getColor(getContext(),R.color.md_green_700); //-13070788
-
+        //Default hint
+        mHintTextShadow = "Confirm";
         TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.TextInputLayoutAppWidget, 0, 0);
         int n = typedArray.getIndexCount();
         for (int i = 0; i < n; i++) {
@@ -108,6 +110,10 @@ public class TextInputLayoutAppWidget extends LinearLayout {
                 case R.styleable.TextInputLayoutAppWidget_hint:
                     mHintText = typedArray.getString(R.styleable.TextInputLayoutAppWidget_hint);
                     break;
+                case R.styleable.TextInputLayoutAppWidget_hint_shadow:
+                    mHintTextShadow = typedArray.getString(R.styleable.TextInputLayoutAppWidget_hint_shadow);
+                    break;
+
                 case R.styleable.TextInputLayoutAppWidget_hasShadow:
                     mHasShadow = typedArray.getBoolean(R.styleable.TextInputLayoutAppWidget_hasShadow, false);
                     break;
@@ -149,7 +155,7 @@ public class TextInputLayoutAppWidget extends LinearLayout {
             mTextInputLayoutShadow.setVisibility(GONE);
         } else {
             mTextInputLayoutShadow.setVisibility(VISIBLE);
-            mTextInputLayoutShadow.setHint("Confirm " + mHintText);
+            mTextInputLayoutShadow.setHint(mHintTextShadow);
         }
         mTextInputLayout.setHint(mHintText);
         if (isInEditMode()) {   // If we are in development we stop here
@@ -215,7 +221,7 @@ public class TextInputLayoutAppWidget extends LinearLayout {
                         mTextInputLayout.setError("");
                         if (charSequence.length() > 0) {
                             if (charSequence.toString().equals("") || charSequence.toString().length() < 3) {
-                                mTextInputLayout.setError("Invalid name", mColorErrorTyping);
+                                mTextInputLayout.setError(getContext().getString(R.string.common_strings_invalid_field), mColorErrorTyping);
                             } else {
                                 mTextInputLayout.setError("");
                             }
@@ -240,7 +246,7 @@ public class TextInputLayoutAppWidget extends LinearLayout {
                             mTextInputLayout.setError("");
                             if (charSequence.length() > 0) {
                                 if (!Patterns.EMAIL_ADDRESS.matcher(charSequence).matches()) {
-                                    mTextInputLayout.setError("Invalid email",mColorErrorTyping);
+                                    mTextInputLayout.setError(getContext().getString(R.string.common_strings_invalid_field),mColorErrorTyping);
                                 } else {
                                     mTextInputLayout.setError("");
                                 }
@@ -273,7 +279,7 @@ public class TextInputLayoutAppWidget extends LinearLayout {
                                     mTextInputLayout.setError("");
                                     hideInputKeyBoard();
                                 } else {
-                                    mTextInputLayout.setError("Invalid phone number",mColorErrorTyping);
+                                    mTextInputLayout.setError(getContext().getString(R.string.common_strings_invalid_field),mColorErrorTyping);
                                 }
                                 if ((editable.toString().matches("[0-9]+") && editable.toString().length() > 0)) {
                                     //Do nothing
@@ -306,14 +312,14 @@ public class TextInputLayoutAppWidget extends LinearLayout {
                             mTextInputLayout.setError("");
                             mErrorColor = mColorErrorTyping;
                             if (editable.length() > 0) {
-                                mTextInputLayout.setError("Password quality");
+                                mTextInputLayout.setError(getContext().getString(R.string.common_strings_password_quality));
                                 int quality = getPasswordQuality(editable.toString());
-                                mTextInputLayout.setError(String.format("Password quality %s", quality).concat(" %"));
-                                if (quality < 50)
+                                mTextInputLayout.setError(String.format(getContext().getString(R.string.common_strings_password_quality) + " %s", quality).concat(" %"));
+                                if (quality < 70)
                                     mErrorColor = ContextCompat.getColor(getContext(), R.color.md_red_500);
-                                else if (quality >= 50 && quality < 70)
+                                else if (quality >= 70 && quality < 100)
                                     mErrorColor = ContextCompat.getColor(getContext(), R.color.md_orange_500);
-                                else if (quality >= 70)
+                                else if (quality >= 100)
                                     mErrorColor = ContextCompat.getColor(getContext(), R.color.md_green_500);
                             } else {
                                 mTextInputLayout.setError("");
@@ -343,7 +349,7 @@ public class TextInputLayoutAppWidget extends LinearLayout {
                                 int quality = getPasswordQuality(editable.toString());
 
                                 if (quality < 70)
-                                    mTextInputLayout.setError("Incomplete password",mColorErrorTyping);
+                                    mTextInputLayout.setError(getContext().getString(R.string.common_strings_password_incomplete),mColorErrorTyping);
                                 else
                                     mTextInputLayout.setError("");
                             } else {
@@ -401,7 +407,7 @@ public class TextInputLayoutAppWidget extends LinearLayout {
                     if (mEditTextShadow.getText().toString().equals(tmpStr)) {
                         mTextInputLayoutShadow.setError("");
                     } else {
-                        mTextInputLayoutShadow.setError("Passwords not matching", mColorErrorTyping);
+                        mTextInputLayoutShadow.setError(getContext().getString(R.string.common_strings_password_not_matching), mColorErrorTyping);
                     }
                 }
             }
@@ -583,12 +589,13 @@ public class TextInputLayoutAppWidget extends LinearLayout {
                     result = true;
                 break;
             case 3: //Define Password
-                if (getPasswordQuality(getText())> 70)
+                if (getPasswordQuality(getText())>= 100)
                     result = true;
                 break;
             case 4: //Confirm Password
-                if (getPasswordQuality(getText())> 70)
+                if (getPasswordQuality(getText())>= 100) {
                     result = true;
+                }
                 break;
             case 1: //email
                 CharSequence cs = getText().trim();
@@ -604,10 +611,10 @@ public class TextInputLayoutAppWidget extends LinearLayout {
                 result = false;
         }
         if (!result) {
-            mTextInputLayout.setError("Invalid field", mColorErrorFinal);
+            mTextInputLayout.setError(getContext().getString(R.string.common_strings_invalid_field), mColorErrorFinal);
         }
         if (!shadowMatches()) {
-            mTextInputLayoutShadow.setError("Invalid field",mColorErrorFinal);
+            mTextInputLayoutShadow.setError(getContext().getString(R.string.common_strings_invalid_field),mColorErrorFinal);
             result = false;
         }
 
@@ -663,7 +670,7 @@ public class TextInputLayoutAppWidget extends LinearLayout {
             }
         }
 
-        if (length > 7) { requirements++;}
+        if (length > 4) { requirements++;}
         if (uppercase > 0) { requirements++; }
         if (lowercase > 0) { requirements++; }
         if (digits > 0) { requirements++; }
@@ -672,7 +679,7 @@ public class TextInputLayoutAppWidget extends LinearLayout {
         if (digits == 0 && symbols == 0) { lettersonly = 1; }
         if (lowercase == 0 && uppercase == 0 && symbols == 0) { numbersonly = 1;}
 
-        int Total = (length * 4) + ((length - uppercase) * 2)
+        int Total = (length * 10) + ((length - uppercase) * 2)
                 + ((length - lowercase) * 2) + (digits * 4) + (symbols * 6)
                 + (bonus * 2) + (requirements * 2) - (lettersonly * length*2)
                 - (numbersonly * length*3) - (cuc * 2) - (clc * 2);

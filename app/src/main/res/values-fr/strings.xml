@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ECube</string>
+    <string name="profile_create_start_title">Rejoignez eCube</string>
+    <string name="profile_create_start_content">On est tres heureux de voir que vous utilizes nos services. Maintenant, on va vous aider a creer un compte en quelques etapes</string>
+    <string name="common_strings_next">Suivant</string>
+    <string name="profile_create_avatar_title">Selectionez une photo</string>
+    <string name="profile_create_avatar_content">Cette image sera vu par les autres utilizateurs si vous laissez des commentaires et autres. Clickez sur l\'image si vous desirez la personalizer</string>
+    <string name="common_strings_first_name">Prenom</string>
+    <string name="common_strings_last_name">Nom</string>
+    <string name="common_strings_invalid_field">Saisie incorrecte</string>
+    <string name="profile_create_names_title">Comment vous appelez vous ?</string>
+    <string name="profile_create_names_content">Ce nom c\'est celui que les autres utilizateurs vont voir. Ecrivez votre vrai nom et prenom</string>
+    <string name="profile_create_phone_title">Entrez votre portable</string>
+    <string name="profile_create_phone_content">Entrez votre numero de portable</string>
+    <string name="common_strings_phone">Portable</string>
+    <string name="profile_create_email_title">Entrez votre adresse mel</string>
+    <string name="profile_create_email_content">Entrez votre addresse de courrier electronique personel ou profesionel. Cette adresse sera utilize pour restorer un mot de passe et pour des notifications de l\'application</string>
+    <string name="common_strings_email">Adresse mel</string>
+    <string name="common_strings_password">Mot de passe</string>
+    <string name="profile_create_password_content">Entrez votre mot de passe pour l\'aplication. Le meme mot de passe vous sera demande si vous acceder aux services a travers du web</string>
+    <string name="profile_create_password_title">Entrez votre mot de passe</string>
+    <string name="common_strings_password_confirm">Confirmez mot de passe</string>
+    <string name="common_strings_password_quality">Qualite de mot de passe</string>
+    <string name="common_strings_password_incomplete">Mot de passe incomplet</string>
+    <string name="common_strings_password_not_matching">Sesie incorrecte</string>
+    <string name="account_common_strings_forgot_password">Mot de passe oublie ?</string>
+    <string name="account_common_strings_create_account">Creez un nouveau compte</string>
+    <string name="account_common_strings_connect_to_another">Se connecter a un autre compte</string>
+    <string name="profile_signin_multiple_title">Entrez vos credentiales</string>
+    <string name="profile_signin_multiple_content">Selectionez un compte et rentrez le mot de passe correspondant</string>
+    <string name="profile_update_created_on">Creez le :</string>
+    <string name="profile_update_change_name">Changer mon nom et prenom</string>
+    <string name="profile_update_change_avatar">Changez l\'avatar</string>
+    <string name="profile_update_remove_account">Suprimez ce compte</string>
+    <string name="profile_update_change_password">Changez votre mot de passe</string>
+    <string name="profile_update_change_email">Modifier adresse mel</string>
+    <string name="profile_update_change_access_type">Changez type d\'acces</string>
+    <string name="profile_update_change_phone">Changez le portable</string>
+    <string name="common_strings_apply">Apliquer</string>
+    <string name="common_strings_cancel">Annuler</string>
+    <string name="profile_signin_email_content">Entrez votre addresse mel et le password correspondant</string>
+    <string name="profile_signin_phone_content">Entrez le numero de portable et le password correspondant</string>
+    <string name="profile_signin_with_email">Se connecter avec adresse mel</string>
+    <string name="profile_signin_with_phone">Se connecter avec le numero de portable</string>
+</resources>
