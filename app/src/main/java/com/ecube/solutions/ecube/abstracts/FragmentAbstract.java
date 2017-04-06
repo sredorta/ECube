@@ -228,6 +228,8 @@ public abstract class FragmentAbstract extends Fragment implements OnBackPressed
                 Log.i(TAG, "Exception during transaction commit !!! This fragment should be retained !!!!!!!!!!!!!");
                 Log.i(TAG, "Exception : " + e);
         }
+
+
         if (DEBUG)
             Log.i(TAG, "Added fragment " + fragment.getClass().getSimpleName() + " with tag:" + tag);
 
@@ -267,6 +269,10 @@ public abstract class FragmentAbstract extends Fragment implements OnBackPressed
        }
    }
 
-
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume");
+        mActivity = getActivity();
+    }
 }

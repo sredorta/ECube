@@ -28,7 +28,7 @@ android:padding="10dp">
         android:id="@+id/profile_update_names_TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New name:"
+        android:text="@string/profile_update_change_name_new"
         android:textColor="@color/md_lime_700"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -44,7 +44,7 @@ android:padding="10dp">
         android:layout_height="wrap_content"
         android:layout_weight="1"
         app:hasShadow="false"
-        app:hint="first name"
+        app:hint="@string/common_strings_first_name"
         app:inputMode="name"
         card_view:errorColorTyping="@color/md_green_300" />
 
@@ -55,7 +55,7 @@ android:padding="10dp">
         android:layout_weight="2"
         android:layout_marginLeft="10dp"
         app:hasShadow="false"
-        app:hint="last name"
+        app:hint="@string/common_strings_last_name"
         app:inputMode="name"
         card_view:errorColorTyping="@color/md_green_300" />
         </LinearLayout>
@@ -69,5 +69,5 @@ android:padding="10dp">
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_marginTop="20dp"
-    android:text="APPLY" />
+    android:text="@string/common_strings_apply" />
 </LinearLayout>

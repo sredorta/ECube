@@ -85,7 +85,7 @@ public class ProfileUpdateAvatarFragment extends FragmentAbstract {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setRetainInstance(true);
         mAvatar = new Avatar(getContext());
         mUser = new User();
 
@@ -150,8 +150,6 @@ public class ProfileUpdateAvatarFragment extends FragmentAbstract {
                 }
             }
         });
-
-
 
 
         final Button nextButton = (Button) v.findViewById(R.id.profile_update_avatar_Button_apply);

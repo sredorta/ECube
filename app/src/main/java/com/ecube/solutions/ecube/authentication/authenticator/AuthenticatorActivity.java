@@ -6,6 +6,7 @@ import android.accounts.AccountManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -29,6 +30,8 @@ import com.ecube.solutions.ecube.authentication.profile.update.ProfileUpdateStar
 import com.ecube.solutions.ecube.general.AppGeneral;
 import com.ecube.solutions.ecube.helpers.IntentHelper;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 
 
@@ -47,6 +50,9 @@ public class AuthenticatorActivity extends ActivityAbstract {
 
     public static AccountAuthenticatorResponse mAccountAuthenticatorResponse = null;
     public static Bundle mResultBundle = null;
+
+    private FragmentManager mFragmentManager;
+
 
 
     //The funcitonality here is to dispatch which fragment we load... as this is on activity all have level.0
@@ -171,17 +177,29 @@ public class AuthenticatorActivity extends ActivityAbstract {
         }
     }
 
-    //This needs to be moved into the superActivity
-    private final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        List<Fragment> fragments = getSupportFragmentManager().getFragments();
-        if (fragments != null) {
-            for (Fragment fragment : fragments) {
-                fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
-            }
-        }
+    protected void onStart() {
+        super.onStart();
+        Log.i(TAG, "OnStart !!!!!!!!!!!!!");
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+
+        Log.i(TAG, "OnPostResume !!!!!!!!!!!!!");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "OnDestroy !!!!!!!!!!!!!");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
 

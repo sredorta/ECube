@@ -67,10 +67,9 @@ public class ProfileCreateAvatarFragment extends FragmentAbstract {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         Log.i(TAG, "OnCreate");
         setRetainInstance(true);
-        super.onCreate(savedInstanceState);
-
         mAvatar = new Avatar(getContext());
 
         //Get the input BASE64 encoded String and convert into bitmap

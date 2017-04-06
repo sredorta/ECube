@@ -43,4 +43,14 @@
     <string name="profile_signin_phone_content">Entra el teu numero de mobil i el password corresponent</string>
     <string name="profile_signin_with_email">Connectar-se amb adressa email</string>
     <string name="profile_signin_with_phone">Connectar-se amb numero de mobil</string>
+    <string name="profile_remove_account_title">Suprimir el compte</string>
+    <string name="profile_remove_account_content">Atencio ! Si elimines aquest compte totes les dades associades tambe es perdran</string>
+    <string name="profile_remove_account_remove">Eliminar compte :</string>
+    <string name="profile_reset_password_title">Reinicialitza el password</string>
+    <string name="profile_reset_password_content">Un nou password sera enviat a l\'adressa email indicada. Verifica tambe el correu no desitjat si no el trobes</string>
+    <string name="profile_update_change_email_new">Nou email :</string>
+    <string name="profile_update_change_password_current">Password actual :</string>
+    <string name="profile_update_change_password_new">Nou password :</string>
+    <string name="profile_update_change_phone_new">Nou numero de mobil :</string>
+    <string name="profile_update_change_name_new">Nou nom:</string>
 </resources>

@@ -44,4 +44,14 @@
     <string name="profile_signin_phone_content">Please enter your phone number and corresponding password</string>
     <string name="profile_signin_with_email">Signin with email address</string>
     <string name="profile_signin_with_phone">Signin with mobile phone number</string>
+    <string name="profile_remove_account_title">Account removal</string>
+    <string name="profile_remove_account_content">Be carefull, if you remove the account all the data associated will be lost</string>
+    <string name="profile_remove_account_remove">Remove account:</string>
+    <string name="profile_reset_password_title">Password reset</string>
+    <string name="profile_reset_password_content">A new password will be sent to the email address below. Check also in the junk email in case you don\'t recieve it.</string>
+    <string name="profile_update_change_password_current">Current password :</string>
+    <string name="profile_update_change_password_new">New password :</string>
+    <string name="profile_update_change_email_new">New email :</string>
+    <string name="profile_update_change_phone_new">New phone :</string>
+    <string name="profile_update_change_name_new">New name :</string>
 </resources>

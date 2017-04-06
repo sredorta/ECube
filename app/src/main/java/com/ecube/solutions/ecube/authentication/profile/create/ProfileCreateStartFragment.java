@@ -80,11 +80,23 @@ public class ProfileCreateStartFragment extends FragmentAbstract {
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "onRESUME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+    }
+
+
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_DEFINE_AVATAR) {
+
+                Log.i(TAG, "Recieved data from AVATAR !!!!");
                 myUser.setAvatar((Bitmap) data.getParcelableExtra(ProfileCreateAvatarFragment.FRAGMENT_OUTPUT_PARAM_USER_AVATAR_BITMAP));
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(ProfileCreateNamesFragment.FRAGMENT_INPUT_PARAM_USER_FIRST_NAME, myUser.getFirstName());

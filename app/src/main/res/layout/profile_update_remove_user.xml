@@ -32,7 +32,7 @@ android:padding="10dp">
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Account removal:"
+            android:text="@string/profile_remove_account_title"
             android:textColor="@color/md_lime_700"
             android:layout_marginBottom="20dp"
             android:textSize="18sp"
@@ -43,7 +43,7 @@ android:padding="10dp">
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Be carefull, if you remove the account all data associated will be lost" />
+            android:text="@string/profile_remove_account_content" />
         <TextView
             android:id="@+id/profile_update_remove_user_TextView_text2"
             android:layout_width="wrap_content"
@@ -52,7 +52,7 @@ android:padding="10dp">
             android:textStyle="bold"
             android:layout_marginTop="10dp"
             android:layout_weight="1"
-            android:text="Remove account: " />
+            android:text="@string/profile_remove_account_remove" />
 
         <TextView
             android:id="@+id/profile_update_remove_user_TextView_email"
@@ -60,7 +60,7 @@ android:padding="10dp">
             android:layout_height="wrap_content"
             android:textColor="@color/md_red_500"
             android:layout_weight="1"
-            android:text="test@mail.com" />
+            android:text="" />
 
     </LinearLayout>
 
@@ -79,7 +79,7 @@ android:padding="10dp">
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="10dp"
-            android:text="CANCEL" />
+            android:text="@string/common_strings_cancel" />
 
         <Button
             android:id="@+id/profile_update_remove_user_Button_submit"
@@ -87,7 +87,7 @@ android:padding="10dp">
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="10dp"
-            android:text="APPLY" />
+            android:text="@string/common_strings_apply" />
     </LinearLayout>
 
 
