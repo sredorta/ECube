@@ -158,6 +158,10 @@ public class TextInputLayoutAppWidget extends LinearLayout {
             mTextInputLayoutShadow.setHint(mHintTextShadow);
         }
         mTextInputLayout.setHint(mHintText);
+        //Case passwords enable toggle eye drawable
+        mTextInputLayout.setPasswordVisibilityToggleEnabled(true);
+        mTextInputLayoutShadow.setPasswordVisibilityToggleEnabled(true);
+
         if (isInEditMode()) {   // If we are in development we stop here
             return;
         }

@@ -127,7 +127,6 @@ public class ProfileCreateAvatarFragment extends FragmentAbstract {
             }
         });
 
-        final Fragment fm = this;
 
         final Button nextButton = (Button) v.findViewById(R.id.profile_create_avatar_button);
         nextButton.setOnClickListener(new View.OnClickListener() {

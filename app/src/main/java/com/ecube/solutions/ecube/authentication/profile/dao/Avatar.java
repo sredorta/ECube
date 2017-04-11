@@ -31,7 +31,7 @@ public class Avatar implements Serializable {
     private static final String TAG = Avatar.class.getSimpleName();
     private static final boolean DEBUG = true;
 
-    private static final int AVATAR_SIZE = 300;
+    private static final int AVATAR_SIZE = 100;
     private Bitmap mBitmap;                     //Stores the bitmap of the avatar
     private File mPhotoFile;                    //Stores a photo of avatar if we take photo
     private Context mContext;
@@ -118,8 +118,22 @@ public class Avatar implements Serializable {
     }
 
 
+    public static void saveFile(Bitmap bitmap, String file_name,Context context ) {
+        OutputStream fOut = null;
+        File externalFilesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File myFile = new File(externalFilesDir, file_name);
+        Log.i(TAG, "Saving file: " +myFile.getAbsolutePath());
+        try {
+            fOut = new FileOutputStream(myFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut); // saving the Bitmap to a file compressed as a JPEG with 85% compression rate
+            fOut.flush(); // Not really required
+            fOut.close(); // do not forget to close the stream
+        } catch (Exception e) {
+            Log.i(TAG, "Caught exception :" + e);
+        }
 
-    private static void saveFile(Uri sourceUri, File destination,Context context) {
+    }
+    public static void saveFile(Uri sourceUri, File destination,Context context) {
         InputStream inputStream = null;
         OutputStream outputStream = null;
         try {

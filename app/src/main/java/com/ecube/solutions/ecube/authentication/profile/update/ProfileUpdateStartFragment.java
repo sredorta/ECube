@@ -136,12 +136,12 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
         myItem.setAction("password");
         mMenuItems.add(myItem);
 
-        myItem = new MenuItem();
+/*        myItem = new MenuItem();
         myItem.setText(getContext().getString(R.string.profile_update_change_access_type));
         myItem.setDrawable(IconHelper.colorize(getContext(),R.drawable.icon_settings_account,R.color.md_lime_700));
         myItem.setAction("access");
         mMenuItems.add(myItem);
-
+*/
         myItem = new MenuItem();
         myItem.setText(getContext().getString(R.string.profile_update_remove_account));
         myItem.setDrawable(IconHelper.colorize(getContext(),R.drawable.icon_settings_remove_account,R.color.md_lime_700));

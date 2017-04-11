@@ -13,12 +13,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Base64;
 import android.util.Log;
 
+import com.ecube.solutions.ecube.R;
 import com.ecube.solutions.ecube.abstracts.AsyncTaskAbstract;
 import com.ecube.solutions.ecube.abstracts.AsyncTaskInterface;
+import com.ecube.solutions.ecube.authentication.profile.dao.Avatar;
 import com.ecube.solutions.ecube.authentication.profile.dao.Internationalization;
 import com.ecube.solutions.ecube.authentication.profile.dao.User;
 import com.ecube.solutions.ecube.general.AppGeneral;
@@ -26,6 +31,7 @@ import com.ecube.solutions.ecube.helpers.IntentHelper;
 import com.ecube.solutions.ecube.network.Encryption;
 import com.ecube.solutions.ecube.network.JsonItem;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -340,7 +346,9 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
             if (mUser.getLastName() != null)
                 mAccountManager.setUserData(account, PARAM_USER_LAST_NAME, mUser.getLastName());
             if (mUser.getAvatar() != null) {
+                //Avatar.saveFile(mUser.getAvatar(mContext),"profile_avatar_" + mUser.getId() + ".jpg", mContext);
                 mAccountManager.setUserData(account, PARAM_USER_AVATAR, mUser.getAvatar());
+                Log.i(TAG, "Saved avatar file :" + "profile_avatar_" + mUser.getId() + ".jpg !!!!!!!!!!!!!!!!!!!!!");
             }
             if (mUser.getCreationTime() != null) {
                 mAccountManager.setUserData(account, PARAM_USER_CREATION_TIME, String.valueOf(mUser.getCreationTime()));
@@ -357,7 +365,19 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
         mUser.setLastName(mAccountManager.getUserData(myAccount, PARAM_USER_LAST_NAME));
         mUser.setEmail(mAccountManager.getUserData(myAccount, PARAM_USER_EMAIL));
         mUser.setPhone(mAccountManager.getUserData(myAccount, PARAM_USER_PHONE));
+
         mUser.setAvatar(mAccountManager.getUserData(myAccount, PARAM_USER_AVATAR));
+/*        Avatar avatar = new Avatar(mContext);
+        File externalFilesDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File myFile = new File(externalFilesDir, "profile_avatar_" + mUser.getId() + ".jpg");
+        if (myFile.exists()) {
+            Log.i(TAG, "Getting avatar from file :" + "profile_avatar_" + mUser.getId() + ".jpg !!!!!!!!!!!!!!!!!!!!!");
+            avatar.getAvatarFromFile(myFile);
+            mUser.setAvatar(avatar.getBitmap());
+        } else {
+            mUser.setAvatar(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.profile_user_default));
+        }
+*/
         mUser.setCreationTime(Integer.valueOf(mAccountManager.getUserData(myAccount,PARAM_USER_CREATION_TIME)));
         //System parameters
         mUser.setPassword(mAccountManager.getPassword(myAccount));

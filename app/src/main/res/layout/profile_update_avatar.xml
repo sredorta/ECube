@@ -62,8 +62,6 @@
             android:id="@+id/profile_update_avatar_FloatingActionButton_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/profile_update_avatar_AvatarAppWidget"
-            android:layout_alignLeft="@+id/profile_update_avatar_AvatarAppWidget"
             android:alpha="0"
             android:clickable="true"
             android:foregroundGravity="bottom"
@@ -71,7 +69,9 @@
             android:src="@drawable/icon_delete"
             app:backgroundTint="@color/md_lime_700"
             app:fabSize="normal"
-            app:layout_anchor="@id/profile_update_avatar_AvatarAppWidget" />
+            app:layout_anchor="@id/profile_update_avatar_AvatarAppWidget"
+            android:layout_alignTop="@+id/profile_update_avatar_AvatarAppWidget"
+            android:layout_alignEnd="@+id/profile_update_avatar_AvatarAppWidget" />
     </RelativeLayout>
 
     <LinearLayout
@@ -88,7 +88,7 @@
             android:id="@+id/profile_update_avatar_Button_apply"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="0dp"
             android:text="@string/common_strings_apply" />
 
     </LinearLayout>
