@@ -81,14 +81,14 @@ android:layout_height="match_parent"
     android:gravity="center_vertical|center_horizontal"
 android:layout_gravity="center_vertical">
 
-<TextView
+    <TextView
+        android:id="@+id/profile_signin_with_email_TextView_use_phone"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/profile_signin_phone_content"
-        android:id="@+id/profile_signin_with_email_TextView_use_phone"
+        android:layout_margin="10dp"
         android:alpha="0.8"
         android:gravity="center_vertical|center_horizontal"
-        android:layout_margin="10dp" />
+        android:text="@string/profile_signin_with_phone" />
 
 <TextView
     android:layout_width="fill_parent"

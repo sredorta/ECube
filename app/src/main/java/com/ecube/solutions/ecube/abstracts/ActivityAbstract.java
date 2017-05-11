@@ -84,7 +84,7 @@ public abstract class ActivityAbstract extends AppCompatActivity {
     public void replaceFragment(Fragment fragment, @Nullable String tag, boolean animation){
         replaceFragment(fragment, tag, animation, true);
     }
-
+/*
     @Override
     protected void onStop() {
         super.onStop();
@@ -94,15 +94,15 @@ public abstract class ActivityAbstract extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
     }
-
-    @Override
-    public void finish() {
+*/
+ //   @Override
+ //   public void finish() {
 /*        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(mAnimEnter,mAnimExit,mAnimPopEnter,mAnimPopExit);
         transaction.remove(fragment);
         transaction.commit();*/
-        super.finish();
-    }
+ //       super.finish();
+ //   }
 
     //Returns current visible fragment
     public <F extends Fragment> F getVisibleFragment() {

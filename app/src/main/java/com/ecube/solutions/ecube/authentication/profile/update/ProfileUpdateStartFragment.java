@@ -87,8 +87,10 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
 
         String email = (String) getInputParam(ProfileUpdateStartFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT);
+        Log.i(TAG, "Created user ");
         mUser = new User();
         mUser.setEmail(email);
         //Get account details from the device
@@ -98,9 +100,10 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
         //Restore user in case of rotation
         if (savedInstanceState!= null) {
             mUser.setEmail((String) savedInstanceState.getString(KEY_CURRENT_USER));
+            Log.i(TAG, "Restored current user  : " + mUser.getEmail());
         }
         mUser = myAccountAuthenticator.getDataFromDeviceAccount(myAccountAuthenticator.getAccount(mUser));
-
+        //setRetainInstance();
         //Init the List of items
         initMenuItems();
     }
@@ -213,6 +216,7 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
     @Override
     public void onResume() {
         super.onResume();
+        Log.i(TAG, "OnResume !");
         initHeaderAccount();
     }
 
@@ -221,7 +225,11 @@ public class ProfileUpdateStartFragment extends FragmentAbstract {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(KEY_CURRENT_USER, mUser.getEmail());
+        Log.i(TAG, "Saved current user  : " + mUser.getEmail());
+        //setRetainInstance();
     }
+
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // RecycleViewer part

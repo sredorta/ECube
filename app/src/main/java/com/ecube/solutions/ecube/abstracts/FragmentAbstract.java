@@ -269,10 +269,4 @@ public abstract class FragmentAbstract extends Fragment implements OnBackPressed
        }
    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.i(TAG, "onResume");
-        mActivity = getActivity();
-    }
 }

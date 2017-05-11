@@ -39,7 +39,7 @@ public class WaitDialogFragment extends DialogAbstract {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        setRetainInstance(true);        //Set dialog to be retained to avoid issues of rotation !
+        //setRetainInstance(true);        //Set dialog to be retained to avoid issues of rotation !
         View v = LayoutInflater.from(mActivity).inflate(R.layout.dialog_wait_fragment,null);
 
         //Avoid rotation of this fragment

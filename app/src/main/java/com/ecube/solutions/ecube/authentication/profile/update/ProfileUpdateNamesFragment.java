@@ -27,7 +27,7 @@ import com.ecube.solutions.ecube.widgets.TextInputLayoutAppWidget;
 
 public class ProfileUpdateNamesFragment extends FragmentAbstract {
     //Logs
-    private static final String TAG = ProfileUpdateEmailFragment.class.getSimpleName();
+    private static final String TAG = ProfileUpdateNamesFragment.class.getSimpleName();
     private static final boolean DEBUG = true;
 
     //Fragment arguments
@@ -56,6 +56,7 @@ public class ProfileUpdateNamesFragment extends FragmentAbstract {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "OnCreate !");
         setRetainInstance(true); // We are using async task so we need to retain it
         String email = (String) getInputParam(ProfileUpdateStartFragment.FRAGMENT_INPUT_PARAM_USER_CURRENT);
         //Check that we have an account with current user and if not exit
@@ -64,6 +65,7 @@ public class ProfileUpdateNamesFragment extends FragmentAbstract {
         mUser = new User();
         if (savedInstanceState != null) {
             mUser = (User) savedInstanceState.getParcelable(KEY_CURRENT_USER);
+            Log.i(TAG, "Restored user : " + mUser.getEmail());
         } else {
             //Get account details from the device
             myAccountAuthenticator = new AccountAuthenticator(getContext());
@@ -129,6 +131,7 @@ public class ProfileUpdateNamesFragment extends FragmentAbstract {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(KEY_CURRENT_USER, mUser);
+        Log.i(TAG, "Saved user : " + mUser.getEmail());
     }
 
 }

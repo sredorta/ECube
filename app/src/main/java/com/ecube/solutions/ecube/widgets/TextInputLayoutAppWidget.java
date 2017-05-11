@@ -706,7 +706,8 @@ public class TextInputLayoutAppWidget extends LinearLayout {
                     inputNumber = null;
                     Log.i(TAG, "Caught exception :" + e);
                 }
-                isValid = phoneUtil.isValidNumber(inputNumber);
+                if (inputNumber == null) isValid =false;
+                else isValid = phoneUtil.isValidNumber(inputNumber);
             }
         }
         return isValid;

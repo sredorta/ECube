@@ -177,7 +177,7 @@ public class AuthenticatorActivity extends ActivityAbstract {
         }
     }
 
-
+/*
     @Override
     protected void onStart() {
         super.onStart();
@@ -196,11 +196,7 @@ public class AuthenticatorActivity extends ActivityAbstract {
         super.onDestroy();
         Log.i(TAG, "OnDestroy !!!!!!!!!!!!!");
     }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
+*/
 
 
 
