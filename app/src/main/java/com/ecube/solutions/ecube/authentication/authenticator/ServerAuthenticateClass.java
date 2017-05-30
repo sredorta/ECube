@@ -132,6 +132,8 @@ public class ServerAuthenticateClass implements ServerAuthenticate {
     //Send to the Server id,token and password (sha1) phone and update if matches with server
     @Override
     public JsonItem userChangeAvatar(User user) {
+        if (user.getLanguage()== null)
+            user.setLanguage(Locale.getDefault().getISO3Language());
         JsonItem item =  new CloudFetchr().userChangeAvatar(user.getId(), user.getLanguage(), user.getAvatar());
 
         return item;

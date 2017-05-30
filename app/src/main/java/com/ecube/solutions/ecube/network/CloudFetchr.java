@@ -256,6 +256,8 @@ public class CloudFetchr {
         StringBuilder result = new StringBuilder();
         boolean first = true;
         for(Map.Entry<String, String> entry : params.entrySet()){
+            Log.i(TAG, "Entry:" + entry.getKey());
+            Log.i(TAG,"Value:" + entry.getValue());
             if (first)
                 first = false;
             else
